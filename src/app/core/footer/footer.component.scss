@@ -1,0 +1,19 @@
+@import "../../../assets/scss/variables.scss";
+
+.footer-container {
+  min-height: 5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 2px solid $light-grey;
+  margin: 0 1rem;
+
+  .row {
+    margin: 0;
+
+    .copyright-text {
+      display: flex;
+      vertical-align: middle;
+    }
+  }
+}

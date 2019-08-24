@@ -1,0 +1,17 @@
+@import "../../../assets/scss/variables.scss";
+
+.welcome-container {
+  height: 48rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .welcome-content {
+    text-align: center;
+    button {
+      margin-top: 2rem;
+      background-color: $primary-color;
+      color: $white;
+    }
+  }
+}

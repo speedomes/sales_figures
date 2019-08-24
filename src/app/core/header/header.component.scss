@@ -1,0 +1,31 @@
+@import "../../../assets/scss/variables.scss";
+
+.header-container {
+  height: 5rem;
+  box-shadow: 0rem 0.2rem 0.2rem 0.2rem $light-grey;
+
+  .row {
+    height: 100%;
+
+    .logo-wrapper {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+
+      .material-icons {
+        font-size: 4rem;
+        color: $light-grey;
+      }
+    }
+
+    .header-content {
+      display: flex;
+      align-items: center;
+
+      .title {
+        font-size: 2rem;
+        font-weight: 700;
+      }
+    }
+  }
+}

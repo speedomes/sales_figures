@@ -1,0 +1,8 @@
+@import "../assets/scss/variables.scss";
+
+.app-container {
+  max-width: 1366px;
+  background-color: $app-bg-color;
+  padding: 0;
+  position: relative;
+}
