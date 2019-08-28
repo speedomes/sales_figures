@@ -1,0 +1,24 @@
+@import "../../../assets/scss/variables.scss";
+
+.dashboard-container {
+  .add-data-button {
+    background-color: $primary-color;
+    color: $white;
+    font-weight: 600;
+  }
+
+  .data-filter {
+    .filter-option {
+      display: inline-block;
+      margin-right: 5rem;
+    }
+  }
+
+  .table-title {
+    margin: 3rem 0;
+  }
+
+  table {
+    width: 100%;
+  }
+}

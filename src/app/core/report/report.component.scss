@@ -1,0 +1,28 @@
+@import "../../../assets/scss/variables.scss";
+
+.report-container {
+  .export-csv-button {
+    background-color: $primary-color;
+    color: $white;
+    font-weight: 600;
+  }
+
+  .data-filter {
+    .filter-option {
+      display: inline-block;
+      margin-right: 5rem;
+    }
+  }
+
+  .table-group-container {
+    margin-top: 2rem;
+
+    .table-title {
+      margin: 1rem;
+    }
+
+    table {
+      width: 100%;
+    }
+  }
+}
