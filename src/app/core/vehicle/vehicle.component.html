@@ -1,1 +1,37 @@
-<p>vehicle works!</p>
+<div class="vehicle-container">
+    <h4 class="page-title">Vehicle Data</h4>
+    <div class="row">
+      <div class="vehicle-data-container col-sm-8">
+        <div class="mat-elevation-z8">
+          <table mat-table [dataSource]="vehicleDataSource" matSort>
+            <ng-container matColumnDef="vehicle">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Vehicle </th>
+              <td mat-cell *matCellDef="let element"> {{element.vehicle}} </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="populateData(row)">
+            </tr>
+          </table>
+          <mat-paginator [pageSizeOptions]="[10, 20, 30, 50, 100]" showFirstLastButtons></mat-paginator>
+        </div>
+      </div>
+      <div class="action-container col-sm-4">
+        <div class="row add-data-wrapper">
+          <div class="col-sm-10">
+            <input matInput [(ngModel)]="selectedVehicle">
+            <div *ngIf="showError" class="error-message">Vehicle already exists!</div>
+          </div>
+          <div class="col-sm-2">
+            <button mat-raised-button (click)="addvehicleData()">Add</button>
+          </div>
+        </div>
+        <div class="row button-wrapper">
+          <div class="col-sm-12">
+            <button mat-raised-button [disabled]="selectedVehicle === '' || !selectedVehicle" (click)="updatevehicleData()">Update</button>
+            <button mat-raised-button [disabled]="selectedVehicle === '' || !selectedVehicle" (click)="removevehicleData()">Delete</button>
+            <button mat-raised-button [disabled]="selectedVehicle === '' || !selectedVehicle" (click)="clearSelection()">Clear</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

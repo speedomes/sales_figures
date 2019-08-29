@@ -1,0 +1,14 @@
+@import "../../../assets/scss/variables.scss";
+
+.daily-container {
+  .page-title {
+    margin: 1rem 0 3rem 0;
+    text-align: center;
+    color: $primary-color;
+    font-weight: 700;
+  }
+
+  table {
+    width: 100%;
+  }
+}

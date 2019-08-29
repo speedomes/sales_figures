@@ -6,4 +6,53 @@ html, body {
     color: $white;
     font-weight: 600;
   }
+
+  .mat-paginator-page-size-select {
+    .mat-select-value {
+      text-align: center;
+    }
+  }
+
+  .mat-sort-header-button {
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: rgba(0,0,0,0.4);
+  }
+
+  .mat-row {
+    cursor: pointer;
+
+    &.highlight-row {
+      background-color: $primary-light-color;
+      .mat-cell {
+        color: $white;
+      }
+    }
+
+    &:hover {
+      background: $primary-light-color;
+
+      .mat-cell {
+        color: $white;
+      }
+    }
+  }
+
+  .form-control {
+    &:focus {
+      box-shadow: none;
+      border-color: $border-grey;
+    }
+  }
+
+  .page-title {
+    margin: 1rem 0 3rem 0;
+    text-align: center;
+    color: $primary-color;
+    font-weight: 700;
+  }
+
+  .error-message {
+    color: $red;
+  }
 }

@@ -23,6 +23,10 @@
             padding: 1rem;
             border-bottom: 1px solid $light-grey;
 
+            &:focus {
+              outline: none;
+            }
+
             &:hover, &.active {
               background: $primary-light-color;
               cursor: pointer;

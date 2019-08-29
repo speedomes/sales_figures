@@ -1,4 +1,5 @@
 <div class="dashboard-container">
+  <h4 class="page-title">Dashboard</h4>
   <div class="data-filter">
     <mat-form-field class="filter-option">
       <mat-label>Select a Office</mat-label>
@@ -80,7 +81,7 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;">
       </tr>
     </table>
-    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    <mat-paginator [pageSizeOptions]="[10, 20, 30, 50, 100]"></mat-paginator>
   </div>
 
   <h5 class="table-title">Monthly Data</h5>
@@ -140,7 +141,7 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;">
       </tr>
     </table>
-    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    <mat-paginator [pageSizeOptions]="[10, 20, 30, 50, 100]"></mat-paginator>
   </div>
 
   <h5 class="table-title">Weekly Data</h5>
@@ -200,7 +201,7 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;">
       </tr>
     </table>
-    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    <mat-paginator [pageSizeOptions]="[10, 20, 30, 50, 100]" showFirstLastButtons></mat-paginator>
   </div>
 
   <h5 class="table-title">Daily Data</h5>
@@ -260,6 +261,6 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;">
       </tr>
     </table>
-    <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    <mat-paginator [pageSizeOptions]="[10, 20, 30, 50, 100]"></mat-paginator>
   </div>
 </div>

@@ -1,0 +1,17 @@
+.total-container {
+  .row {
+    margin-bottom: 3rem;
+    justify-content: space-between;
+
+    .col-3 {
+      mat-label {
+        display: block;
+        text-align: center;
+      }
+
+      * {
+        width: 100%;
+      }
+    }
+  }
+}

@@ -1,1 +1,90 @@
-<p>rep works!</p>
+<div class="rep-container">
+    <h4 class="page-title col">Rep Data</h4>
+    <div class="row">
+      <div class="rep-data-container col-sm-8">
+        <div class="mat-elevation-z8">
+          <table mat-table [dataSource]="repDataSource" matSort>
+            <ng-container matColumnDef="id">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+              <td mat-cell *matCellDef="let element"> {{element.id}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+              <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="office">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Default Office </th>
+              <td mat-cell *matCellDef="let element"> {{element.office}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="vehicle">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Default Vehicle </th>
+              <td mat-cell *matCellDef="let element"> {{element.vehicle}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="balance">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header> Balance B </th>
+              <td mat-cell *matCellDef="let element"> {{element.balance}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index"
+              (click)="populateFormDate(row, i)"
+              [ngClass]="{'highlight-row': i === selectedIndex}">
+            </tr>
+          </table>
+          <mat-paginator [pageSizeOptions]="[10, 20, 30, 50, 100]" showFirstLastButtons></mat-paginator>
+        </div>
+      </div>
+      <div class="action-container col-sm-4">
+        <form [formGroup]="repForm" (ngSubmit)="submitRepData()">
+          <div class="row add-data-wrapper">
+            <div class="form-group">
+              <div class="field-title">ID</div>
+              <input matInput formControlName="id" name="id" class="form-control">
+            </div>
+          </div>
+          <div class="row add-data-wrapper">
+            <div class="form-group">
+              <div class="field-title">Name</div>
+              <input matInput formControlName="name" name="name" class="form-control">
+            </div>
+          </div>
+          <div class="row add-data-wrapper">
+            <div class="form-group">
+              <div class="field-title">Balance</div>
+              <input matInput formControlName="balance" name="balance" class="form-control">
+            </div>
+          </div>
+          <div class="row add-data-wrapper">
+            <div class="form-group">
+              <div class="field-title">Office</div>
+              <mat-select formControlName="office" name="office" class="form-control">
+                <mat-option *ngFor="let data of repData" [value]="data.office">{{data.office}}</mat-option>
+              </mat-select>
+            </div>
+          </div>
+          <div class="row add-data-wrapper">
+            <div class="form-group">
+              <div class="field-title">Vehicle</div>
+              <mat-select formControlName="vehicle" name="vehicle" class="form-control">
+                <mat-option *ngFor="let data of repData" [value]="data.vehicle">{{data.vehicle}}</mat-option>
+              </mat-select>
+            </div>
+          </div>
+        </form>
+        <div class="row button-wrapper">
+          <div class="col-sm-12 clear-button">
+            <button mat-raised-button [disabled]="(!repForm.valid) || (!repForm.dirty && !repForm.valid)" (click)="repForm.reset()">Clear</button>
+          </div>
+          <div class="col-sm-12">
+            <button mat-raised-button [disabled]="!repForm.valid" type="submit">Add</button>
+            <button mat-raised-button [disabled]="!repForm.valid" type="submit">Update</button>
+            <button mat-raised-button [disabled]="!repForm.valid" (click)="removeRepData()">Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
