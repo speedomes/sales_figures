@@ -16,6 +16,7 @@ import { FooterComponent } from './footer/footer.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { CoreRoutingModule } from './core-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { AddDataComponent } from './add-data/add-data.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     SpliteComponent,
     HeaderComponent,
     FooterComponent,
-    WelcomeComponent
+    WelcomeComponent,
+    AddDataComponent
   ],
   imports: [
     CommonModule,

@@ -6,6 +6,7 @@ import { MatTableModule } from '@angular/material/table';
 import { MatSortModule } from '@angular/material/sort';
 import { MatSelectModule } from '@angular/material/select';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatRadioModule } from '@angular/material/radio';
 
 @NgModule({
   exports: [
@@ -14,7 +15,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatTableModule,
     MatSortModule,
     MatSelectModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatRadioModule
   ]
 })
 export class MaterialModule { }

@@ -10,12 +10,13 @@ import { OfficeComponent } from './office/office.component';
 import { VehicleComponent } from './vehicle/vehicle.component';
 import { RepComponent } from './rep/rep.component';
 import { SpliteComponent } from './splite/splite.component';
-
+import { AddDataComponent } from './add-data/add-data.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent,
     children: [
       { path: 'dashboard', component: DashboardComponent },
+      { path: 'add-data', component: AddDataComponent },
       { path: 'report', component: ReportComponent },
       { path: 'daily-data', component: DailyDataComponent },
       { path: 'total', component: TotalComponent },

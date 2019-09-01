@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { DataService } from 'src/app/data.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -34,9 +35,12 @@ export class DashboardComponent implements OnInit {
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-  constructor() { }
+  constructor(private dataService: DataService) { }
 
   ngOnInit() {
+    this.dataService.fetchDashboardData().subscribe((response) => {
+      console.log(response);
+    });
     this.yearlyDataSource.paginator = this.paginator;
     this.yearlyDataSource.sort = this.sort;
   }
