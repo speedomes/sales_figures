@@ -44,4 +44,40 @@ export class DataService {
   deleteOffice(data: {}): Observable<any> {
     return this.httpClient.post('http://localhost:3000/api/deleteOffice', data);
   }
+
+  getVehicles(): Observable<any> {
+    return this.httpClient.get('http://localhost:3000/api/getVehicles');
+  }
+
+  addVehicle(data: {}): Observable<any> {
+    return this.httpClient.post('http://localhost:3000/api/addVehicle', data);
+  }
+
+  updateVehicle(data: {}): Observable<any> {
+    return this.httpClient.post('http://localhost:3000/api/updateVehicle', data);
+  }
+
+  deleteVehicle(data: {}): Observable<any> {
+    return this.httpClient.post('http://localhost:3000/api/deleteVehicle', data);
+  }
+
+  getReps(): Observable<any> {
+    return this.httpClient.get('http://localhost:3000/api/getReps');
+  }
+
+  addRep(data: {}): Observable<any> {
+    return this.httpClient.post('http://localhost:3000/api/addRep', data);
+  }
+
+  updateRep(data: {}): Observable<any> {
+    return this.httpClient.post('http://localhost:3000/api/updateRep', data);
+  }
+
+  deleteRep(data: {}): Observable<any> {
+    return this.httpClient.post('http://localhost:3000/api/deleteRep', data);
+  }
+
+  getSpliteData(): Observable<any> {
+    return this.httpClient.get('http://localhost:3000/api/getSpliteData');
+  }
 }

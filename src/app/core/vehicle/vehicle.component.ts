@@ -2,6 +2,10 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { DataService } from 'src/app/data.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackBarComponent } from 'src/app/shared/snack-bar/snack-bar.component';
 
 @Component({
   selector: 'app-vehicle',
@@ -10,76 +14,107 @@ import { MatTableDataSource } from '@angular/material/table';
 })
 export class VehicleComponent implements OnInit {
 
-  selectedVehicle: string;
-  vehicleToModify: string;
+  vehicleForm: FormGroup;
+  selectedVehicle: any;
   showError: boolean = false;
+  selectedIndex: number;
 
-  vehicleData = [
-    { vehicle: 'Cornwall' },
-    { vehicle: 'Oxford' }
-  ];
-
-  vehicleDataSource =  new MatTableDataSource(this.vehicleData);
-
+  vehicleDataSource =  new MatTableDataSource();
   displayedColumns: string[] = ['vehicle'];
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-  constructor() { }
+  constructor(private dataService: DataService,
+    private _snackBar: MatSnackBar) { }
 
   ngOnInit() {
+    this.getVehicles();
+
+    this.vehicleForm = new FormGroup({
+      vehicleName: new FormControl('', [Validators.required])
+    });
+
     this.vehicleDataSource.paginator = this.paginator;
     this.vehicleDataSource.sort = this.sort;
   }
 
-  populateData(rowData: any) {
-    this.selectedVehicle = rowData.vehicle;
-    this.vehicleToModify = rowData.vehicle;
+  populateData(rowData: any, index) {
+    this.selectedIndex = index;
+    this.selectedVehicle = rowData;
+    this.vehicleForm.setValue({ vehicleName: rowData.name });
   }
 
-  addvehicleData() {
-    this.showError = false;
-
-    this.vehicleDataSource.data.filter((value) => {
-      if (value.vehicle === this.selectedVehicle) {
-        this.showError = true;
-      }
-      return true;
+  getVehicles() {
+    this.dataService.getVehicles().subscribe((response) => {
+      console.log(response);
+      this.vehicleDataSource.data = response.vehicles;
     });
+  }
 
-    if (!this.showError) {
-      this.vehicleDataSource.data.push({ vehicle: this.selectedVehicle });
-      this.vehicleDataSource.filter = '';
-      this.showError = false;
+  addVehicle() {
+    if(this.selectedVehicle &&
+        (this.vehicleForm.get('vehicleName').value === this.selectedVehicle.name)) {
+        this.displaySnackbar('Vehicle name already exists!');
+        return;
+    } else {
+      this.dataService.addVehicle({
+        name: this.vehicleForm.get('vehicleName').value
+      }).subscribe((response) => {
+        this.displaySnackbar('Vehicle name has been added successfully!');
+        this.clearSelection();
+        this.getVehicles();
+      });
     }
   }
 
-  updatevehicleData() {
-    this.vehicleDataSource.data.filter((value) => {
-      if (value.vehicle === this.vehicleToModify) {
-        value.vehicle = this.selectedVehicle;
-        this.vehicleToModify = this.selectedVehicle;
-      }
-      return true;
-    });
+  updateVehicle() {
+    if(this.vehicleForm.get('vehicleName').value === this.selectedVehicle.name) {
+      this._snackBar.openFromComponent(SnackBarComponent, {
+        duration: 5000,
+        data: { message: 'No update required!' }
+      });
+      return;
+    } else {
+      this.dataService.updateVehicle({
+        id: this.selectedVehicle.id, 
+        name: this.vehicleForm.get('vehicleName').value
+      }).subscribe((response) => {
+        this.displaySnackbar('Vehicle name has been updated successfully!');
+        this.clearSelection();
+        this.getVehicles();
+      });
+    }
   }
 
-  removevehicleData() {
-    this.vehicleDataSource.data.filter((value, index) => {
-      if ((this.vehicleToModify && value.vehicle === this.vehicleToModify)
-        || (value.vehicle === this.selectedVehicle)) {
-        this.vehicleDataSource.data.splice(index, 1);
-        this.vehicleDataSource.filter = '';
+  deleteVehicle() {
+    if(this.vehicleForm.get('vehicleName').value !== this.selectedVehicle.name) {
+      this._snackBar.openFromComponent(SnackBarComponent, {
+        duration: 5000,
+        data: { message: 'Please select an vehicle' }
+      });
+      return;
+    } else {
+      this.dataService.deleteVehicle({
+        id: this.selectedVehicle.id
+      }).subscribe((response) => {
+        this.displaySnackbar('Vehicle name has been deleted successfully!');
         this.clearSelection();
-      }
-      return true;
-    });
+        this.getVehicles();
+      });
+    }
   }
 
   clearSelection() {
+    this.vehicleForm.reset();
     this.selectedVehicle = undefined;
-    this.vehicleToModify = undefined;
+  }
+
+  displaySnackbar(message: string) {
+    this._snackBar.openFromComponent(SnackBarComponent, {
+      duration: 5000,
+      data: { message: message }
+    });
   }
 
 }

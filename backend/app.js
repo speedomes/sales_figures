@@ -215,7 +215,7 @@ app.get('/api/getDailyData',(req, res, next) => {
 });
 
 app.get('/api/getOffices',(req, res, next) => {
-  const officeDataQuery = `select * from office`;
+  const officeDataQuery = `select * from office ORDER BY office.id`;
 
   database.query(officeDataQuery)
   .then (rows => {
@@ -264,6 +264,126 @@ app.post('/api/deleteOffice',(req, res) => {
   .then (rows => {
     res.status(201).json({
       message: 'Office deleted successfully'
+    });
+  })
+  .catch(err => {
+    throw err;
+  });
+});
+
+/** APIs for Vehicle page **/
+app.get('/api/getVehicles',(req, res, next) => {
+  const VehicleDataQuery = `select * from vehicle ORDER BY vehicle.id DESC`;
+
+  database.query(VehicleDataQuery)
+  .then (rows => {
+    res.status(201).json({
+      message: 'Vehicle data fetched successfully',
+      vehicles: rows
+    });
+  })
+  .catch(err => {
+    throw err;
+  });
+});
+
+app.post('/api/addVehicle',(req, res) => {
+  const addVehicleQuery = `insert INTO vehicle(name) VALUES ('${req.body.name}')`;
+
+  database.query(addVehicleQuery)
+  .then (rows => {
+    res.status(201).json({
+      message: 'Vehicle added successfully',
+    });
+  })
+  .catch(err => {
+    throw err;
+  });
+});
+
+app.post('/api/updateVehicle',(req, res) => {
+  const updateVehicleQuery = `update vehicle SET name='${req.body.name}' WHERE id='${req.body.id}'`;
+
+  database.query(updateVehicleQuery)
+  .then (rows => {
+    res.status(201).json({
+      message: 'Vehicle has been updated successfully'
+    });
+  })
+  .catch(err => {
+    throw err;
+  });
+});
+
+app.post('/api/deleteVehicle',(req, res) => {
+  const deleteVehicleQuery = `delete FROM vehicle WHERE id='${req.body.id}'`;
+
+  database.query(deleteVehicleQuery)
+  .then (rows => {
+    res.status(201).json({
+      message: 'Vehicle deleted successfully'
+    });
+  })
+  .catch(err => {
+    throw err;
+  });
+});
+
+app.get('/api/getReps',(req, res, next) => {
+  const RepDataQuery = `SELECT r.id, r.name as repName, o.name as officeName,
+    v.name as vehicleName, r.balance, r.office_id,
+    r.vehicle_id FROM reps AS r JOIN office AS o ON r.office_id = o.id JOIN vehicle AS v 
+    ON r.vehicle_id = v.id`;
+
+  database.query(RepDataQuery)
+  .then (rows => {
+    console.log(rows);
+    res.status(201).json({
+      message: 'Rep data fetched successfully',
+      reps: rows
+    });
+  })
+  .catch(err => {
+    throw err;
+  });
+});
+
+app.post('/api/addRep',(req, res) => {
+  const addRepQuery = `INSERT INTO reps(name, office_id, vehicle_id, balance, id) 
+  VALUES (?,?,?,?,?)`;
+
+  database.query(addRepQuery)
+  .then (rows => {
+    res.status(201).json({
+      message: 'Rep added successfully',
+    });
+  })
+  .catch(err => {
+    throw err;
+  });
+});
+
+app.post('/api/updateRep',(req, res) => {
+  const updateRepQuery = `UPDATE reps SET name=?, office_id=?, vehicle_id=?, balance=?, id=? WHERE id=?`;
+
+  database.query(updateRepQuery)
+  .then (rows => {
+    res.status(201).json({
+      message: 'Rep has been updated successfully'
+    });
+  })
+  .catch(err => {
+    throw err;
+  });
+});
+
+app.post('/api/deleteRep',(req, res) => {
+  const deleteRepQuery = `DELETE FROM reps WHERE id=?`;
+
+  database.query(deleteRepQuery)
+  .then (rows => {
+    res.status(201).json({
+      message: 'Rep deleted successfully'
     });
   })
   .catch(err => {
@@ -321,33 +441,19 @@ app.get('/api/getTotalData',(req, res, next) => {
   });
 });
 
-app.get('/api/getVehicles',(req, res, next) => {
-  res.status(201).json({
-    message: 'Data saved successfully',
-  });
-});
-
-app.post('/api/saveVehicle',(req, res, next) => {
-  res.status(201).json({
-    message: 'Data saved successfully',
-  });
-});
-
-app.get('/api/getReps',(req, res, next) => {
-  res.status(201).json({
-    message: 'Data saved successfully',
-  });
-});
-
-app.post('/api/saveRep',(req, res, next) => {
-  res.status(201).json({
-    message: 'Data saved successfully',
-  });
-});
-
 app.get('/api/getSpliteData',(req, res, next) => {
-  res.status(201).json({
-    message: 'Data saved successfully',
+  const spliteDataQuery = `SELECT s.date, o.name, s.cash, s.cards, s.viu
+    FROM split as s join office as o on s.office_id=o.id`;
+
+  database.query(spliteDataQuery)
+  .then (rows => {
+    res.status(201).json({
+      message: 'Splite data fetched successfully.',
+      spliteData: rows
+    });
+  })
+  .catch(err => {
+    throw err;
   });
 });
 

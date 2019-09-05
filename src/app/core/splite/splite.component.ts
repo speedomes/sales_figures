@@ -2,6 +2,9 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
+import { DataService } from 'src/app/data.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackBarComponent } from 'src/app/shared/snack-bar/snack-bar.component';
 
 @Component({
   selector: 'app-splite',
@@ -35,14 +38,30 @@ export class SpliteComponent implements OnInit {
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-  constructor() { }
+  constructor(private dataService: DataService,
+    private _snackBar: MatSnackBar) { }
 
   ngOnInit() {
+    this.dataService.getSpliteData().subscribe((response) => {
+      console.log(response);
+      if() {
+
+      } else {
+        this.displaySnackbar('No data found');
+      }
+    });
     this.spliteDataSource.paginator = this.paginator;
     this.spliteDataSource.sort = this.sort;
   }
 
   highlightRow(index) {
     this.selectedIndex = index;
+  }
+
+  displaySnackbar(message: string) {
+    this._snackBar.openFromComponent(SnackBarComponent, {
+      duration: 5000,
+      data: { message: message }
+    });
   }
 }

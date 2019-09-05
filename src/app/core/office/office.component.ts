@@ -61,8 +61,8 @@ export class OfficeComponent implements OnInit {
       this.dataService.addOffice({
         name: this.officeForm.get('officeName').value
       }).subscribe((response) => {
-        this.displaySnackbar('Office has been added successfully!');
-        this.officeForm.reset();
+        this.displaySnackbar('Office name has been added successfully!');
+        this.clearSelection();
         this.getOffices();
       });
     }
@@ -80,8 +80,8 @@ export class OfficeComponent implements OnInit {
         id: this.selectedOffice.id, 
         name: this.officeForm.get('officeName').value
       }).subscribe((response) => {
-        this.displaySnackbar('Office has been updated successfully!');
-        this.officeForm.reset();
+        this.displaySnackbar('Office name has been updated successfully!');
+        this.clearSelection();
         this.getOffices();
       });
     }
@@ -98,16 +98,16 @@ export class OfficeComponent implements OnInit {
       this.dataService.deleteOffice({
         id: this.selectedOffice.id
       }).subscribe((response) => {
-        this.displaySnackbar('Office has been deleted successfully!');
-        this.officeForm.reset();
+        this.displaySnackbar('Office name has been deleted successfully!');
+        this.clearSelection();
         this.getOffices();
       });
     }
   }
 
   clearSelection() {
+    this.officeForm.reset();
     this.selectedOffice = undefined;
-    this.officeToModify = undefined;
   }
 
   displaySnackbar(message: string) {
@@ -116,5 +116,4 @@ export class OfficeComponent implements OnInit {
       data: { message: message }
     });
   }
-
 }

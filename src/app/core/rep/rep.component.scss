@@ -21,9 +21,13 @@
         width: 100%;
       }
 
+      .field-title {
+        margin-bottom: 0.5rem;
+      }
+
       input {
         width: 100%;
-        padding: 0.3rem;
+        padding: 0.5rem;
       }
 
       .error-message {
@@ -42,7 +46,7 @@
 
         &.clear-button {
           justify-content: center;
-          margin-bottom: 2rem;
+          margin: 2rem 0;
         }
       }
     }
