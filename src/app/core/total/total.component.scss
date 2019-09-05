@@ -6,7 +6,12 @@
     .col-3 {
       mat-label {
         display: block;
-        text-align: center;
+        font-weight: bold;
+        margin-bottom: 1rem;
+      }
+
+      input {
+        padding-left: 0.5rem;
       }
 
       * {

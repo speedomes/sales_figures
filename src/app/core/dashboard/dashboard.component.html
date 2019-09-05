@@ -21,7 +21,7 @@
       </mat-select>
     </mat-form-field>
 
-    <button class="add-data-button" mat-raised-button routerLink="/add">Enter the data</button>
+    <button class="add-data-button" mat-raised-button routerLink="../add-data">Enter the data</button>
   </div>
 
   <h5 class="table-title">Yearly Data</h5>
@@ -141,7 +141,7 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;">
       </tr>
     </table>
-    <mat-paginator [pageSizeOptions]="[10, 20, 30, 50, 100]"></mat-paginator>
+    <mat-paginator [pageSizeOptions]="[10, 20, 30, 50, 100]" showFirstLastButtons></mat-paginator>
   </div>
 
   <h5 class="table-title">Weekly Data</h5>

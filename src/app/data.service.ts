@@ -12,4 +12,36 @@ export class DataService {
   fetchDashboardData(): Observable<any> {
     return this.httpClient.get('http://localhost:3000/api/dashboard');
   }
+
+  getYears() {
+    return this.httpClient.get('http://localhost:3000/api/getYears');
+  }
+
+  getReport(reportConfig: {}): Observable<any> {
+    return this.httpClient.post('http://localhost:3000/api/getReport', reportConfig);
+  }
+
+  getTotalData(): Observable<any> {
+    return this.httpClient.get('http://localhost:3000/api/getTotalData');
+  }
+
+  getDailyData(): Observable<any> {
+    return this.httpClient.get('http://localhost:3000/api/getDailyData');
+  }
+
+  getOffices(): Observable<any> {
+    return this.httpClient.get('http://localhost:3000/api/getOffices');
+  }
+
+  addOffice(data: {}): Observable<any> {
+    return this.httpClient.post('http://localhost:3000/api/addOffice', data);
+  }
+
+  updateOffice(data: {}): Observable<any> {
+    return this.httpClient.post('http://localhost:3000/api/updateOffice', data);
+  }
+
+  deleteOffice(data: {}): Observable<any> {
+    return this.httpClient.post('http://localhost:3000/api/deleteOffice', data);
+  }
 }

@@ -18,7 +18,7 @@
     .add-data-wrapper {
       input {
         width: 100%;
-        padding: 0.3rem;
+        padding: 0.5rem;
       }
 
       .error-message {
@@ -36,5 +36,11 @@
         justify-content: space-evenly;
       }
     }
+  }
+}
+
+::ng-deep {
+  .mat-sort-header-container {
+    justify-content: center;
   }
 }

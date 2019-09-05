@@ -1,0 +1,20 @@
+@import "../../../assets/scss/variables.scss";
+
+.add-data-container {
+  .filter-type-container {
+    
+    .data-table-wrapper {
+      margin-top: 3rem;
+      .data-table {
+        padding: 0;
+        table {
+          width: 100%;
+        }
+      }
+    }
+
+    .justify-center {
+      justify-content: center;
+    }
+  }
+}

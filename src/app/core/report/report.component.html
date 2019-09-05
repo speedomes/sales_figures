@@ -1,94 +1,122 @@
 <div class="report-container">
   <h4 class="page-title">Report</h4>
-  <div class="data-filter">
-    <mat-form-field class="filter-option">
-      <mat-label>Select a Year</mat-label>
-      <mat-select [(value)]="selectedYear">
-        <mat-option value="2019">2019</mat-option>
-        <mat-option value="2018">2018</mat-option>
-      </mat-select>
-    </mat-form-field>
+  <form [formGroup]="reportForm" (ngSubmit)="generateReport()">
+    <div class="data-filter">
+      <div class="row">
+        <mat-form-field class="filter-option col-sm-2">
+          <mat-label>Select a Year</mat-label>
+          <mat-select formControlName="year">
+            <mat-option [value]="y.year" *ngFor="let y of years">{{y.year}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+    
+        <mat-form-field class="filter-option col-sm-2">
+          <mat-label>Select a Week</mat-label>
+          <mat-select formControlName="week">
+            <mat-option *ngFor="let no of totalWeeks" [value]="no">{{no}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+    
+        <div class="col-sm-2 export-csv-button-wrapper">
+          <button
+            class="export-csv-button"
+            mat-raised-button
+            (click)="exportToCSV()"
+            [disabled]="!reportSuccess"
+            >
+            Save to CSV
+          </button>
+        </div>
+      </div>
 
-    <mat-form-field class="filter-option">
-      <mat-label>Select a Week</mat-label>
-      <mat-select [(value)]="selectedWeek">
-        <mat-option *ngFor="let no of totalWeeks" [value]="no">{{no}}</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <button class="export-csv-button" mat-raised-button (click)="exportToCSV()">Save to CSV</button>
-  </div>
-
-  <h5>Report Week #1 2018.01.02 - 2018.01.08</h5>
-  <div class="table-group-container row">
-    <div class="mat-elevation-z8 col-sm mx-3">
-      <h5 class="table-title">Pulled</h5>
-      <table mat-table [dataSource]="pulledDataSource" matSort>
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
-          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="office">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Office </th>
-          <td mat-cell *matCellDef="let element"> {{element.office}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="week">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Week </th>
-          <td mat-cell *matCellDef="let element"> {{element.week}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="month">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Month </th>
-          <td mat-cell *matCellDef="let element"> {{element.month}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="year">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Year </th>
-          <td mat-cell *matCellDef="let element"> {{element.year}} </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;">
-        </tr>
-      </table>
-      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+      <div class="row generate-report-button-wrapper">
+        <div class="generate-report-button">
+          <button mat-raised-button type="submit" [disabled]="!reportForm.valid">Generate Report</button>
+        </div>
+      </div>
     </div>
+  </form>
 
-    <div class="mat-elevation-z8 col-sm mx-3">
-      <h5 class="table-title">New Customers</h5>
-      <table mat-table [dataSource]="pulledDataSource" matSort>
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
-          <td mat-cell *matCellDef="let element"> {{element.name}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="office">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Office </th>
-          <td mat-cell *matCellDef="let element"> {{element.office}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="week">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Week </th>
-          <td mat-cell *matCellDef="let element"> {{element.week}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="month">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Month </th>
-          <td mat-cell *matCellDef="let element"> {{element.month}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="year">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Year </th>
-          <td mat-cell *matCellDef="let element"> {{element.year}} </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;">
-        </tr>
-      </table>
-      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+  <div *ngIf="reportSuccess" class="report-container">
+    <h5>Report Week #{{reportForm.get('week').value}} &nbsp; {{startDate}} - {{endDate}}</h5>
+    <div class="table-group-container row">
+      <div class="mat-elevation-z8 col-sm mx-3">
+        <h5 class="table-title">Pulled</h5>
+        <table mat-table [dataSource]="pulledDataSource" matSort #dSort="matSort">
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+            <td mat-cell *matCellDef="let element"> {{element.repName}} </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="office">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Office </th>
+            <td mat-cell *matCellDef="let element"> {{element.officeName}} </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="wData">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Week </th>
+            <td mat-cell *matCellDef="let element"> {{element.wData}} </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="mData">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Month </th>
+            <td mat-cell *matCellDef="let element"> {{element.mData}} </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="yData">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Year </th>
+            <td mat-cell *matCellDef="let element"> {{element.yData}} </td>
+          </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+          </tr>
+        </table>
+        <mat-paginator 
+        [pageSizeOptions]="[10, 20, 30, 50, 100]" 
+        [pageSize]="10" 
+        showFirstLastButtons
+        #dPaginator="matPaginator"></mat-paginator>
+      </div>
+  
+      <div class="mat-elevation-z8 col-sm mx-3">
+        <h5 class="table-title">New Customers</h5>
+        <table mat-table [dataSource]="newClientsDataSource" matSort #cSort="matSort">
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+            <td mat-cell *matCellDef="let element"> {{element.repName}} </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="office">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Office </th>
+            <td mat-cell *matCellDef="let element"> {{element.officeName}} </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="wData">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Week </th>
+            <td mat-cell *matCellDef="let element"> {{element.wData}} </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="mData">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Month </th>
+            <td mat-cell *matCellDef="let element"> {{element.mData}} </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="yData">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Year </th>
+            <td mat-cell *matCellDef="let element"> {{element.yData}} </td>
+          </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+          </tr>
+        </table>
+        <mat-paginator 
+        [pageSizeOptions]="[10, 20, 30, 50, 100]" 
+        [pageSize]="10" 
+        showFirstLastButtons
+        #cPaginator="matPaginator"></mat-paginator>
+      </div>
     </div>
   </div>
 </div>

@@ -1,6 +1,12 @@
 html, body {
   font-family: 'Open Sans', cursive;
 
+  .custom-border {
+    border: 1px solid #ced4da;
+    border-radius: 0.25rem;
+    background: $white;
+  }
+
   .mat-raised-button {
     background-color: $primary-color;
     color: $white;
@@ -17,6 +23,11 @@ html, body {
     font-size: 0.9rem;
     font-weight: bold;
     color: rgba(0,0,0,0.4);
+  }
+
+  .mat-snack-bar-container {
+    background: $primary-color;
+    color: $white;
   }
 
   .mat-row {

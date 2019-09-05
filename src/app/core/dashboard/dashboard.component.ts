@@ -14,20 +14,7 @@ export class DashboardComponent implements OnInit {
   selectedOffice: string = 'all';
   selectedRep: string = 'all';
 
-  yearlyDataSource =  new MatTableDataSource([
-    {
-      timeFrequency: 2018,
-      sold: 70575,
-      pulled: 70241,
-      holidays: 1909,
-      newClients: 10118,
-      credit: 2442966.53,
-      interviews: 1120,
-      tab1: 152,
-      tab2: 43,
-      percentage: 28.29
-    }
-  ]);
+  yearlyDataSource;
 
   displayedColumns: string[] = ['timeFrequency', 'sold', 'pulled', 'holidays', 'newClients', 'credit',
       'interviews', 'tab1', 'tab2', 'percentage'];
@@ -39,7 +26,7 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.dataService.fetchDashboardData().subscribe((response) => {
-      console.log(response);
+      this.yearlyDataSource = new MatTableDataSource(response);
     });
     this.yearlyDataSource.paginator = this.paginator;
     this.yearlyDataSource.sort = this.sort;

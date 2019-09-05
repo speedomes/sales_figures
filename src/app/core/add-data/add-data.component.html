@@ -1,5 +1,12 @@
-<div class="add-data-container row">
+<div class="add-data-container">
+  <h4 class="page-title">Data Scope</h4>
   <div class="filter-type-container">
+    <div class="row">
+      <div class="col-sm-12">
+        <mat-label>Filter Mode</mat-label>
+      </div>
+    </div>
+    <div class="row">
       <mat-radio-group
         class="filter-type-wrapper"
         [(ngModel)]="filterType">
@@ -10,5 +17,133 @@
           Filter By Specified Value
         </mat-radio-button>
       </mat-radio-group>
+    </div>
+    <div class="row justify-center">
+      <div class="col-sm-3">
+        <mat-label>Year</mat-label>
+        <mat-select class="form-control">
+          <mat-option>
+            Select
+          </mat-option>
+        </mat-select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-3">
+        <mat-label>Month</mat-label>
+        <mat-select>
+          <mat-option>
+            Select
+          </mat-option>
+        </mat-select>
+      </div>
+      <div class="col-sm-3">
+        <mat-label>Day</mat-label>
+        <mat-select>
+          <mat-option>
+            Select
+          </mat-option>
+        </mat-select>
+      </div>
+      <div class="col-sm-3">
+        <mat-label>Office</mat-label>
+        <mat-select>
+          <mat-option>
+            Select
+          </mat-option>
+        </mat-select>
+      </div>
+      <div class="col-sm-3">
+        <mat-label>Rep</mat-label>
+        <mat-select>
+          <mat-option>
+            Select
+          </mat-option>
+        </mat-select>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-3">
+        <button mat-raised-button>Clear Filters</button>
+      </div>
+    </div>
+
+    <div class="row data-table-wrapper">
+      <div class="mat-elevation-z8 col-sm-12 data-table">
+        <table mat-table [dataSource]="dataSource" matSort>
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
+            <td mat-cell *matCellDef="let element"> {{element.date}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="office">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Office </th>
+            <td mat-cell *matCellDef="let element"> {{element.office}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="repId">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> RepID </th>
+            <td mat-cell *matCellDef="let element"> {{element.repId}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+            <td mat-cell *matCellDef="let element"> {{element.name}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="vehicle">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Vehicle </th>
+            <td mat-cell *matCellDef="let element"> {{element.vehicle}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="sold">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Sold </th>
+            <td mat-cell *matCellDef="let element"> {{element.sold}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="pulled">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Pulled </th>
+            <td mat-cell *matCellDef="let element"> {{element.pulled}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="newClients">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> New Clients </th>
+            <td mat-cell *matCellDef="let element"> {{element.newClients}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="credit">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Credit </th>
+            <td mat-cell *matCellDef="let element"> {{element.credit}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="balance">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Balance </th>
+            <td mat-cell *matCellDef="let element"> {{element.balance}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="in">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> In </th>
+            <td mat-cell *matCellDef="let element"> {{element.in}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="day1">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Day 1 </th>
+            <td mat-cell *matCellDef="let element"> {{element.day1}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="day2">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Day 2 </th>
+            <td mat-cell *matCellDef="let element"> {{element.day2}} </td>
+          </ng-container>
+    
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+          </tr>
+        </table>
+        <mat-paginator [pageSizeOptions]="[10, 20, 30, 50, 100]" showFirstLastButtons></mat-paginator>
+      </div>
+    </div>
   </div>
 </div>
