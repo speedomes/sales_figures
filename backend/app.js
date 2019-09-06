@@ -35,8 +35,8 @@ const database = new Database({
   host     : '127.0.0.1',
   user     : 'root',
   password : '',
-  database : 'admin_fiverr',
-  debug: true
+  database : 'salesFigures',
+  debug: false
 });
 
 // function handle_database(req,res) {
@@ -98,7 +98,7 @@ app.get('/api/getYears',(req, res) => {
     });
   })
   .catch(err => {
-    throw err;
+    next(err); 
   });
 });
 
@@ -112,11 +112,11 @@ app.post('/api/getReport',(req, res, next) => {
   const yearStartDate = moment(sDate).startOf('year').format('YYYY.MM.DD');
   const yearEndDate = moment(eDate).endOf('year').format('YYYY.MM.DD');
 
-  const wPulledQuery = `select sum(d.pulled) as wData, r.name as repName,
-    o.name as officeName, r.id as repId
-    from daily as d JOIN reps as r on d.rep_id=r.id JOIN office as o on r.office_id=o.id WHERE
-    d.date<='${weekEndDate}' AND d.date>='${weekStartDate}'
-    GROUP BY d.rep_id ORDER BY wData DESC`;
+  const wPulledQuery = `select sum(d.pulled) as wData, r.name as repName, 
+  o.name as officeName, r.id as repId 
+  from daily as d JOIN reps as r on d.rep_id=r.id JOIN office as o on r.office_id=o.id WHERE 
+  d.date<='${weekEndDate}' AND d.date>='${weekStartDate}'
+  GROUP BY d.rep_id ORDER BY wData DESC`;
 
   let pulledPromiseArray = [];
   let reportData = {};
@@ -192,15 +192,18 @@ app.post('/api/getReport',(req, res, next) => {
     return database.close().then(() => { throw err; })
   })
   .catch(err => {
-    throw err;
+    next(err); 
   });
 });
 
-app.get('/api/getDailyData',(req, res, next) => {
+app.post('/api/getDailyData',(req, res, next) => {
+  const startLimit = parseInt(req.body.startLimit);
+  const endLimit = parseInt(req.body.endLimit);
+  console.log(startLimit, endLimit);
   const dailyDataQuery = `SELECT d.date, o.name as officeName, d.rep_id as repId, v.name as vehicleName, 
-  d.sold, d.pulled, d.newclients, d.credit, d.balance, d.unused, d.inuse, d.t1, d.t2, d.st, 
+  d.sold, d.pulled, d.newclients as newClients, d.credit, d.balance, d.unused, d.inuse, d.t1, d.t2, d.st, 
   r.name as repName FROM daily as d join reps as r on d.rep_id = r.id 
-  join office as o on r.office_id = o.id join vehicle as v on d.vehicle_id = v.id`;
+  join office as o on r.office_id = o.id join vehicle as v on d.vehicle_id = v.id LIMIT ${startLimit},${endLimit}`;
 
   database.query(dailyDataQuery)
   .then (rows => {
@@ -210,7 +213,7 @@ app.get('/api/getDailyData',(req, res, next) => {
     });
   })
   .catch(err => {
-    throw err;
+    next(err); 
   });
 });
 
@@ -225,7 +228,7 @@ app.get('/api/getOffices',(req, res, next) => {
     });
   })
   .catch(err => {
-    throw err;
+    next(err); 
   });
 });
 
@@ -239,7 +242,7 @@ app.post('/api/addOffice',(req, res) => {
     });
   })
   .catch(err => {
-    throw err;
+    next(err); 
   });
 });
 
@@ -253,7 +256,7 @@ app.post('/api/updateOffice',(req, res) => {
     });
   })
   .catch(err => {
-    throw err;
+    next(err); 
   });
 });
 
@@ -267,7 +270,7 @@ app.post('/api/deleteOffice',(req, res) => {
     });
   })
   .catch(err => {
-    throw err;
+    next(err); 
   });
 });
 
@@ -283,7 +286,7 @@ app.get('/api/getVehicles',(req, res, next) => {
     });
   })
   .catch(err => {
-    throw err;
+    next(err); 
   });
 });
 
@@ -297,7 +300,7 @@ app.post('/api/addVehicle',(req, res) => {
     });
   })
   .catch(err => {
-    throw err;
+    next(err); 
   });
 });
 
@@ -311,7 +314,7 @@ app.post('/api/updateVehicle',(req, res) => {
     });
   })
   .catch(err => {
-    throw err;
+    next(err); 
   });
 });
 
@@ -325,7 +328,7 @@ app.post('/api/deleteVehicle',(req, res) => {
     });
   })
   .catch(err => {
-    throw err;
+    next(err); 
   });
 });
 
@@ -337,14 +340,13 @@ app.get('/api/getReps',(req, res, next) => {
 
   database.query(RepDataQuery)
   .then (rows => {
-    console.log(rows);
     res.status(201).json({
       message: 'Rep data fetched successfully',
       reps: rows
     });
   })
   .catch(err => {
-    throw err;
+    next(err); 
   });
 });
 
@@ -359,7 +361,7 @@ app.post('/api/addRep',(req, res) => {
     });
   })
   .catch(err => {
-    throw err;
+    next(err); 
   });
 });
 
@@ -373,7 +375,7 @@ app.post('/api/updateRep',(req, res) => {
     });
   })
   .catch(err => {
-    throw err;
+    next(err); 
   });
 });
 
@@ -387,7 +389,7 @@ app.post('/api/deleteRep',(req, res) => {
     });
   })
   .catch(err => {
-    throw err;
+    next(err); 
   });
 });
 
@@ -437,7 +439,7 @@ app.get('/api/getTotalData',(req, res, next) => {
     return database.close().then(() => { throw err; })
   })
   .catch(err => {
-    throw err;
+    next(err); 
   });
 });
 
@@ -453,7 +455,7 @@ app.get('/api/getSpliteData',(req, res, next) => {
     });
   })
   .catch(err => {
-    throw err;
+    next(err); 
   });
 });
 

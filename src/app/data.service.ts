@@ -25,8 +25,8 @@ export class DataService {
     return this.httpClient.get('http://localhost:3000/api/getTotalData');
   }
 
-  getDailyData(): Observable<any> {
-    return this.httpClient.get('http://localhost:3000/api/getDailyData');
+  getDailyData(data: {}): Observable<any> {
+    return this.httpClient.post('http://localhost:3000/api/getDailyData', data);
   }
 
   getOffices(): Observable<any> {

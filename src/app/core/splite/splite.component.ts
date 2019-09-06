@@ -14,24 +14,7 @@ import { SnackBarComponent } from 'src/app/shared/snack-bar/snack-bar.component'
 export class SpliteComponent implements OnInit {
 
   selectedIndex: number;
-  spliteDataSource =  new MatTableDataSource([
-    {
-      date: '2018.01.03',
-      office: 'Cornwall',
-      cash: 388.91,
-      cards: 149,
-      vehicle: 0,
-      total: 537.91
-    },
-    {
-      date: '2018.01.03',
-      office: 'Oxford',
-      cash: 148,
-      cards: 1027.64,
-      vehicle: 0,
-      total: 1175.64
-    }
-  ]);
+  spliteDataSource =  new MatTableDataSource();
 
   displayedColumns: string[] = ['date', 'office', 'cash', 'cards', 'vehicle', 'total'];
 
@@ -44,8 +27,8 @@ export class SpliteComponent implements OnInit {
   ngOnInit() {
     this.dataService.getSpliteData().subscribe((response) => {
       console.log(response);
-      if() {
-
+      if(response && response.spliteData.length > 0) {
+        this.spliteDataSource = response.spliteData;
       } else {
         this.displaySnackbar('No data found');
       }

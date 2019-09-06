@@ -1,79 +1,79 @@
 <div class="daily-container">
   <h4 class="page-title">Daily Data</h4>
-  <div class="mat-elevation-z8">
-    <table mat-table [dataSource]="dailyDataSource" matSort>
+  <div class="mat-elevation-z8" *ngIf="dataLoaded">
+    <table mat-table [dataSource]="dailyDataSource">
       <ng-container matColumnDef="date">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
+        <th mat-header-cell *matHeaderCellDef> Date </th>
         <td mat-cell *matCellDef="let element"> {{element.date}} </td>
       </ng-container>
 
       <ng-container matColumnDef="office">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Office </th>
+        <th mat-header-cell *matHeaderCellDef> Office </th>
         <td mat-cell *matCellDef="let element"> {{element.officeName}} </td>
       </ng-container>
 
       <ng-container matColumnDef="repId">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Rep ID </th>
+        <th mat-header-cell *matHeaderCellDef> Rep ID </th>
         <td mat-cell *matCellDef="let element"> {{element.repId}} </td>
       </ng-container>
 
       <ng-container matColumnDef="vehicle">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Vehicles </th>
+        <th mat-header-cell *matHeaderCellDef> Vehicles </th>
         <td mat-cell *matCellDef="let element"> {{element.vehicleName}} </td>
       </ng-container>
 
       <ng-container matColumnDef="sold">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Sold </th>
+          <th mat-header-cell *matHeaderCellDef> Sold </th>
           <td mat-cell *matCellDef="let element"> {{element.sold}} </td>
         </ng-container>
 
       <ng-container matColumnDef="pulled">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Pulled </th>
+        <th mat-header-cell *matHeaderCellDef> Pulled </th>
         <td mat-cell *matCellDef="let element"> {{element.pulled}} </td>
       </ng-container>
 
       <ng-container matColumnDef="clients">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> New Clients </th>
+        <th mat-header-cell *matHeaderCellDef> New Clients </th>
         <td mat-cell *matCellDef="let element"> {{element.newClients}} </td>
       </ng-container>
 
       <ng-container matColumnDef="credit">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Credit </th>
+        <th mat-header-cell *matHeaderCellDef> Credit </th>
         <td mat-cell *matCellDef="let element"> {{element.credit}} </td>
       </ng-container>
 
       <ng-container matColumnDef="balance">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Balance </th>
+        <th mat-header-cell *matHeaderCellDef> Balance </th>
         <td mat-cell *matCellDef="let element"> {{element.balance}} </td>
       </ng-container>
 
       <ng-container matColumnDef="unused">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Unused </th>
+        <th mat-header-cell *matHeaderCellDef> Unused </th>
         <td mat-cell *matCellDef="let element"> {{element.unused}} </td>
       </ng-container>
 
       <ng-container matColumnDef="in">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> In </th>
+        <th mat-header-cell *matHeaderCellDef> In </th>
         <td mat-cell *matCellDef="let element"> {{element.inuse}} </td>
       </ng-container>
 
       <ng-container matColumnDef="day1">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Day 1 </th>
+        <th mat-header-cell *matHeaderCellDef> Day 1 </th>
         <td mat-cell *matCellDef="let element"> {{element.t1}} </td>
       </ng-container>
 
       <ng-container matColumnDef="day2">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Day 2 </th>
+        <th mat-header-cell *matHeaderCellDef> Day 2 </th>
         <td mat-cell *matCellDef="let element"> {{element.t2}} </td>
       </ng-container>
 
       <ng-container matColumnDef="st">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> St </th>
+        <th mat-header-cell *matHeaderCellDef> St </th>
         <td mat-cell *matCellDef="let element"> {{element.st}} </td>
       </ng-container>
 
       <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+        <th mat-header-cell *matHeaderCellDef> Name </th>
         <td mat-cell *matCellDef="let element"> {{element.repName}} </td>
       </ng-container>
 
@@ -83,6 +83,12 @@
         [ngClass]="{'highlight-row': i === selectedIndex}">
       </tr>
     </table>
-    <mat-paginator [pageSizeOptions]="[10, 20, 30, 50, 100]" [pageSize]="20" showFirstLastButtons></mat-paginator>
+    <mat-paginator [pageSize]="50" showFirstLastButtons></mat-paginator>
   </div>
+  <mat-progress-spinner
+    *ngIf="!dataLoaded"
+    class="app-spinner"
+    [mode]="'indeterminate'">
+  </mat-progress-spinner>
 </div>
+

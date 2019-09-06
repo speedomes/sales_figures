@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
@@ -13,21 +13,41 @@ import { DataService } from 'src/app/data.service';
 export class DailyDataComponent implements OnInit {
 
   selectedIndex: number;
-  dailyDataSource =  new MatTableDataSource();
+  dataLoaded: boolean = false;
+  dailyDataSource;
 
   displayedColumns: string[] = ['date', 'office', 'repId', 'vehicle', 'sold',
     'pulled', 'clients', 'credit', 'balance', 'unused', 'in', 'day1', 'day2', 'st', 'name'];
 
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
 
-  constructor(private dataService: DataService) { }
+  constructor(private dataService: DataService,
+    private changeDetectorRefs: ChangeDetectorRef) { }
 
   ngOnInit() {
-    this.dataService.getDailyData().subscribe((response) => {
-      this.dailyDataSource.data = response.dailyData;
+    this.dailyDataSource = new MatTableDataSource();
+    this.dailyDataSource.paginator = this.paginator;
+    this.fetchData(1, 200);
+  }
+
+  fetchData(sOffset, eOffset) {
+    this.dataService.getDailyData({startLimit: sOffset, endLimit: eOffset}).subscribe((response) => {
+      this.dailyDataSource.data = this.dailyDataSource.data.concat(response.dailyData);
+      this.dataLoaded = true;
+      this.changeDetectorRefs.detectChanges();
       this.dailyDataSource.paginator = this.paginator;
-      this.dailyDataSource.sort = this.sort;
+      this.dailyDataSource.paginator.hidePageSize = true;
+      this.dailyDataSource.paginator.pageSize = 50;
+
+      const subscription = this.dailyDataSource.paginator.page.subscribe((data) => {
+        const isDataFetchRequired = (data.pageIndex > data.previousPageIndex) 
+          && (this.dailyDataSource.data.length - ((data.pageIndex + 1) * data.pageSize)) == data.pageSize;
+
+        if(isDataFetchRequired) {
+          this.fetchData(this.dailyDataSource.data.length + 1, 100);
+          subscription.unsubscribe();
+        }
+      });
     });
   }
 

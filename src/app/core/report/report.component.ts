@@ -82,6 +82,7 @@ export class ReportComponent implements OnInit {
   }
 
   exportToCSV() {
+    const dataLabels = ['Name', 'Office', 'Week', 'Month', 'Year'];
     const csvOptions = {
       fieldSeparator: ',',
       quoteStrings: '"',
@@ -91,9 +92,14 @@ export class ReportComponent implements OnInit {
       title: 'Report',
       useBom: true,
       noDownload: false,
-      headers: ['Name', 'Office', 'Week', 'Month', 'Year'],
+      headers: dataLabels,
       nullToEmptyString: true,
     };
-    let csv = new AngularCsv(this.pulledDataSource, 'Report', csvOptions);
+    
+    let formatReportData = [{},{title: "Pulled"},{}]
+      .concat(this.pulledDataSource.data)
+      .concat([{},{title: "New Customers"},{}])
+      .concat(this.newClientsDataSource.data)
+    new AngularCsv(formatReportData, 'Report', csvOptions);
   }
 }

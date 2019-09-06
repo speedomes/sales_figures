@@ -19,7 +19,7 @@ html, body {
     }
   }
 
-  .mat-sort-header-button {
+  .mat-header-cell {
     font-size: 0.9rem;
     font-weight: bold;
     color: rgba(0,0,0,0.4);
@@ -65,5 +65,12 @@ html, body {
 
   .error-message {
     color: $red;
+  }
+
+  .mat-progress-spinner {
+    margin:0 auto;
+    circle {
+      stroke: $primary-color;
+    }
   }
 }
