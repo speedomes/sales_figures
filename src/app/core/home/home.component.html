@@ -1,4 +1,4 @@
-<div class="sidenav-container">
+<!-- <div class="sidenav-container">
   <div class="row">
     <div class="sidenav-links-container col-sm-2">
       <nav class="navbar navbar-expand-lg navbar-light">
@@ -20,4 +20,34 @@
       <router-outlet></router-outlet>
     </div>
   </div>
-</div>
+</div> -->
+
+<mat-sidenav-container
+    class="sidenav-container" (backdropClick)="close()">
+    <mat-sidenav #sidenav (keydown.escape)="close()" disableClose class="sidenav-links-container col-sm-3">
+      <div class="toggle-close-control" (click)="close()">
+        <i class="material-icons">menu_open</i>
+        <span class="toggle-label">Close</span>
+      </div>
+      <ul class="sidenav-links" (click)="close()">
+        <li class="sidenav-link" routerLink="/home/dashboard" routerLinkActive="active"><a>Dashboard</a></li>
+        <li class="sidenav-link" routerLink="/home/report" routerLinkActive="active"><a>Report</a></li>
+        <li class="sidenav-link" routerLink="/home/daily-data" routerLinkActive="active"><a>Daily Data</a></li>
+        <li class="sidenav-link" routerLink="/home/total" routerLinkActive="active"><a>Total</a></li>
+        <li class="sidenav-link" routerLink="/home/office" routerLinkActive="active"><a>Office</a></li>
+        <li class="sidenav-link" routerLink="/home/vehicle" routerLinkActive="active"><a>Vehicle</a></li>
+        <li class="sidenav-link" routerLink="/home/rep" routerLinkActive="active"><a>Rep</a></li>
+        <li class="sidenav-link" routerLink="/home/splite" routerLinkActive="active"><a>Splite</a></li>
+      </ul>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="main-content col-sm-12">
+      <div class="toggle-control" (click)="sidenav.open()">
+        <i class="material-icons">menu</i>
+        <span class="toggle-label">Menu</span>
+      </div>
+      <div class="section-content">
+        <router-outlet></router-outlet>
+      </div>
+    </mat-sidenav-content>
+</mat-sidenav-container>

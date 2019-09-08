@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
@@ -22,19 +22,20 @@ export class SpliteComponent implements OnInit {
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
   constructor(private dataService: DataService,
-    private _snackBar: MatSnackBar) { }
+    private _snackBar: MatSnackBar,
+    private changeDetectorRefs: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.dataService.getSpliteData().subscribe((response) => {
-      console.log(response);
       if(response && response.spliteData.length > 0) {
-        this.spliteDataSource = response.spliteData;
+        this.spliteDataSource.data = response.spliteData;
+        this.spliteDataSource.paginator = this.paginator;
+        this.spliteDataSource.sort = this.sort;
+        this.changeDetectorRefs.detectChanges();
       } else {
         this.displaySnackbar('No data found');
       }
     });
-    this.spliteDataSource.paginator = this.paginator;
-    this.spliteDataSource.sort = this.sort;
   }
 
   highlightRow(index) {

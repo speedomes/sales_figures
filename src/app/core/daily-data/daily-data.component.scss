@@ -13,3 +13,23 @@
     width: 100%;
   }
 }
+
+::ng-deep {
+  .mat-paginator {
+    .mat-paginator-container {
+      justify-content: center;
+      .mat-paginator-navigation-first, .mat-paginator-navigation-last {
+        display: none;
+      }
+  
+      .mat-paginator-range-label {
+        display: none;
+      }
+  
+      .mat-paginator-navigation-next, .mat-paginator-navigation-previous {
+        outline: none;
+      }
+    }
+  }
+}
+

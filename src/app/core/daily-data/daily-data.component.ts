@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
 import { DataService } from 'src/app/data.service';
 
 @Component({
@@ -36,8 +35,6 @@ export class DailyDataComponent implements OnInit {
       this.dataLoaded = true;
       this.changeDetectorRefs.detectChanges();
       this.dailyDataSource.paginator = this.paginator;
-      this.dailyDataSource.paginator.hidePageSize = true;
-      this.dailyDataSource.paginator.pageSize = 50;
 
       const subscription = this.dailyDataSource.paginator.page.subscribe((data) => {
         const isDataFetchRequired = (data.pageIndex > data.previousPageIndex) 

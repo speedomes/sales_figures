@@ -28,6 +28,10 @@ html, body {
   .mat-snack-bar-container {
     background: $primary-color;
     color: $white;
+
+    &.warning {
+      background: $red;
+    }
   }
 
   .mat-row {

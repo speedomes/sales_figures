@@ -83,7 +83,7 @@
         [ngClass]="{'highlight-row': i === selectedIndex}">
       </tr>
     </table>
-    <mat-paginator [pageSize]="50" showFirstLastButtons></mat-paginator>
+    <mat-paginator [pageSize]="10" showFirstLastButtons></mat-paginator>
   </div>
   <mat-progress-spinner
     *ngIf="!dataLoaded"

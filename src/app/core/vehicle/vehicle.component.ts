@@ -55,7 +55,7 @@ export class VehicleComponent implements OnInit {
   addVehicle() {
     if(this.selectedVehicle &&
         (this.vehicleForm.get('vehicleName').value === this.selectedVehicle.name)) {
-        this.displaySnackbar('Vehicle name already exists!');
+        this.displaySnackbar('Vehicle name already exists!', 'warning');
         return;
     } else {
       this.dataService.addVehicle({
@@ -70,10 +70,7 @@ export class VehicleComponent implements OnInit {
 
   updateVehicle() {
     if(this.vehicleForm.get('vehicleName').value === this.selectedVehicle.name) {
-      this._snackBar.openFromComponent(SnackBarComponent, {
-        duration: 5000,
-        data: { message: 'No update required!' }
-      });
+      this.displaySnackbar('No update required!');
       return;
     } else {
       this.dataService.updateVehicle({
@@ -89,10 +86,7 @@ export class VehicleComponent implements OnInit {
 
   deleteVehicle() {
     if(this.vehicleForm.get('vehicleName').value !== this.selectedVehicle.name) {
-      this._snackBar.openFromComponent(SnackBarComponent, {
-        duration: 5000,
-        data: { message: 'Please select an vehicle' }
-      });
+      this.displaySnackbar('Please select an vehicle', 'warning');
       return;
     } else {
       this.dataService.deleteVehicle({
@@ -110,11 +104,11 @@ export class VehicleComponent implements OnInit {
     this.selectedVehicle = undefined;
   }
 
-  displaySnackbar(message: string) {
+  displaySnackbar(message: string, className: string = 'primary') {
     this._snackBar.openFromComponent(SnackBarComponent, {
       duration: 5000,
-      data: { message: message }
+      data: { message: message },
+      panelClass: className
     });
   }
-
 }

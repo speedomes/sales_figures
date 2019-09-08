@@ -9,7 +9,7 @@
 
       <ng-container matColumnDef="office">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Office </th>
-        <td mat-cell *matCellDef="let element"> {{element.office}} </td>
+        <td mat-cell *matCellDef="let element"> {{element.name}} </td>
       </ng-container>
 
       <ng-container matColumnDef="cash">
@@ -24,7 +24,7 @@
 
       <ng-container matColumnDef="vehicle">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Vehicles in use </th>
-        <td mat-cell *matCellDef="let element"> {{element.vehicle}} </td>
+        <td mat-cell *matCellDef="let element"> {{element.viu}} </td>
       </ng-container>
 
       <ng-container matColumnDef="total">
@@ -38,7 +38,7 @@
         [ngClass]="{'highlight-row': i === selectedIndex}">
       </tr>
     </table>
-    <mat-paginator [pageSizeOptions]="[10, 20, 30, 50, 100]" showFirstLastButtons></mat-paginator>
+    <mat-paginator [pageSizeOptions]="[10, 20, 30, 50, 100]" [pageSize]="20" showFirstLastButtons></mat-paginator>
   </div>
 </div>
 

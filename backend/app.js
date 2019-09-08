@@ -65,21 +65,7 @@ app.use((req, res, next) => {
 });
 
 app.get('/api/dashboard',(req, res, next) => {
-  // handle_database(req,res);
-  // const dashboardQuery = "SELECT sum(d.sold), sum(d.pulled), sum(d.newclients), sum(d.credit), sum(d.inuse), sum(d.t1), sum(d.t2) from daily as d";
-  // pool.query(dashboardQuery, (err, rows, fields) => {
-  //   console.log(rows);
-  //   console.log(fields);
 
-  //   if (!err) {
-  //     res.status(200).json({
-  //       message: 'Dasboard data fetched successfully',
-  //       dashboardData: rows
-  //     });
-  //   } else {
-  //     console.log('Error while performing Query.');
-  //   }
-  // });
 });
 
 app.post('/api/saveRecord',(req, res, next) => {
@@ -444,7 +430,8 @@ app.get('/api/getTotalData',(req, res, next) => {
 });
 
 app.get('/api/getSpliteData',(req, res, next) => {
-  const spliteDataQuery = `SELECT s.date, o.name, s.cash, s.cards, s.viu
+  const spliteDataQuery = `SELECT s.date, o.name, s.cash, s.cards, s.viu,
+    FORMAT((s.cash + s.cards), 2) as total
     FROM split as s join office as o on s.office_id=o.id`;
 
   database.query(spliteDataQuery)

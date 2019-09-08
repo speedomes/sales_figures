@@ -58,7 +58,7 @@ export class RepComponent implements OnInit {
   addRep() {
     if(this.selectedRep &&
         (this.repForm.get('repName').value === this.selectedRep.name)) {
-        this.displaySnackbar('Rep name already exists!');
+        this.displaySnackbar('Rep name already exists!', 'warning');
         return;
     } else {
       this.dataService.addRep({
@@ -107,10 +107,11 @@ export class RepComponent implements OnInit {
     this.selectedRep = undefined;
   }
 
-  displaySnackbar(message: string) {
+  displaySnackbar(message: string, className: string = 'primary') {
     this._snackBar.openFromComponent(SnackBarComponent, {
       duration: 5000,
-      data: { message: message }
+      data: { message: message },
+      panelClass: className
     });
   }
 }
