@@ -36,7 +36,7 @@ const database = new Database({
   user     : 'root',
   password : '',
   database : 'salesFigures',
-  debug: false
+  debug: true
 });
 
 // function handle_database(req,res) {
@@ -338,7 +338,8 @@ app.get('/api/getReps',(req, res, next) => {
 
 app.post('/api/addRep',(req, res) => {
   const addRepQuery = `INSERT INTO reps(name, office_id, vehicle_id, balance, id) 
-  VALUES (?,?,?,?,?)`;
+  VALUES ('${req.body.name}','${req.body.officeId}','${req.body.vehicleId}',
+  '${req.body.balance}','${req.body.id}')`;
 
   database.query(addRepQuery)
   .then (rows => {
@@ -352,10 +353,12 @@ app.post('/api/addRep',(req, res) => {
 });
 
 app.post('/api/updateRep',(req, res) => {
-  const updateRepQuery = `UPDATE reps SET name=?, office_id=?, vehicle_id=?, balance=?, id=? WHERE id=?`;
+  const updateRepQuery = `UPDATE reps SET name='${req.body.name}',
+    office_id='${req.body.officeId}', vehicle_id='${req.body.vehicleId}',
+    balance='${req.body.balance}', id='${req.body.id}' WHERE id='${req.body.id}'`;
 
   database.query(updateRepQuery)
-  .then (rows => {
+  .then (() => {
     res.status(201).json({
       message: 'Rep has been updated successfully'
     });
@@ -366,7 +369,7 @@ app.post('/api/updateRep',(req, res) => {
 });
 
 app.post('/api/deleteRep',(req, res) => {
-  const deleteRepQuery = `DELETE FROM reps WHERE id=?`;
+  const deleteRepQuery = `DELETE FROM reps WHERE id='${req.body.id}'`;
 
   database.query(deleteRepQuery)
   .then (rows => {

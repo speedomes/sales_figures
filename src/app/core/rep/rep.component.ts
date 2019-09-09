@@ -18,6 +18,8 @@ export class RepComponent implements OnInit {
   selectedIndex: number;
   selectedRep;
   repDataSource =  new MatTableDataSource();
+  offices: [] = [];
+  vehicles: [] = [];
   displayedColumns: string[] = ['id', 'repName', 'officeName', 'vehicleName', 'balance'];
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
@@ -37,12 +39,31 @@ export class RepComponent implements OnInit {
     this.getReps();
     this.repDataSource.paginator = this.paginator;
     this.repDataSource.sort = this.sort;
+
+    this.dataService.getOffices().subscribe((response) => {
+      if(response && response.offices) {
+        this.offices = response.offices;
+      }
+    });
+    
+    this.dataService.getVehicles().subscribe((response) => {
+      if(response && response.vehicles) {
+        this.vehicles = response.vehicles;
+      }
+    });
   }
 
   populateData(rowData: any, index) {
     this.selectedIndex = index;
     this.selectedRep = rowData;
-    this.repForm.setValue({ repName: rowData.name });
+    
+    this.repForm.setValue({ 
+      id: rowData.id,
+      repName: rowData.repName,
+      balance: rowData.balance,
+      officeName: rowData.office_id,
+      vehicleName: rowData.vehicle_id
+    });
   }
 
   getReps() {
@@ -52,58 +73,83 @@ export class RepComponent implements OnInit {
       } else {
         this.displaySnackbar('No data found');
       }
+    },
+    (error) => {
+      this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
     });
   }
 
   addRep() {
     if(this.selectedRep &&
-        (this.repForm.get('repName').value === this.selectedRep.name)) {
+        (this.repForm.get('repName').value === this.selectedRep.repName)) {
         this.displaySnackbar('Rep name already exists!', 'warning');
         return;
     } else {
       this.dataService.addRep({
-        name: this.repForm.get('repName').value
+        id: this.repForm.get('id').value, 
+        name: this.repForm.get('repName').value,
+        balance: this.repForm.get('balance').value,
+        officeId: this.repForm.get('officeName').value,
+        vehicleId: this.repForm.get('vehicleName').value
       }).subscribe((response) => {
-        this.displaySnackbar('Rep name has been added successfully!');
+        this.displaySnackbar((response && response.message) || 'Rep name has been added successfully!');
         this.clearSelection();
         this.getReps();
+      },
+      (error) => {
+        this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
       });
     }
   }
 
   updateRep() {
-    if(this.repForm.get('repName').value === this.selectedRep.name) {
+    if(this.repForm.get('repName').value === this.selectedRep.repName) {
       this.displaySnackbar('No update required!');
       return;
     } else {
       this.dataService.updateRep({
-        id: this.selectedRep.id, 
-        name: this.repForm.get('repName').value
+        id: this.repForm.get('id').value, 
+        name: this.repForm.get('repName').value,
+        balance: this.repForm.get('balance').value,
+        officeId: this.repForm.get('officeName').value,
+        vehicleId: this.repForm.get('vehicleName').value
       }).subscribe((response) => {
-        this.displaySnackbar('Rep name has been updated successfully!');
+        this.displaySnackbar((response && response.message) || 'Rep has been updated successfully');
         this.clearSelection();
         this.getReps();
+      },
+      (error) => {
+        this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
       });
     }
   }
 
   deleteRep() {
-    if(this.repForm.get('repName').value !== this.selectedRep.name) {
-      this.displaySnackbar('Please select an rep.');
+    if(this.repForm.get('repName').value !== this.selectedRep.repName) {
+      this.displaySnackbar('Please select an rep.', 'warning');
       return;
     } else {
       this.dataService.deleteRep({
-        id: this.selectedRep.id
+        id: this.repForm.get('id').value
       }).subscribe((response) => {
-        this.displaySnackbar('Rep name has been deleted successfully!');
+        this.displaySnackbar((response && response.message) || 'Rep name has been deleted successfully!');
         this.clearSelection();
         this.getReps();
+      },
+      (error) => {
+        this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
       });
     }
   }
 
   clearSelection() {
-    this.repForm.reset();
+    this.repForm.setValue({ 
+      id: '',
+      repName: '',
+      balance: '',
+      officeName: '',
+      vehicleName: ''
+    });
     this.selectedRep = undefined;
   }
 

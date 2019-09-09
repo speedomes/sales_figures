@@ -62,7 +62,8 @@
             <div class="form-group">
               <div class="field-title">Office</div>
               <mat-select formControlName="officeName" class="form-control">
-                <mat-option *ngFor="let data of repData" [value]="data.office">{{data.officeName}}</mat-option>
+                <mat-option value="">Select</mat-option>
+                <mat-option *ngFor="let office of offices" [value]="office.id">{{office.name}}</mat-option>
               </mat-select>
             </div>
           </div>
@@ -70,16 +71,17 @@
             <div class="form-group">
               <div class="field-title">Vehicle</div>
               <mat-select formControlName="vehicleName" class="form-control">
-                <mat-option *ngFor="let data of repData" [value]="data.vehicle">{{data.vehicleName}}</mat-option>
+                <mat-option value="">Select</mat-option>
+                <mat-option *ngFor="let vehicle of vehicles" [value]="vehicle.id">{{vehicle.name}}</mat-option>
               </mat-select>
             </div>
           </div>
         </form>
         <div class="row button-wrapper">
           <div class="col-sm-12">
-            <button mat-raised-button [disabled]="!repForm.valid" type="submit">Add</button>
-            <button mat-raised-button [disabled]="!repForm.valid" type="submit">Update</button>
-            <button mat-raised-button [disabled]="!repForm.valid" (click)="removeRepData()">Delete</button>
+            <button mat-raised-button [disabled]="!repForm.valid" (click)="addRep()">Add</button>
+            <button mat-raised-button [disabled]="!repForm.valid" (click)="updateRep()">Update</button>
+            <button mat-raised-button [disabled]="!repForm.valid" (click)="deleteRep()">Delete</button>
           </div>
           <div class="col-sm-12 clear-button">
             <button mat-raised-button [disabled]="(!repForm.valid) || (!repForm.dirty && !repForm.valid)" (click)="repForm.reset()">Clear</button>

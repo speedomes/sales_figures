@@ -49,58 +49,64 @@ export class OfficeComponent implements OnInit {
   getOffices() {
     this.dataService.getOffices().subscribe((response) => {
       this.officeDataSource.data = response.offices;
+    },
+    (error) => {
+      this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
     });
   }
 
   addOffice() {
     if(this.selectedOffice &&
         (this.officeForm.get('officeName').value === this.selectedOffice.name)) {
-        this.displaySnackbar('Office name already exists!');
+        this.displaySnackbar('Office already exists!', 'warning');
         return;
     } else {
       this.dataService.addOffice({
         name: this.officeForm.get('officeName').value
       }).subscribe((response) => {
-        this.displaySnackbar('Office name has been added successfully!');
+        this.displaySnackbar((response && response.message) || 'Office has been added successfully');
         this.clearSelection();
         this.getOffices();
+      },
+      (error) => {
+        this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
       });
     }
   }
 
   updateOffice() {
     if(this.officeForm.get('officeName').value === this.selectedOffice.name) {
-      this._snackBar.openFromComponent(SnackBarComponent, {
-        duration: 5000,
-        data: { message: 'No update required!' }
-      });
+      this.displaySnackbar('No update required');
       return;
     } else {
       this.dataService.updateOffice({
         id: this.selectedOffice.id, 
         name: this.officeForm.get('officeName').value
       }).subscribe((response) => {
-        this.displaySnackbar('Office name has been updated successfully!');
+        this.displaySnackbar((response && response.message) || 'Office has been updated successfully');
         this.clearSelection();
         this.getOffices();
+      },
+      (error) => {
+        this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
       });
     }
   }
 
   deleteOffice() {
     if(this.officeForm.get('officeName').value !== this.selectedOffice.name) {
-      this._snackBar.openFromComponent(SnackBarComponent, {
-        duration: 5000,
-        data: { message: 'Please select an office' }
-      });
+      this.displaySnackbar('Please select an office', 'warning');
       return;
     } else {
       this.dataService.deleteOffice({
         id: this.selectedOffice.id
       }).subscribe((response) => {
-        this.displaySnackbar('Office name has been deleted successfully!');
+        this.displaySnackbar((response && response.message) || 'Office name has been deleted successfully!');
         this.clearSelection();
         this.getOffices();
+      },
+      (error) => {
+        this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
       });
     }
   }

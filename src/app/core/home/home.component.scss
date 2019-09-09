@@ -2,6 +2,7 @@
 
 .sidenav-container {
   margin: 1rem 0;
+  
   .sidenav-links-container {
     .sidenav-links {
       width: 100%;
@@ -10,7 +11,7 @@
       padding: 0;
 
       .sidenav-link {
-        padding: 1rem;
+        padding: 0.9rem;
         border-bottom: 1px solid $light-grey;
 
         &:focus {
@@ -39,11 +40,11 @@
     .toggle-close-control {
       display: flex;
       align-items: center;
-      cursor: pointer;
 
       .material-icons {
         font-size: 2.5rem;
         color: $primary-color;
+        cursor: pointer;
       }
 
       .toggle-label {
@@ -51,6 +52,7 @@
         margin-left: 0.5rem;
         font-weight: bold;
         color: $primary-color;
+        cursor: pointer;
       }
     }
   }
@@ -76,6 +78,10 @@
         font-weight: bold;
         color: $primary-color;
       }
+    }
+
+    .section-content {
+      height: 100%;
     }
   }
 }

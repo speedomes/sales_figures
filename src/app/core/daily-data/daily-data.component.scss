@@ -1,12 +1,17 @@
 @import "../../../assets/scss/variables.scss";
 
 .daily-container {
-  height: 100%;
   .page-title {
     margin: 1rem 0 3rem 0;
     text-align: center;
     color: $primary-color;
     font-weight: 700;
+  }
+
+  .mat-progress-spinner {
+    position: absolute;
+    top: 45%;
+    left: 45%;
   }
 
   table {
