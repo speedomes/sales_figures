@@ -28,7 +28,7 @@ export class ReportComponent implements OnInit {
   pulledDataSource = new MatTableDataSource();
   newClientsDataSource = new MatTableDataSource();
 
-  displayedColumns: string[] = ['name', 'office', 'wData', 'mData', 'yData'];
+  displayedColumns: string[] = ['repName', 'officeName', 'wData', 'mData', 'yData'];
 
   @ViewChild('dPaginator', {static: false}) dPaginator: MatPaginator;
   @ViewChild('dSort', {static: false}) dSort: MatSort;
@@ -90,7 +90,7 @@ export class ReportComponent implements OnInit {
       decimalseparator: '.',
       showLabels: true,
       showTitle: true,
-      title: 'Report',
+      title: `Report Week #${this.reportForm.get('week').value} ${this.startDate} - ${this.endDate}`,
       useBom: true,
       noDownload: false,
       headers: dataLabels,
@@ -117,6 +117,6 @@ export class ReportComponent implements OnInit {
       dataCollection[index] = reportObj;
     });
 
-    new AngularCsv(dataCollection, 'Report', csvOptions);
+    new AngularCsv(dataCollection, "Report", csvOptions);
   }
 }

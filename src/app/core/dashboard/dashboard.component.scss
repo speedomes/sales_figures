@@ -1,6 +1,23 @@
 @import "../../../assets/scss/variables.scss";
 
 .dashboard-container {
+  >.row {
+    margin: 2rem 0;
+
+    &.enter-data-wrapper {
+      justify-content: center;
+    }
+
+    .col-sm-6 {
+      padding: 0.2rem;
+    }
+  }
+
+  .field-title {
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+
   .add-data-button {
     background-color: $primary-color;
     color: $white;
@@ -8,17 +25,42 @@
   }
 
   .data-filter {
+    margin: 0 0 2rem 0;
+    justify-content: center;
+
     .filter-option {
       display: inline-block;
       margin-right: 5rem;
     }
   }
 
-  .table-title {
-    margin: 3rem 0;
-  }
-
   table {
     width: 100%;
+  }
+
+  .dataset-1 {
+    .col-sm-4 {
+      padding-left: 0;
+    }
+
+    .col-sm-3 {
+      padding-left: 0;
+    }
+  }
+
+  .dataset-2 {
+    .col-sm-4 {
+      padding: 0;
+    }
+  }
+
+  .disabled {
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  .button-wrapper {
+    margin: 0;
+    justify-content: center;
   }
 }

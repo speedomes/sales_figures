@@ -151,6 +151,7 @@ export class RepComponent implements OnInit {
       vehicleName: ''
     });
     this.selectedRep = undefined;
+    this.selectedIndex = undefined;
   }
 
   displaySnackbar(message: string, className: string = 'primary') {

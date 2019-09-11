@@ -7,10 +7,11 @@ import { Observable } from 'rxjs';
 })
 export class DataService {
 
+  private _showSpinner: boolean = false;
   constructor(private httpClient: HttpClient) { }
 
-  fetchDashboardData(): Observable<any> {
-    return this.httpClient.get('http://localhost:3000/api/dashboard');
+  getDashboardData(data: {}): Observable<any> {
+    return this.httpClient.post('http://localhost:3000/api/getDashboardData', data);
   }
 
   getYears() {
@@ -79,5 +80,13 @@ export class DataService {
 
   getSpliteData(): Observable<any> {
     return this.httpClient.get('http://localhost:3000/api/getSpliteData');
+  }
+
+  setShowSpinner(showSpinner: boolean) {
+    this._showSpinner = showSpinner;
+  }
+
+  getShowSpinner() {
+    return this._showSpinner;
   }
 }

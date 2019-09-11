@@ -20,9 +20,19 @@ html, body {
   }
 
   .mat-header-cell {
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: bold;
-    color: rgba(0,0,0,0.4);
+    color: $primary-color;
+
+    .mat-sort-header-button {
+      &:focus {
+        outline: none;
+      }
+    }
+
+    .mat-sort-header-arrow {
+      color: $primary-color;
+    }
   }
 
   .mat-snack-bar-container {
@@ -72,9 +82,61 @@ html, body {
   }
 
   .mat-progress-spinner {
-    margin:0 auto;
+    position: absolute;
+    top: 45%;
+    left: 45%;
+    
     circle {
       stroke: $primary-color;
+    }
+  }
+
+  .mat-paginator {
+    .mat-paginator-container {
+      justify-content: center;
+    }
+  }
+
+  .daily-container {
+    .mat-paginator {
+      .mat-paginator-range-actions {
+        .mat-paginator-navigation-first, .mat-paginator-navigation-last {
+          display: none;
+        }
+    
+        .mat-paginator-range-label {
+          display: none;
+        }
+    
+        .mat-paginator-navigation-next, .mat-paginator-navigation-previous {
+          outline: none;
+        }
+      }
+    }
+  }
+
+  .office-container {
+    .mat-sort-header-container {
+      justify-content: center;
+    }
+  }
+
+  .dashboard-container {
+    .mat-header-cell {
+      font-size: 0.7rem;
+      padding-left: 0.5rem;
+
+      &:first-of-type {
+        padding-left: 0.5rem;
+      }
+    }
+
+    .mat-cell {
+      padding-left: 0.5rem;
+
+      &:first-of-type {
+        padding-left: 0.5rem;
+      }
     }
   }
 }

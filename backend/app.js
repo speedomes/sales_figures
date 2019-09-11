@@ -36,7 +36,7 @@ const database = new Database({
   user     : 'root',
   password : '',
   database : 'salesFigures',
-  debug: true
+  debug: false
 });
 
 // function handle_database(req,res) {
@@ -64,8 +64,144 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/api/dashboard',(req, res, next) => {
+app.post('/api/getDashboardData',(req, res, next) => {
+  let dashboardQuery = `SELECT sum(d.sold) as sold, sum(d.pulled) as pulled,
+    sum(d.newclients) as newClients, FORMAT(sum(d.credit), 2) as credit,
+    sum(d.inuse) as interviews, sum(d.t1) as day1, sum(d.t2) as day2,
+    FORMAT((sum(d.t2)/sum(d.t1))*100, 2) as percentage
+    from daily as d join reps as r on d.rep_id = r.id 
+    join office as o on r.office_id = o.id where`;
 
+  let dashboardDataCollection = [];
+
+  if(req.body.office !== null) {
+    dashboardQuery += ` o.id='${req.body.office}' and`;
+  }
+
+  if(req.body.rep !== null) {
+    dashboardQuery += ` r.id='${req.body.rep}' and`;
+  }
+
+  if(req.body.year !== '') {
+    const dateObj = moment().isoWeekYear(parseInt(req.body.year)).toDate();
+    let startDate = moment(dateObj).startOf('year').format('YYYY.MM.DD');
+    let endDate = moment(dateObj).endOf('year').format('YYYY.MM.DD');
+
+    if(req.body.month !== '') {
+      startDate = moment(dateObj).month(req.body.month).startOf('month').format('YYYY.MM.DD');
+      endDate = moment(dateObj).month(req.body.month).endOf('month').format('YYYY.MM.DD');
+      
+      if(req.body.week !== '') {
+        startDate = moment(dateObj).month(req.body.month).isoWeek(req.body.week).startOf('week').format('YYYY.MM.DD');
+        endDate = moment(dateObj).month(req.body.month).isoWeek(req.body.week).endOf('week').format('YYYY.MM.DD');
+      } else {
+        const dashboardPromiseArray = [];
+        const noOfWeeks = moment(dateObj).month(req.body.month).isoWeek() - moment(dateObj).month(req.body.month).startOf('month').isoWeek() + 1;
+        console.log(moment(dateObj).month(req.body.month));
+        for(let count=1; count <=noOfWeeks; count++) {
+          startDate = moment(dateObj).isoWeek(count).startOf('week').format('YYYY.MM.DD');
+          endDate = moment(dateObj).isoWeek(count).startOf('week').format('YYYY.MM.DD');
+          const weekQuery = dashboardQuery + ` date<='${endDate}' and date>='${startDate}'`;
+          let weeklyData = [];
+  
+          dashboardPromiseArray.push(database.query(weekQuery)
+            .then(rows => {
+              weeklyData = rows[0];
+              weeklyData['duration'] = count;
+              return database.query(`SELECT count(d.sold) as holidays from daily as d
+                join reps as r on d.rep_id = r.id join office as o on r.office_id = o.id
+                where date<='${endDate}' and date>='${startDate}' and sold=-1`);
+            })
+            .then(rows => {
+              weeklyData['holidays'] = rows[0].holidays;
+              return weeklyData;
+            })
+          );
+        }
+  
+        Promise.all(dashboardPromiseArray).then(dataCollection => {
+          res.status(201).json({
+            message: 'Dashboard data fetched successfully',
+            dashboardData: dataCollection,
+            durationType: 'Week'
+          });
+        })
+        .catch(err => {
+          next(err); 
+        });
+      }
+    } else {
+      const dashboardPromiseArray = [];
+      for(let count=1; count <=12; count++) {
+        const dateObj = moment().isoWeekYear(parseInt(req.body.year)).toDate();
+        startDate = moment(dateObj).month(count).startOf('month').format('YYYY.MM.DD');
+        endDate = moment(dateObj).month(count).endOf('month').format('YYYY.MM.DD');
+        const monthQuery = dashboardQuery + ` date<='${endDate}' and date>='${startDate}'`;
+        let monthlyData = [];
+
+        dashboardPromiseArray.push(database.query(monthQuery)
+          .then(rows => {
+            monthlyData = rows[0];
+            monthlyData['duration'] = count;
+            return database.query(`SELECT count(d.sold) as holidays from daily as d
+              join reps as r on d.rep_id = r.id join office as o on r.office_id = o.id
+              where date<='${endDate}' and date>='${startDate}' and sold=-1`);
+          })
+          .then(rows => {
+            monthlyData['holidays'] = rows[0].holidays;
+            return monthlyData;
+          })
+        );
+      }
+
+      Promise.all(dashboardPromiseArray).then(dataCollection => {
+        res.status(201).json({
+          message: 'Dashboard data fetched successfully',
+          dashboardData: dataCollection,
+          durationType: 'Month'
+        });
+      })
+      .catch(err => {
+        next(err); 
+      });
+    }
+    dashboardQuery += ` date<='${endDate}' and date>='${startDate}'`;
+  } else {
+    const dashboardPromiseArray = [];
+    req.body.years.forEach(yearObj => {
+      const year = yearObj.year;
+      const dateObj = moment().isoWeekYear(parseInt(year)).toDate();
+      let startDate = moment(dateObj).startOf('year').format('YYYY.MM.DD');
+      let endDate = moment(dateObj).endOf('year').format('YYYY.MM.DD');
+      const yearQuery = dashboardQuery + ` date<='${endDate}' and date>='${startDate}'`;
+      let yearlyData = [];
+
+      dashboardPromiseArray.push(database.query(yearQuery)
+        .then(rows => {
+          yearlyData = rows[0];
+          yearlyData['duration'] = year;
+          return database.query(`SELECT count(d.sold) as holidays from daily as d
+            join reps as r on d.rep_id = r.id join office as o on r.office_id = o.id
+            where date<='${endDate}' and date>='${startDate}' and sold=-1`);
+        })
+        .then(rows => {
+          yearlyData['holidays'] = rows[0].holidays;
+          return yearlyData;
+        })
+      );
+    });
+
+    Promise.all(dashboardPromiseArray).then(dataCollection => {
+      res.status(201).json({
+        message: 'Dashboard data fetched successfully',
+        dashboardData: dataCollection,
+        durationType: 'Year'
+      });
+    })
+    .catch(err => {
+      next(err); 
+    });
+  }
 });
 
 app.post('/api/saveRecord',(req, res, next) => {

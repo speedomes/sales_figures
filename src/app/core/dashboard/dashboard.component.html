@@ -1,266 +1,248 @@
 <div class="dashboard-container">
   <h4 class="page-title">Dashboard</h4>
-  <div class="data-filter">
-    <mat-form-field class="filter-option">
-      <mat-label>Select a Office</mat-label>
-      <mat-select [(value)]="selectedOffice">
-        <mat-option value="all">All Office</mat-option>
-        <mat-option value="option1">Option 1</mat-option>
-        <mat-option value="option2">Option 2</mat-option>
-        <mat-option value="option3">Option 3</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field class="filter-option">
-      <mat-label>Select a Rep</mat-label>
-      <mat-select [(value)]="selectedRep">
-        <mat-option value="all">All Rep</mat-option>
-        <mat-option value="option1">Option 1</mat-option>
-        <mat-option value="option2">Option 2</mat-option>
-        <mat-option value="option3">Option 3</mat-option>
-      </mat-select>
-    </mat-form-field>
-
+  <div class="row enter-data-wrapper">
     <button class="add-data-button" mat-raised-button routerLink="../add-data">Enter the data</button>
   </div>
 
-  <h5 class="table-title">Yearly Data</h5>
-  <div class="mat-elevation-z8">
-    <table mat-table [dataSource]="yearlyDataSource" matSort>
-      <ng-container matColumnDef="timeFrequency">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Year </th>
-        <td mat-cell *matCellDef="let element"> {{element.timeFrequency}} </td>
-      </ng-container>
+  <div class="row">
+    <div class="col-sm-6 dataset-1">
+      <form [formGroup]="dataForm1" (ngSubmit)="fetchData1()">
+        <div class="row data-filter">
+          <div class="col-sm-4">
+            <div class="field-title">Office</div>
+            <mat-select formControlName="office" class="filter-option form-control">
+              <mat-option value="">Select an Office</mat-option>
+              <mat-option value="all">All Office</mat-option>
+              <mat-option *ngFor="let office of offices" [value]="office.id">{{office.name}}</mat-option>
+            </mat-select>
+          </div>
+          <div class="col-sm-4" [ngClass]="{'disabled': !dataForm1.get('office').value}">
+            <div class="field-title">Rep</div>
+            <mat-select formControlName="rep" class="filter-option form-control">
+              <mat-option value="all">All Rep</mat-option>
+              <mat-option *ngFor="let rep of reps" [value]="rep.id">{{rep.repName}}</mat-option>
+            </mat-select>
+          </div>
+        </div>
 
-      <ng-container matColumnDef="sold">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Sold </th>
-        <td mat-cell *matCellDef="let element"> {{element.sold}} </td>
-      </ng-container>
+        <div class="row data-filter" [ngClass]="{'disabled': !dataForm1.get('office').value}">
+          <div class="col-sm-3">
+            <div class="field-title">Year</div>
+            <mat-select formControlName="year" class="filter-option form-control">
+              <mat-option value="">Select</mat-option>
+              <mat-option [value]="y.year" *ngFor="let y of years">{{y.year}}</mat-option>
+            </mat-select>
+          </div>
+          <div class="col-sm-3">
+            <div class="field-title">Month</div>
+            <mat-select formControlName="month" class="filter-option form-control" (selectionChange)="populateWeeks()">
+              <mat-option value="">Select</mat-option>
+              <ng-container *ngIf="dataForm1.get('year').value !== null && dataForm1.get('year').value !== ''">
+                <mat-option [value]="month" *ngFor="let month of months">{{month}}</mat-option>
+              </ng-container>
+            </mat-select>
+          </div>
+          <div class="col-sm-3">
+            <div class="field-title">Week</div>
+            <mat-select formControlName="week" class="filter-option form-control">
+              <mat-option value="">Select</mat-option>
+              <ng-container *ngIf="dataForm1.get('month').value !== null && dataForm1.get('month').value !== ''">
+                <mat-option [value]="week" *ngFor="let week of weeks">{{week}}</mat-option>
+              </ng-container>
+            </mat-select>
+          </div>
+        </div>
 
-      <ng-container matColumnDef="pulled">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Pulled </th>
-        <td mat-cell *matCellDef="let element"> {{element.pulled}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="holidays">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Holidays </th>
-        <td mat-cell *matCellDef="let element"> {{element.holidays}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="newClients">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> New Clients </th>
-        <td mat-cell *matCellDef="let element"> {{element.newClients}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="credit">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Credit </th>
-        <td mat-cell *matCellDef="let element"> {{element.credit}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="interviews">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Interviews </th>
-        <td mat-cell *matCellDef="let element"> {{element.interviews}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="tab1">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Day 1 </th>
-        <td mat-cell *matCellDef="let element"> {{element.tab1}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="tab2">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Day 2 </th>
-        <td mat-cell *matCellDef="let element"> {{element.tab2}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="percentage">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> % </th>
-        <td mat-cell *matCellDef="let element"> {{element.percentage}} </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;">
-      </tr>
-    </table>
-    <mat-paginator [pageSizeOptions]="[10, 20, 30, 50, 100]"></mat-paginator>
+        <div class="row button-wrapper">
+          <button mat-raised-button [disabled]="!dataForm1.valid">Search</button>
+        </div>
+      </form>
+    </div>
   </div>
 
-  <h5 class="table-title">Monthly Data</h5>
-  <div class="mat-elevation-z8">
-    <table mat-table [dataSource]="yearlyDataSource" matSort>
-      <ng-container matColumnDef="timeFrequency">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Month </th>
-        <td mat-cell *matCellDef="let element"> {{element.timeFrequency}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="sold">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Sold </th>
-        <td mat-cell *matCellDef="let element"> {{element.sold}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="pulled">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Pulled </th>
-        <td mat-cell *matCellDef="let element"> {{element.pulled}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="holidays">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Holidays </th>
-        <td mat-cell *matCellDef="let element"> {{element.holidays}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="newClients">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> New Clients </th>
-        <td mat-cell *matCellDef="let element"> {{element.newClients}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="credit">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Credit </th>
-        <td mat-cell *matCellDef="let element"> {{element.credit}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="interviews">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Interviews </th>
-        <td mat-cell *matCellDef="let element"> {{element.interviews}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="tab1">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Day 1 </th>
-        <td mat-cell *matCellDef="let element"> {{element.tab1}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="tab2">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Day 2 </th>
-        <td mat-cell *matCellDef="let element"> {{element.tab2}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="percentage">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> % </th>
-        <td mat-cell *matCellDef="let element"> {{element.percentage}} </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;">
-      </tr>
-    </table>
-    <mat-paginator [pageSizeOptions]="[10, 20, 30, 50, 100]" showFirstLastButtons></mat-paginator>
+  <div class="row">
+    <div class="col-sm-6" *ngIf="dataObj1.yearlyDataSource.data && dataObj1.yearlyDataSource.data.length > 0">
+      <div class="mat-elevation-z8 yearlyData">
+        <table mat-table [dataSource]="dataObj1.yearlyDataSource" matSort>
+          <ng-container matColumnDef="duration">
+            <th mat-header-cell *matHeaderCellDef> Year </th>
+            <td mat-cell *matCellDef="let element"> {{element.duration}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="sold">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Sold </th>
+            <td mat-cell *matCellDef="let element"> {{element.sold}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="pulled">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Pulled </th>
+            <td mat-cell *matCellDef="let element"> {{element.pulled}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="holidays">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Holidays </th>
+            <td mat-cell *matCellDef="let element"> {{element.holidays}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="newClients">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> New Clients </th>
+            <td mat-cell *matCellDef="let element"> {{element.newClients}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="credit">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Credit </th>
+            <td mat-cell *matCellDef="let element"> {{element.credit}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="interviews">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Interviews </th>
+            <td mat-cell *matCellDef="let element"> {{element.interviews}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="day1">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Day 1 </th>
+            <td mat-cell *matCellDef="let element"> {{element.day1}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="day2">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Day 2 </th>
+            <td mat-cell *matCellDef="let element"> {{element.day2}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="percentage">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> % </th>
+            <td mat-cell *matCellDef="let element"> {{element.percentage}} </td>
+          </ng-container>
+    
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+          </tr>
+        </table>
+      </div>
+    </div>
   </div>
 
-  <h5 class="table-title">Weekly Data</h5>
-  <div class="mat-elevation-z8">
-    <table mat-table [dataSource]="yearlyDataSource" matSort>
-      <ng-container matColumnDef="timeFrequency">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Week </th>
-        <td mat-cell *matCellDef="let element"> {{element.timeFrequency}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="sold">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Sold </th>
-        <td mat-cell *matCellDef="let element"> {{element.sold}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="pulled">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Pulled </th>
-        <td mat-cell *matCellDef="let element"> {{element.pulled}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="holidays">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Holidays </th>
-        <td mat-cell *matCellDef="let element"> {{element.holidays}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="newClients">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> New Clients </th>
-        <td mat-cell *matCellDef="let element"> {{element.newClients}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="credit">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Credit </th>
-        <td mat-cell *matCellDef="let element"> {{element.credit}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="interviews">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Interviews </th>
-        <td mat-cell *matCellDef="let element"> {{element.interviews}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="tab1">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Day 1 </th>
-        <td mat-cell *matCellDef="let element"> {{element.tab1}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="tab2">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Day 2 </th>
-        <td mat-cell *matCellDef="let element"> {{element.tab2}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="percentage">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> % </th>
-        <td mat-cell *matCellDef="let element"> {{element.percentage}} </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;">
-      </tr>
-    </table>
-    <mat-paginator [pageSizeOptions]="[10, 20, 30, 50, 100]" showFirstLastButtons></mat-paginator>
+  <div class="row">
+    <div class="col-sm-6" *ngIf="dataObj1.monthlyDataSource.data && dataObj1.monthlyDataSource.data.length > 0">
+      <div class="mat-elevation-z8 yearlyData">
+        <table mat-table [dataSource]="dataObj1.monthlyDataSource" matSort>
+          <ng-container matColumnDef="duration">
+            <th mat-header-cell *matHeaderCellDef> Month </th>
+            <td mat-cell *matCellDef="let element"> {{element.duration}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="sold">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Sold </th>
+            <td mat-cell *matCellDef="let element"> {{element.sold}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="pulled">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Pulled </th>
+            <td mat-cell *matCellDef="let element"> {{element.pulled}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="holidays">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Holidays </th>
+            <td mat-cell *matCellDef="let element"> {{element.holidays}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="newClients">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> New Clients </th>
+            <td mat-cell *matCellDef="let element"> {{element.newClients}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="credit">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Credit </th>
+            <td mat-cell *matCellDef="let element"> {{element.credit}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="interviews">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Interviews </th>
+            <td mat-cell *matCellDef="let element"> {{element.interviews}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="day1">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Day 1 </th>
+            <td mat-cell *matCellDef="let element"> {{element.day1}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="day2">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Day 2 </th>
+            <td mat-cell *matCellDef="let element"> {{element.day2}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="percentage">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> % </th>
+            <td mat-cell *matCellDef="let element"> {{element.percentage}} </td>
+          </ng-container>
+    
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+          </tr>
+        </table>
+      </div>
+    </div>
   </div>
 
-  <h5 class="table-title">Daily Data</h5>
-  <div class="mat-elevation-z8">
-    <table mat-table [dataSource]="yearlyDataSource" matSort>
-      <ng-container matColumnDef="timeFrequency">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Month </th>
-        <td mat-cell *matCellDef="let element"> {{element.timeFrequency}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="sold">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Sold </th>
-        <td mat-cell *matCellDef="let element"> {{element.sold}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="pulled">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Pulled </th>
-        <td mat-cell *matCellDef="let element"> {{element.pulled}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="holidays">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Holidays </th>
-        <td mat-cell *matCellDef="let element"> {{element.holidays}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="newClients">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> New Clients </th>
-        <td mat-cell *matCellDef="let element"> {{element.newClients}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="credit">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Credit </th>
-        <td mat-cell *matCellDef="let element"> {{element.credit}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="interviews">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Interviews </th>
-        <td mat-cell *matCellDef="let element"> {{element.interviews}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="tab1">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Day 1 </th>
-        <td mat-cell *matCellDef="let element"> {{element.tab1}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="tab2">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> Day 2 </th>
-        <td mat-cell *matCellDef="let element"> {{element.tab2}} </td>
-      </ng-container>
-
-      <ng-container matColumnDef="percentage">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> % </th>
-        <td mat-cell *matCellDef="let element"> {{element.percentage}} </td>
-      </ng-container>
-
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns;">
-      </tr>
-    </table>
-    <mat-paginator [pageSizeOptions]="[10, 20, 30, 50, 100]"></mat-paginator>
+  <div class="row">
+    <div class="col-sm-6" *ngIf="dataObj1.weeklyDataSource.data && dataObj1.weeklyDataSource.data.length > 0">
+      <div class="mat-elevation-z8 yearlyData">
+        <table mat-table [dataSource]="dataObj1.weeklyDataSource" matSort>
+          <ng-container matColumnDef="duration">
+            <th mat-header-cell *matHeaderCellDef> Month </th>
+            <td mat-cell *matCellDef="let element"> {{element.duration}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="sold">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Sold </th>
+            <td mat-cell *matCellDef="let element"> {{element.sold}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="pulled">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Pulled </th>
+            <td mat-cell *matCellDef="let element"> {{element.pulled}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="holidays">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Holidays </th>
+            <td mat-cell *matCellDef="let element"> {{element.holidays}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="newClients">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> New Clients </th>
+            <td mat-cell *matCellDef="let element"> {{element.newClients}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="credit">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Credit </th>
+            <td mat-cell *matCellDef="let element"> {{element.credit}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="interviews">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Interviews </th>
+            <td mat-cell *matCellDef="let element"> {{element.interviews}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="day1">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Day 1 </th>
+            <td mat-cell *matCellDef="let element"> {{element.day1}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="day2">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Day 2 </th>
+            <td mat-cell *matCellDef="let element"> {{element.day2}} </td>
+          </ng-container>
+    
+          <ng-container matColumnDef="percentage">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> % </th>
+            <td mat-cell *matCellDef="let element"> {{element.percentage}} </td>
+          </ng-container>
+    
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;">
+          </tr>
+        </table>
+      </div>
+    </div>
   </div>
 </div>

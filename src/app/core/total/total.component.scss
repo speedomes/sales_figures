@@ -1,7 +1,13 @@
+@import "../../../assets/scss/variables.scss";
+
 .total-container {
   .row {
     margin-bottom: 3rem;
     justify-content: space-between;
+
+    mat-label {
+      color: $primary-color;
+    }
 
     .col-3 {
       mat-label {

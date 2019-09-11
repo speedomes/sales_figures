@@ -15,23 +15,22 @@ export class SpliteComponent implements OnInit {
 
   selectedIndex: number;
   spliteDataSource =  new MatTableDataSource();
-
-  displayedColumns: string[] = ['date', 'office', 'cash', 'cards', 'vehicle', 'total'];
+  dataLoaded: boolean = false;
+  displayedColumns: string[] = ['date', 'name', 'cash', 'cards', 'viu', 'total'];
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
   constructor(private dataService: DataService,
-    private _snackBar: MatSnackBar,
-    private changeDetectorRefs: ChangeDetectorRef) { }
+    private _snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.dataService.getSpliteData().subscribe((response) => {
+      this.dataLoaded = true;
       if(response && response.spliteData.length > 0) {
         this.spliteDataSource.data = response.spliteData;
         this.spliteDataSource.paginator = this.paginator;
         this.spliteDataSource.sort = this.sort;
-        this.changeDetectorRefs.detectChanges();
       } else {
         this.displaySnackbar('No data found');
       }

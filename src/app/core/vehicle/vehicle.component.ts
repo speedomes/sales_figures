@@ -20,7 +20,7 @@ export class VehicleComponent implements OnInit {
   selectedIndex: number;
 
   vehicleDataSource =  new MatTableDataSource();
-  displayedColumns: string[] = ['vehicle'];
+  displayedColumns: string[] = ['name'];
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
@@ -47,23 +47,32 @@ export class VehicleComponent implements OnInit {
 
   getVehicles() {
     this.dataService.getVehicles().subscribe((response) => {
-      console.log(response);
-      this.vehicleDataSource.data = response.vehicles;
+      if(response.vehicles && response.vehicles.length > 0) {
+        this.vehicleDataSource.data = response.vehicles;
+      } else {
+        this.displaySnackbar('No data found');
+      }
+    },
+    (error) => {
+      this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
     });
   }
 
   addVehicle() {
     if(this.selectedVehicle &&
-        (this.vehicleForm.get('vehicleName').value === this.selectedVehicle.name)) {
-        this.displaySnackbar('Vehicle name already exists!', 'warning');
-        return;
+      (this.vehicleForm.get('vehicleName').value === this.selectedVehicle.name)) {
+      this.displaySnackbar('Vehicle name already exists!', 'warning');
+      return;
     } else {
       this.dataService.addVehicle({
         name: this.vehicleForm.get('vehicleName').value
       }).subscribe((response) => {
-        this.displaySnackbar('Vehicle name has been added successfully!');
+        this.displaySnackbar((response && response.message) || 'Vehicle name has been added successfully!');
         this.clearSelection();
         this.getVehicles();
+      },
+      (error) => {
+        this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
       });
     }
   }
@@ -77,7 +86,7 @@ export class VehicleComponent implements OnInit {
         id: this.selectedVehicle.id, 
         name: this.vehicleForm.get('vehicleName').value
       }).subscribe((response) => {
-        this.displaySnackbar('Vehicle name has been updated successfully!');
+        this.displaySnackbar((response && response.message) || 'Vehicle name has been updated successfully!');
         this.clearSelection();
         this.getVehicles();
       });
@@ -92,7 +101,7 @@ export class VehicleComponent implements OnInit {
       this.dataService.deleteVehicle({
         id: this.selectedVehicle.id
       }).subscribe((response) => {
-        this.displaySnackbar('Vehicle name has been deleted successfully!');
+        this.displaySnackbar((response && response.message) || 'Vehicle name has been deleted successfully!');
         this.clearSelection();
         this.getVehicles();
       });
@@ -102,6 +111,7 @@ export class VehicleComponent implements OnInit {
   clearSelection() {
     this.vehicleForm.reset();
     this.selectedVehicle = undefined;
+    this.selectedIndex = undefined;
   }
 
   displaySnackbar(message: string, className: string = 'primary') {

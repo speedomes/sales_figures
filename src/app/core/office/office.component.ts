@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -21,21 +21,21 @@ export class OfficeComponent implements OnInit {
   selectedIndex: number;
 
   officeDataSource =  new MatTableDataSource();
-  displayedColumns: string[] = ['office'];
+  displayedColumns: string[] = ['name'];
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
   constructor(private dataService: DataService,
-    private _snackBar: MatSnackBar) { }
+    private _snackBar: MatSnackBar,
+    private changeDetectorRefs: ChangeDetectorRef) { }
 
   ngOnInit() {
-    this.getOffices();
-
     this.officeForm = new FormGroup({
       officeName: new FormControl('', [Validators.required])
     });
 
+    this.getOffices();
     this.officeDataSource.paginator = this.paginator;
     this.officeDataSource.sort = this.sort;
   }
@@ -48,7 +48,11 @@ export class OfficeComponent implements OnInit {
 
   getOffices() {
     this.dataService.getOffices().subscribe((response) => {
-      this.officeDataSource.data = response.offices;
+      if(response.offices && response.offices.length > 0) {
+        this.officeDataSource.data = response.offices;
+      } else {
+        this.displaySnackbar('No data found');
+      }
     },
     (error) => {
       this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
@@ -114,6 +118,7 @@ export class OfficeComponent implements OnInit {
   clearSelection() {
     this.officeForm.reset();
     this.selectedOffice = undefined;
+    this.selectedIndex = undefined;
   }
 
   displaySnackbar(message: string, className: string = 'primary') {

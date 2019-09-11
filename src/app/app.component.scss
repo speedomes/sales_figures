@@ -2,14 +2,7 @@
 
 .app-container {
   max-width: 1366px;
-  min-height: 768px;
   background-color: $app-bg-color;
   padding: 0;
   position: relative;
-}
-
-::ng-deep {
-  .row {
-    width: 100%;
-  }
 }
