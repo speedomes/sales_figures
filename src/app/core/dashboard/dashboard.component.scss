@@ -2,8 +2,6 @@
 
 .dashboard-container {
   >.row {
-    margin: 2rem 0;
-
     &.enter-data-wrapper {
       justify-content: center;
     }
@@ -11,6 +9,14 @@
     .col-sm-6 {
       padding: 0.2rem;
     }
+  }
+
+  .collection-container {
+    margin: 2rem 0 2rem 0;
+  }
+
+  .duration-data-container {
+    margin-bottom: 2rem;
   }
 
   .field-title {

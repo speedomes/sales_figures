@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const mysql = require('mysql');
 const moment = require('moment');
 const Promise = require('promise');
+const helmet = require('helmet');
 
 class Database {
   constructor(config) {
@@ -12,8 +13,10 @@ class Database {
   query(sql, args) {
     return new Promise((resolve, reject) => {
       this.connection.query(sql, args, (err, rows) => {
-        if (err)
-            return reject(err);
+        if (err) {
+          // res.json({"code" : 100, "status" : "Error in connection database"});
+          return;
+        }
         resolve(rows);
       });
     });
@@ -22,7 +25,8 @@ class Database {
     return new Promise((resolve, reject) => {
       this.connection.end(err => {
         if (err) {
-          return reject(err);
+          // res.json({"code" : 100, "status" : "Error in connection database"});
+          return;
         }
         resolve();
       });
@@ -35,25 +39,11 @@ const database = new Database({
   host     : '127.0.0.1',
   user     : 'root',
   password : '',
-  database : 'salesFigures',
+  database : 'fiverr1',
   debug: false
 });
 
-// function handle_database(req,res) {
-//   pool.getConnection(function(err,connection){
-//     if (err) {
-//       res.json({"code" : 100, "status" : "Error in connection database"});
-//       return;
-//     }
-
-//     console.log('connected as id ' + connection.threadId);
-    
-//     connection.on('error', function(err) {      
-//       res.json({"code" : 100, "status" : "Error in connection database"});
-//       return;     
-//     });
-//   });
-// }
+app.use(helmet());
 
 app.use(bodyParser.json());
 
@@ -88,52 +78,163 @@ app.post('/api/getDashboardData',(req, res, next) => {
     let endDate = moment(dateObj).endOf('year').format('YYYY.MM.DD');
 
     if(req.body.month !== '') {
-      startDate = moment(dateObj).month(req.body.month).startOf('month').format('YYYY.MM.DD');
-      endDate = moment(dateObj).month(req.body.month).endOf('month').format('YYYY.MM.DD');
+      startDate = moment(dateObj).month(req.body.month-1).startOf('month').format('YYYY.MM.DD');
+      endDate = moment(dateObj).month(req.body.month-1).endOf('month').format('YYYY.MM.DD');
       
       if(req.body.week !== '') {
-        startDate = moment(dateObj).month(req.body.month).isoWeek(req.body.week).startOf('week').format('YYYY.MM.DD');
-        endDate = moment(dateObj).month(req.body.month).isoWeek(req.body.week).endOf('week').format('YYYY.MM.DD');
-      } else {
+        let monthStart = moment(dateObj).month(req.body.month-1).startOf('month');
+        let monthEnd = moment(dateObj).month(req.body.month-1).endOf('month');
         const dashboardPromiseArray = [];
-        const noOfWeeks = moment(dateObj).month(req.body.month).isoWeek() - moment(dateObj).month(req.body.month).startOf('month').isoWeek() + 1;
-        console.log(moment(dateObj).month(req.body.month));
-        for(let count=1; count <=noOfWeeks; count++) {
-          startDate = moment(dateObj).isoWeek(count).startOf('week').format('YYYY.MM.DD');
-          endDate = moment(dateObj).isoWeek(count).startOf('week').format('YYYY.MM.DD');
-          const weekQuery = dashboardQuery + ` date<='${endDate}' and date>='${startDate}'`;
-          let weeklyData = [];
-  
+        const holidayQueryPromiseArray = [];
+        let dailyData = [];
+        let holidaysData = [];
+        const weekArray = [];
+
+        for(let count=0; count < Math.ceil((monthStart.clone().daysInMonth()/ 7)); count++) {
+          const start = monthStart.clone().add(count*7, 'days');
+          if(count === Math.ceil((monthStart.clone().daysInMonth()/ 7)) -1) {
+            weekArray.push({ 
+              start: start,
+              end: monthEnd.clone()
+            });
+          } else {
+            weekArray.push({
+              start: start,
+              end: monthStart.clone().add((count*7)+ 6, 'days')
+            });
+          }
+        }
+
+        startDate = weekArray[req.body.week - 1].start;
+        endDate = weekArray[req.body.week - 1].end;
+
+        for (let count=0; count<= endDate.diff(startDate, 'days'); count++) {
+          const filterDate = startDate.clone().add(count, 'day').format('DD/MM/YYYY');
+          const weekQuery = dashboardQuery + ` date='${filterDate}'`;
+
           dashboardPromiseArray.push(database.query(weekQuery)
             .then(rows => {
-              weeklyData = rows[0];
-              weeklyData['duration'] = count;
-              return database.query(`SELECT count(d.sold) as holidays from daily as d
-                join reps as r on d.rep_id = r.id join office as o on r.office_id = o.id
-                where date<='${endDate}' and date>='${startDate}' and sold=-1`);
+              dailyData = rows[0];
+              dailyData['duration'] = filterDate;
+              dailyData['dayNo'] = count + 1;
+              return dailyData;
             })
+          );
+
+          const holidayQuery = `SELECT count(d.sold) as holidays from daily as d
+              join reps as r on d.rep_id = r.id join office as o on r.office_id = o.id
+              where date='${filterDate}' and sold=-1`;
+            
+          holidayQueryPromiseArray.push(database.query(holidayQuery)
             .then(rows => {
-              weeklyData['holidays'] = rows[0].holidays;
-              return weeklyData;
+              holidaysData = rows[0];
+              holidaysData['day'] = filterDate;
+              holidaysData['dayNo'] = count + 1;
+              return holidaysData;
             })
           );
         }
-  
-        Promise.all(dashboardPromiseArray).then(dataCollection => {
+
+        Promise.all(dashboardPromiseArray).then(dailyDataCollection => {
+          dailyData = dailyDataCollection.sort((a, b) => {
+            return (a.dayNo - b.dayNo);
+          });
+        });
+
+        Promise.all(holidayQueryPromiseArray).then(holidaysCollection => {
+          holidaysData = holidaysCollection.sort((a, b) => {
+            return (a.dayNo - b.dayNo);
+          });
+
+          dailyData.forEach((data, index) => {
+            data['holidays'] = holidaysData[index].holidays;
+          });
+
           res.status(201).json({
             message: 'Dashboard data fetched successfully',
-            dashboardData: dataCollection,
+            dashboardData: dailyData,
+            durationType: 'Day'
+          });
+        });
+      } else {
+        const dashboardPromiseArray = [];
+        let weekStart = moment(dateObj).month(req.body.month-1).startOf('month');
+        let weekEnd = moment(dateObj).month(req.body.month-1).startOf('month').add(6, 'days');
+        let monthEnd = moment(dateObj).month(req.body.month-1).endOf('month');
+        let isMonthEnd = true;
+        let weekNo = 1;
+        let weeklyData = [];
+        let holidaysData = [];
+        const holidayQueryPromiseArray = [];
+
+        startDate = weekStart;
+        endDate = weekEnd;
+
+        while(isMonthEnd) {
+          const start = startDate.format('YYYY.MM.DD');
+          const end = endDate.format('YYYY.MM.DD');
+          const weekQuery = dashboardQuery + ` date<='${end}' and date>='${start}'`;
+          const week = weekNo;
+          
+          dashboardPromiseArray.push(database.query(weekQuery)
+            .then(rows => {
+              weeklyData = rows[0];
+              weeklyData['duration'] = week;
+              return weeklyData;
+            })
+          );
+
+          const holidayQuery = `SELECT count(d.sold) as holidays from daily as d
+              join reps as r on d.rep_id = r.id join office as o on r.office_id = o.id
+              where date<='${end}' and date>='${start}' and sold=-1`;
+            
+          holidayQueryPromiseArray.push(database.query(holidayQuery)
+            .then(rows => {
+              holidaysData = rows[0];
+              holidaysData['week'] = week;
+              return holidaysData;
+            })
+          );
+
+          const diff = monthEnd.diff(endDate, 'days');
+          if(diff <= 0) {
+            isMonthEnd = false;
+            break;
+          } else if(diff > 0 && diff < 7) {
+            endDate = endDate.add(diff, 'days');
+            weekNo++;
+          } else {
+            endDate = endDate.add(7, 'days');
+            weekNo++;
+          }
+          startDate = startDate.add(7, 'days');
+        }
+
+        Promise.all(dashboardPromiseArray).then(weeklyDataCollection => {
+          weeklyData = weeklyDataCollection.sort((a, b) => {
+            return (a.duration - b.duration);
+          });
+        });
+
+        Promise.all(holidayQueryPromiseArray).then(holidaysCollection => {
+          holidaysData = holidaysCollection.sort((a, b) => {
+            return (a.week - b.week);
+          });
+
+          weeklyData.forEach((data, index) => {
+            data['holidays'] = holidaysData[index].holidays;
+          });
+
+          res.status(201).json({
+            message: 'Dashboard data fetched successfully',
+            dashboardData: weeklyData,
             durationType: 'Week'
           });
-        })
-        .catch(err => {
-          next(err); 
         });
       }
     } else {
       const dashboardPromiseArray = [];
-      for(let count=1; count <=12; count++) {
-        const dateObj = moment().isoWeekYear(parseInt(req.body.year)).toDate();
+      for(let count=0; count <=11; count++) {
         startDate = moment(dateObj).month(count).startOf('month').format('YYYY.MM.DD');
         endDate = moment(dateObj).month(count).endOf('month').format('YYYY.MM.DD');
         const monthQuery = dashboardQuery + ` date<='${endDate}' and date>='${startDate}'`;
@@ -142,23 +243,54 @@ app.post('/api/getDashboardData',(req, res, next) => {
         dashboardPromiseArray.push(database.query(monthQuery)
           .then(rows => {
             monthlyData = rows[0];
-            monthlyData['duration'] = count;
-            return database.query(`SELECT count(d.sold) as holidays from daily as d
-              join reps as r on d.rep_id = r.id join office as o on r.office_id = o.id
-              where date<='${endDate}' and date>='${startDate}' and sold=-1`);
-          })
-          .then(rows => {
-            monthlyData['holidays'] = rows[0].holidays;
+            monthlyData['duration'] = count + 1;
             return monthlyData;
           })
         );
       }
 
-      Promise.all(dashboardPromiseArray).then(dataCollection => {
-        res.status(201).json({
-          message: 'Dashboard data fetched successfully',
-          dashboardData: dataCollection,
-          durationType: 'Month'
+      Promise.all(dashboardPromiseArray).then(monthlyDataCollection => {
+        monthlyData = monthlyDataCollection.sort((a, b) => {
+          return (a.duration - b.duration);
+        });
+
+        const holidayQueryPromiseArray = [];
+
+        for(let count=0; count <=11; count++) {
+          startDate = moment(dateObj).month(count).startOf('month').format('YYYY.MM.DD');
+          endDate = moment(dateObj).month(count).endOf('month').format('YYYY.MM.DD');
+
+          const holidayQuery = `SELECT count(d.sold) as holidays from daily as d
+            join reps as r on d.rep_id = r.id join office as o on r.office_id = o.id
+            where date<='${endDate}' and date>='${startDate}' and sold=-1`;
+          let holidaysData = {};
+
+          holidayQueryPromiseArray.push(database.query(holidayQuery)
+            .then(rows => {
+              holidaysData['month'] = count + 1;
+              holidaysData['holidays'] = rows[0].holidays;
+              return holidaysData;
+            })
+          );
+        }
+
+        Promise.all(holidayQueryPromiseArray).then(holidaysCollection => {
+          holidaysData = holidaysCollection.sort((a, b) => {
+            return (a.month - b.month);
+          });
+
+          monthlyData.forEach((data, index) => {
+            data['holidays'] = holidaysData[index]['holidays'];
+          });
+
+          res.status(201).json({
+            message: 'Dashboard data fetched successfully',
+            dashboardData: monthlyData,
+            durationType: 'Month'
+          });
+        })
+        .catch(err => {
+          next(err); 
         });
       })
       .catch(err => {
@@ -202,13 +334,6 @@ app.post('/api/getDashboardData',(req, res, next) => {
       next(err); 
     });
   }
-});
-
-app.post('/api/saveRecord',(req, res, next) => {
-  const record = req.body;
-  res.status(201).json({
-    message: 'Data saved successfully',
-  });
 });
 
 app.get('/api/getYears',(req, res) => {
