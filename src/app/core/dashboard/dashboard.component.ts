@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { DataService } from 'src/app/data.service';
 import { SnackBarComponent } from 'src/app/shared/snack-bar/snack-bar.component';
@@ -40,7 +39,7 @@ export class DashboardComponent implements OnInit {
   ];
   weeks: number[] = [];
 
-  displayedColumns: string[] = ['duration','sold', 'pulled', 'holidays', 'newClients', 'credit',
+  displayedColumns: string[] = ['duration', 'sold', 'pulled', 'holidays', 'newClients', 'credit',
       'interviews', 'day1', 'day2', 'percentage'];
 
   @ViewChild(MatSort, {static: false}) set yearlySort1(sort: MatSort) {
@@ -75,8 +74,7 @@ export class DashboardComponent implements OnInit {
     this.dataObj2.monthlyDataSource.sort = sort;
   }
 
-  constructor(private dataService: DataService,
-    private _snackBar: MatSnackBar) { }
+  constructor(private dataService: DataService, private _snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.dataForm1 = new FormGroup({
@@ -96,7 +94,7 @@ export class DashboardComponent implements OnInit {
     });
 
     this.dataService.getOffices().subscribe((response) => {
-      if(response) {
+      if (response) {
         this.offices = response.offices;
       } else {
         this.displaySnackbar('No data found', 'warning');
@@ -123,6 +121,7 @@ export class DashboardComponent implements OnInit {
   }
 
   populateWeeks(event) {
+    // tslint:disable-next-line: radix
     const dateObj = moment().isoWeekYear(parseInt(this.dataForm1.get('year').value)).toDate();
     const startDate = moment(dateObj).month(event.value - 1).startOf('month');
     const endDate = moment(dateObj).month(event.value - 1).endOf('month');
@@ -179,10 +178,10 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  displaySnackbar(message: string, className: string = 'primary') {
+  displaySnackbar(msg: string, className: string = 'primary') {
     this._snackBar.openFromComponent(SnackBarComponent, {
       duration: 5000,
-      data: { message: message },
+      data: { message: msg },
       panelClass: className
     });
   }

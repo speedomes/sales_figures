@@ -39,7 +39,7 @@ const database = new Database({
   host     : '127.0.0.1',
   user     : 'root',
   password : '',
-  database : 'fiverr1',
+  database : 'fiverr',
   debug: false
 });
 
@@ -82,17 +82,26 @@ app.post('/api/getDashboardData',(req, res, next) => {
       endDate = moment(dateObj).month(req.body.month-1).endOf('month').format('YYYY.MM.DD');
       
       if(req.body.week !== '') {
-        let monthStart = moment(dateObj).month(req.body.month-1).startOf('month');
-        let monthEnd = moment(dateObj).month(req.body.month-1).endOf('month');
+        let monthStart = moment(dateObj).month(req.body.month-1).startOf('month').startOf('isoWeek').isoWeekday('Tuesday');
+        if(monthStart.month() < req.body.month-1) {
+          monthStart = monthStart.add(7, 'days');
+        }
+
+        let monthEnd = moment(dateObj).month(req.body.month).startOf('month').isoWeekday('Monday');
+        if(monthEnd.month() === req.body.month-1) {
+          monthEnd = monthEnd.add(7, 'days');
+        }
+
         const dashboardPromiseArray = [];
         const holidayQueryPromiseArray = [];
         let dailyData = [];
         let holidaysData = [];
         const weekArray = [];
+        const noOfWeeks = Math.ceil(monthEnd.clone().diff(monthStart, 'days')/ 7);
 
-        for(let count=0; count < Math.ceil((monthStart.clone().daysInMonth()/ 7)); count++) {
+        for(let count=0; count < noOfWeeks; count++) {
           const start = monthStart.clone().add(count*7, 'days');
-          if(count === Math.ceil((monthStart.clone().daysInMonth()/ 7)) -1) {
+          if(count === (noOfWeeks -1)) {
             weekArray.push({ 
               start: start,
               end: monthEnd.clone()
@@ -109,7 +118,7 @@ app.post('/api/getDashboardData',(req, res, next) => {
         endDate = weekArray[req.body.week - 1].end;
 
         for (let count=0; count<= endDate.diff(startDate, 'days'); count++) {
-          const filterDate = startDate.clone().add(count, 'day').format('DD/MM/YYYY');
+          const filterDate = startDate.clone().add(count, 'days').format('YYYY.MM.DD');
           const weekQuery = dashboardQuery + ` date='${filterDate}'`;
 
           dashboardPromiseArray.push(database.query(weekQuery)
@@ -158,9 +167,9 @@ app.post('/api/getDashboardData',(req, res, next) => {
         });
       } else {
         const dashboardPromiseArray = [];
-        let weekStart = moment(dateObj).month(req.body.month-1).startOf('month');
+        let weekStart = moment(dateObj).month(req.body.month-1).startOf('month').isoWeekday('Tuesday');
         let weekEnd = moment(dateObj).month(req.body.month-1).startOf('month').add(6, 'days');
-        let monthEnd = moment(dateObj).month(req.body.month-1).endOf('month');
+        let monthEnd = moment(dateObj).month(req.body.month).startOf('month').isoWeekday('Monday');
         let isMonthEnd = true;
         let weekNo = 1;
         let weeklyData = [];
@@ -235,9 +244,17 @@ app.post('/api/getDashboardData',(req, res, next) => {
     } else {
       const dashboardPromiseArray = [];
       for(let count=0; count <=11; count++) {
-        startDate = moment(dateObj).month(count).startOf('month').format('YYYY.MM.DD');
-        endDate = moment(dateObj).month(count).endOf('month').format('YYYY.MM.DD');
-        const monthQuery = dashboardQuery + ` date<='${endDate}' and date>='${startDate}'`;
+        startDate = moment(dateObj).month(count).startOf('month').startOf('isoWeek').isoWeekday('Tuesday');
+        if(startDate.month() < count) {
+          startDate = startDate.add(7, 'days');
+        }
+
+        endDate = moment(dateObj).month(count+1).startOf('month').isoWeekday('Monday');
+        if(endDate.month() === count) {
+          endDate = endDate.add(7, 'days');
+        }
+
+        const monthQuery = dashboardQuery + ` date<='${endDate.format('YYYY.MM.DD')}' and date>='${startDate.format('YYYY.MM.DD')}'`;
         let monthlyData = [];
 
         dashboardPromiseArray.push(database.query(monthQuery)
@@ -300,12 +317,19 @@ app.post('/api/getDashboardData',(req, res, next) => {
     dashboardQuery += ` date<='${endDate}' and date>='${startDate}'`;
   } else {
     const dashboardPromiseArray = [];
-    req.body.years.forEach(yearObj => {
+    req.body.years.forEach((yearObj, index) => {
       const year = yearObj.year;
       const dateObj = moment().isoWeekYear(parseInt(year)).toDate();
-      let startDate = moment(dateObj).startOf('year').format('YYYY.MM.DD');
-      let endDate = moment(dateObj).endOf('year').format('YYYY.MM.DD');
-      const yearQuery = dashboardQuery + ` date<='${endDate}' and date>='${startDate}'`;
+      startDate =  moment(dateObj).startOf('year').startOf('isoWeek').isoWeekday('Tuesday');
+        if(startDate.year() < year) {
+          startDate = startDate.add(7, 'days');
+        }
+
+      endDate = moment(moment().isoWeekYear(parseInt(year+1)).toDate()).startOf('year').isoWeekday('Monday');
+      if(endDate.year() === year) {
+        endDate = endDate.add(7, 'days');
+      }
+      const yearQuery = dashboardQuery + ` date<='${endDate.format('YYYY.MM.DD')}' and date>='${startDate.format('YYYY.MM.DD')}'`;
       let yearlyData = [];
 
       dashboardPromiseArray.push(database.query(yearQuery)
