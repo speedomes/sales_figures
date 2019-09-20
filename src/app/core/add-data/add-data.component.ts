@@ -12,6 +12,7 @@ import { MatSort } from '@angular/material/sort';
 export class AddDataComponent implements OnInit {
 
   addDataForm: FormGroup;
+  filterType;
   dataSource =  new MatTableDataSource([
     {
       date: '2019.02.01',
