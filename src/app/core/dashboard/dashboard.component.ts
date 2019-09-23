@@ -175,7 +175,7 @@ export class DashboardComponent implements OnInit {
       month: form.get('month').value,
       week: form.get('week').value,
       years: this.years
-    }
+    };
   }
 
   displaySnackbar(msg: string, className: string = 'primary') {

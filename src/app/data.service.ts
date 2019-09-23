@@ -82,6 +82,10 @@ export class DataService {
     return this.httpClient.get('http://localhost:3000/api/getSpliteData');
   }
 
+  getScopeData(data: {}): Observable<any> {
+    return this.httpClient.post('http://localhost:3000/api/getScopeData', data);
+  }
+
   setShowSpinner(showSpinner: boolean) {
     this._showSpinner = showSpinner;
   }

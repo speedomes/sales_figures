@@ -488,6 +488,210 @@ app.post('/api/getDailyData',(req, res, next) => {
   });
 });
 
+app.post('/api/getScopeData',(req, res, next) => {
+  let scopeDataQuery = `SELECT d.date, o.name as officeName, d.rep_id as repId, v.name as vehicleName, 
+  d.sold, d.pulled, d.newclients as newClients, d.credit, d.balance, d.unused, d.inuse, d.t1, d.t2, d.st, 
+  r.name as repName FROM daily as d join reps as r on d.rep_id = r.id 
+  join office as o on r.office_id = o.id join vehicle as v on d.vehicle_id = v.id where`;
+
+  let scopeData = [];
+
+  if(req.body.office !== null && req.body.office !== '') {
+    scopeDataQuery += ` o.id='${req.body.office}' and`;
+  }
+
+  if(req.body.rep !== null && req.body.rep !== '') {
+    scopeDataQuery += ` r.id='${req.body.rep}' and`;
+  }
+
+  if(req.body.year !== '') {
+    const dateObj = moment().isoWeekYear(parseInt(req.body.year)).toDate();
+    let startDate = moment(dateObj).startOf('year').format('YYYY.MM.DD');
+    let endDate = moment(dateObj).endOf('year').format('YYYY.MM.DD');
+
+    if(req.body.month !== '') {
+      startDate = moment(dateObj).month(req.body.month-1).startOf('month').format('YYYY.MM.DD');
+      endDate = moment(dateObj).month(req.body.month-1).endOf('month').format('YYYY.MM.DD');
+      
+      if(req.body.week !== '') {
+        let monthStart = moment(dateObj).month(req.body.month-1).startOf('month').startOf('isoWeek').isoWeekday('Tuesday');
+        if(monthStart.month() < req.body.month-1) {
+          monthStart = monthStart.add(7, 'days');
+        }
+
+        let monthEnd = moment(dateObj).month(req.body.month).startOf('month').isoWeekday('Monday');
+        if(monthEnd.month() === req.body.month-1) {
+          monthEnd = monthEnd.add(7, 'days');
+        }
+
+        const scopeDataPromiseArray = [];
+        const weekArray = [];
+        const noOfWeeks = Math.ceil(monthEnd.clone().diff(monthStart, 'days')/ 7);
+
+        for(let count=0; count < noOfWeeks; count++) {
+          const start = monthStart.clone().add(count*7, 'days');
+          if(count === (noOfWeeks -1)) {
+            weekArray.push({ 
+              start: start,
+              end: monthEnd.clone()
+            });
+          } else {
+            weekArray.push({
+              start: start,
+              end: monthStart.clone().add((count*7)+ 6, 'days')
+            });
+          }
+        }
+
+        startDate = weekArray[req.body.week - 1].start;
+        endDate = weekArray[req.body.week - 1].end;
+
+        for (let count=0; count<= endDate.diff(startDate, 'days'); count++) {
+          const filterDate = startDate.clone().add(count, 'days').format('YYYY.MM.DD');
+          const weekQuery = scopeDataQuery + ` date='${filterDate}'`;
+
+          scopeDataPromiseArray.push(database.query(weekQuery)
+            .then(rows => {
+              scopeData = rows[0];
+              return scopeData;
+            })
+          );
+        }
+
+        Promise.all(scopeDataPromiseArray).then(scopeDataCollection => {
+          scopeData = scopeDataCollection.sort((a, b) => {
+            return (a.date - b.date);
+          });
+
+          res.status(201).json({
+            message: 'Scope data fetched successfully',
+            scopeData: scopeDataCollection
+          });
+        });
+      } else {
+        const scopeDataPromiseArray = [];
+        let weekStart = moment(dateObj).month(req.body.month-1).startOf('month').isoWeekday('Tuesday');
+        let weekEnd = moment(dateObj).month(req.body.month-1).startOf('month').add(6, 'days');
+        let monthEnd = moment(dateObj).month(req.body.month).startOf('month').isoWeekday('Monday');
+        let isMonthEnd = true;
+
+        startDate = weekStart;
+        endDate = weekEnd;
+
+        while(isMonthEnd) {
+          const start = startDate.format('YYYY.MM.DD');
+          const end = endDate.format('YYYY.MM.DD');
+          const weekQuery = scopeDataQuery + ` date<='${end}' and date>='${start}'`;
+          
+          scopeDataPromiseArray.push(database.query(weekQuery)
+            .then(rows => {
+              scopeData = rows[0];
+              return scopeData;
+            })
+          );
+
+          const diff = monthEnd.diff(endDate, 'days');
+          if(diff <= 0) {
+            isMonthEnd = false;
+            break;
+          } else if(diff > 0 && diff < 7) {
+            endDate = endDate.add(diff, 'days');
+            weekNo++;
+          } else {
+            endDate = endDate.add(7, 'days');
+            weekNo++;
+          }
+          startDate = startDate.add(7, 'days');
+        }
+
+        Promise.all(scopeDataPromiseArray).then(weeklyDataCollection => {
+          scopeData = weeklyDataCollection.sort((a, b) => {
+            return (a.date - b.date);
+          });
+
+          res.status(201).json({
+            message: 'Scope data fetched successfully',
+            scopeData: weeklyDataCollection
+          });
+        });
+      }
+    } else {
+      const scopeDataPromiseArray = [];
+      for(let count=0; count <=11; count++) {
+        startDate = moment(dateObj).month(count).startOf('month').startOf('isoWeek').isoWeekday('Tuesday');
+        if(startDate.month() < count) {
+          startDate = startDate.add(7, 'days');
+        }
+
+        endDate = moment(dateObj).month(count+1).startOf('month').isoWeekday('Monday');
+        if(endDate.month() === count) {
+          endDate = endDate.add(7, 'days');
+        }
+
+        const monthQuery = scopeDataQuery + ` date<='${endDate.format('YYYY.MM.DD')}' and date>='${startDate.format('YYYY.MM.DD')}'`;
+        console.log(monthQuery);
+        scopeDataPromiseArray.push(database.query(monthQuery)
+          .then(rows => {
+            scopeData = rows;
+            return scopeData;
+          })
+        );
+      }
+
+      Promise.all(scopeDataPromiseArray).then(monthlyDataCollection => {
+        scopeData = monthlyDataCollection.sort((a, b) => {
+          return (a.date - b.date);
+        });
+
+        res.status(201).json({
+          message: 'Scope data fetched successfully',
+          scopeData: monthlyDataCollection
+        });
+      })
+      .catch(err => {
+        next(err); 
+      });
+    }
+    scopeDataQuery += ` date<='${endDate}' and date>='${startDate}'`;
+  } else {
+    const scopeDataPromiseArray = [];
+    req.body.years.forEach((yearObj, index) => {
+      const year = yearObj.year;
+      const dateObj = moment().isoWeekYear(parseInt(year)).toDate();
+      startDate =  moment(dateObj).startOf('year').startOf('isoWeek').isoWeekday('Tuesday');
+        if(startDate.year() < year) {
+          startDate = startDate.add(7, 'days');
+        }
+
+      endDate = moment(moment().isoWeekYear(parseInt(year+1)).toDate()).startOf('year').isoWeekday('Monday');
+      if(endDate.year() === year) {
+        endDate = endDate.add(7, 'days');
+      }
+      const yearQuery = scopeDataQuery + ` date<='${endDate.format('YYYY.MM.DD')}' and date>='${startDate.format('YYYY.MM.DD')}'`;
+      scopeDataPromiseArray.push(database.query(yearQuery)
+        .then(rows => {
+          scopeData = rows[0];
+          return scopeData;
+        })
+      );
+    });
+
+    Promise.all(scopeDataPromiseArray).then(dataCollection => {
+      scopeData = dataCollection.sort((a, b) => {
+        return (a.date - b.date);
+      });
+  
+      res.status(201).json({
+        message: 'Scope data fetched successfully',
+        scopeData: dataCollection
+      });
+    })
+    .catch(err => {
+      next(err); 
+    });
+  }
+});
+
 app.get('/api/getOffices',(req, res, next) => {
   const officeDataQuery = `select * from office ORDER BY office.id`;
 

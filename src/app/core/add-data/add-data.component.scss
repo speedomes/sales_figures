@@ -2,6 +2,20 @@
 
 .add-data-container {
   .filter-type-container {
+
+    .row {
+      margin: 0 0 1rem 0;
+    }
+
+    .filter-type-wrapper {
+      .filter-type {
+        margin-right: 2rem;
+      }
+    }
+
+    .filter-type-title {
+      font-weight: bold;
+    }
     
     .data-table-wrapper {
       margin-top: 3rem;
@@ -15,6 +29,61 @@
 
     .justify-center {
       justify-content: center;
+    }
+
+    .filter-by-value-content {
+      margin-top: 2rem;
+      .button-container {
+        margin-top: 2rem;
+        button {
+          margin-right: 1rem;
+        }
+      }
+
+      mat-label {
+        margin-bottom: 1rem;
+        display: block;
+        text-align: center;
+      }
+
+      .split-data-wrapper {
+        margin-top: 2rem;
+        .pageTitle {
+          color: $primary-color;
+        }
+      }
+
+      .total-data-wrapper {
+        margin-top: 2rem;
+        .pageTitle {
+          color: $primary-color;
+        }
+      }
+    }
+
+    .filter-by-dateOffice-content {
+      .button-container {
+        margin-top: 3rem;
+        button {
+          margin-right: 1rem;
+        }
+      }
+
+      mat-label {
+        margin-bottom: 1rem;
+        display: block;
+        text-align: center;
+      }
+
+      .subHeader {
+        font-weight: bold;
+        color: $primary-color;
+        margin-top: 2rem;
+      }
+
+      .officeDataForm {
+        margin-top: 2rem;
+      }
     }
   }
 }
