@@ -14,6 +14,7 @@ import { SnackBarComponent } from 'src/app/shared/snack-bar/snack-bar.component'
 })
 export class AddDataComponent implements OnInit {
 
+  filterType: string;
   dataForm: FormGroup;
   dataEntryForm: FormGroup;
   hasDataLoaded: boolean = false;
