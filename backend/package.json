@@ -2,7 +2,7 @@
   "name": "sales-figures",
   "version": "0.0.0",
   "scripts": {
-    "startServer": "nodemon server.js"
+    "start": "nodemon server.js"
   },
   "private": true,
   "dependencies": {
