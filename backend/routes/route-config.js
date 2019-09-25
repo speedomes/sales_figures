@@ -38,7 +38,7 @@ const database = new Database({
   user     : process.env.MYSQL_USER,
   password : process.env.MYSQL_PWD,
   database : process.env.MYSQL_DB_NAME,
-  debug: false
+  debug: process.env.DEBUG || false
 });
 
 router.post('/api/getDashboardData',(req, res, next) => {
@@ -348,16 +348,16 @@ router.post('/api/getDashboardData',(req, res, next) => {
 });
 
 router.get('/api/getYears',(req, res) => {
-database.query('SELECT YEAR(date) AS year FROM daily GROUP BY YEAR(date)')
-.then (data => {
+  database.query('SELECT YEAR(date) AS year FROM daily GROUP BY YEAR(date)')
+  .then (data => {
     res.status(201).json({
     message: 'Years fetched successfully',
     yearData: data
     });
-})
-.catch(err => {
+  })
+  .catch(err => {
     next(err); 
-});
+  });
 });
 
 router.post('/api/getReport',(req, res, next) => {

@@ -2,7 +2,7 @@
   "name": "sales-figures",
   "version": "0.0.0",
   "scripts": {
-    "start": "pm2 start server.js"
+    "startServer": "pm2 start server.js"
   },
   "private": true,
   "dependencies": {
