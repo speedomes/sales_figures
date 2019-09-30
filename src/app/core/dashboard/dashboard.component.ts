@@ -94,6 +94,7 @@ export class DashboardComponent implements OnInit {
     });
 
     this.dataService.getOffices().subscribe((response) => {
+      console.log(response);
       if (response) {
         this.offices = response.offices;
       } else {
