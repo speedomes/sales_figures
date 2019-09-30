@@ -94,7 +94,7 @@ export class DashboardComponent implements OnInit {
     });
 
     this.dataService.getOffices().subscribe((response) => {
-      console.log(response);
+      console.log('hello' + response);
       if (response) {
         this.offices = response.offices;
       } else {
@@ -106,7 +106,8 @@ export class DashboardComponent implements OnInit {
     });
 
     this.dataService.getReps().subscribe((response) => {
-      if(response) {
+      console.log('hello2' + response);
+      if (response) {
         this.reps = response.reps;
       } else {
         this.displaySnackbar('No data found', 'warning');
@@ -117,6 +118,7 @@ export class DashboardComponent implements OnInit {
     });
 
     this.dataService.getYears().subscribe((response: any) => {
+      console.log('hello' + response);
       this.years = response.yearData;
     });
   }
