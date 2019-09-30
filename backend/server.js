@@ -42,9 +42,14 @@ const onListening = () => {
 };
 
 const port = normalizePort(3000);
-app.set("port", port);
+// app.set("port", port);
 
-const server = http.createServer(app);
-server.on("error", onError);
-server.on("listening", onListening);
-server.listen(port);
+// const server = http.createServer(app);
+// server.on("error", onError);
+// server.on("listening", onListening);
+// server.listen(port);
+
+http.createServer(function(request, response) {
+  response.writeHead(200, {'Content-Type': 'text/plain'});
+  response.end("Hello, World!\n");
+}).listen(process.env.PORT);
