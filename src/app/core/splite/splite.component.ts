@@ -18,8 +18,10 @@ export class SpliteComponent implements OnInit {
   dataLoaded: boolean = false;
   displayedColumns: string[] = ['date', 'name', 'cash', 'cards', 'viu', 'total'];
 
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild(MatSort, {static: false}) set sort(sort: MatSort) {
+    this.spliteDataSource.sort = sort;
+  }
 
   constructor(private dataService: DataService,
     private _snackBar: MatSnackBar) { }

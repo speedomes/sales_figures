@@ -1,6 +1,6 @@
 <div class="splite-container">
   <h4 class="page-title">Splite Data</h4>
-  <div class="mat-elevation-z8">
+  <div class="mat-elevation-z8" *ngIf="dataLoaded; else placeholderText">
     <table mat-table [dataSource]="spliteDataSource" matSort>
       <ng-container matColumnDef="date">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
@@ -40,6 +40,10 @@
     </table>
     <mat-paginator [pageSizeOptions]="[10, 20, 30, 50, 100]" showFirstLastButtons></mat-paginator>
   </div>
+  <ng-template #placeholderText>
+    <p class="placeholderText">Data will appear here soon</p>
+  </ng-template>
+  
 </div>
 <mat-progress-spinner
     *ngIf="!dataLoaded"

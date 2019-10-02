@@ -12,7 +12,7 @@ class Database {
     return new Promise((resolve, reject) => {
       this.connection.query(sql, args, (err, rows) => {
         if (err) {
-          // res.json({"code" : 100, "status" : "Error in connection database"});
+          reject({"code" : 100, "message" : "Error connecting database"});
           return;
         }
         resolve(rows);
@@ -23,7 +23,7 @@ class Database {
     return new Promise((resolve, reject) => {
       this.connection.end(err => {
         if (err) {
-          // res.json({"code" : 100, "status" : "Error in connection database"});
+          reject({"code" : 100, "message" : "Error connecting database"});
           return;
         }
         resolve();
@@ -457,7 +457,6 @@ database.query(wPulledQuery)
 router.post('/api/getDailyData',(req, res, next) => {
 const startLimit = parseInt(req.body.startLimit);
 const endLimit = parseInt(req.body.endLimit);
-console.log(startLimit, endLimit);
 const dailyDataQuery = `SELECT d.date, o.name as officeName, d.rep_id as repId, v.name as vehicleName, 
 d.sold, d.pulled, d.newclients as newClients, d.credit, d.balance, d.unused, d.inuse, d.t1, d.t2, d.st, 
 r.name as repName FROM daily as d join reps as r on d.rep_id = r.id 
@@ -616,7 +615,6 @@ if(req.body.year !== '') {
         }
 
         const monthQuery = scopeDataQuery + ` date<='${endDate.format('YYYY.MM.DD')}' and date>='${startDate.format('YYYY.MM.DD')}'`;
-        console.log(monthQuery);
         scopeDataPromiseArray.push(database.query(monthQuery)
         .then(rows => {
             scopeData = rows;

@@ -84,7 +84,7 @@ html, body {
   .mat-progress-spinner {
     position: absolute;
     top: 45%;
-    left: 45%;
+    left: 46%;
     
     circle {
       stroke: $primary-color;
@@ -157,5 +157,17 @@ html, body {
     .mat-sort-header-container {
       justify-content: center;
     }
+  }
+  
+  .placeholderText {
+    position: absolute;
+    top: 49%;
+    left: 43%;
+    opacity: 0.4;
+  }
+
+  .mat-drawer-container {
+    background: $app-bg-color;
+    height: 80vh;
   }
 }
