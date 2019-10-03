@@ -11,7 +11,7 @@
         <div class="row data-filter">
           <div class="col-sm-4">
             <div class="field-title">Office</div>
-            <mat-select formControlName="office" class="filter-option form-control">
+            <mat-select formControlName="office" class="filter-option form-control" (selectionChange)="filterChange1()">
               <mat-option value="">Select an Office</mat-option>
               <mat-option value="all">All Office</mat-option>
               <mat-option *ngFor="let office of offices" [value]="office.id">{{office.name}}</mat-option>
@@ -19,7 +19,7 @@
           </div>
           <div class="col-sm-4" [ngClass]="{'disabled': !dataForm1.get('office').value}">
             <div class="field-title">Rep</div>
-            <mat-select formControlName="rep" class="filter-option form-control">
+            <mat-select formControlName="rep" class="filter-option form-control" (selectionChange)="filterChange1()">
               <mat-option value="all">All Rep</mat-option>
               <mat-option *ngFor="let rep of reps" [value]="rep.id">{{rep.repName}}</mat-option>
             </mat-select>
@@ -66,7 +66,7 @@
         <div class="row data-filter">
           <div class="col-sm-4">
             <div class="field-title">Office</div>
-            <mat-select formControlName="office" class="filter-option form-control">
+            <mat-select formControlName="office" class="filter-option form-control" (selectionChange)="filterChange2()">
               <mat-option value="">Select an Office</mat-option>
               <mat-option value="all">All Office</mat-option>
               <mat-option *ngFor="let office of offices" [value]="office.id">{{office.name}}</mat-option>
@@ -74,7 +74,7 @@
           </div>
           <div class="col-sm-4" [ngClass]="{'disabled': !dataForm2.get('office').value}">
             <div class="field-title">Rep</div>
-            <mat-select formControlName="rep" class="filter-option form-control">
+            <mat-select formControlName="rep" class="filter-option form-control" (selectionChange)="filterChange2()">
               <mat-option value="all">All Rep</mat-option>
               <mat-option *ngFor="let rep of reps" [value]="rep.id">{{rep.repName}}</mat-option>
             </mat-select>

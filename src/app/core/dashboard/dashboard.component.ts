@@ -38,6 +38,8 @@ export class DashboardComponent implements OnInit {
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
   ];
   weeks: number[] = [];
+  mainFilterChange1: boolean = false;
+  mainFilterChange2: boolean = false;
 
   displayedColumns: string[] = ['duration', 'sold', 'pulled', 'holidays', 'newClients', 'credit',
       'interviews', 'day1', 'day2', 'percentage'];
@@ -74,7 +76,7 @@ export class DashboardComponent implements OnInit {
     this.dataObj2.monthlyDataSource.sort = sort;
   }
 
-  constructor(private dataService: DataService, private _snackBar: MatSnackBar) { }
+  constructor(private dataService: DataService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.dataForm1 = new FormGroup({
@@ -105,7 +107,6 @@ export class DashboardComponent implements OnInit {
     });
 
     this.dataService.getReps().subscribe((response) => {
-      console.log('hello2' + response);
       if (response) {
         this.reps = response.reps;
       } else {
@@ -117,13 +118,11 @@ export class DashboardComponent implements OnInit {
     });
 
     this.dataService.getYears().subscribe((response: any) => {
-      console.log('hello' + response);
       this.years = response.yearData;
     });
   }
 
   populateWeeks(event) {
-    // tslint:disable-next-line: radix
     const dateObj = moment().isoWeekYear(parseInt(this.dataForm1.get('year').value)).toDate();
     const startDate = moment(dateObj).month(event.value - 1).startOf('month');
     const endDate = moment(dateObj).month(event.value - 1).endOf('month');
@@ -135,16 +134,20 @@ export class DashboardComponent implements OnInit {
 
   fetchData1() {
     this.dataService.getDashboardData(this.formatReqObject(this.dataForm1)).subscribe(response => {
-      if(response.durationType === 'Year') {
+      if (this.mainFilterChange1) {
+        this.clearData1();
+      }
+      this.mainFilterChange1 = false;
+      if (response.durationType === 'Year') {
         this.dataObj1.yearlyDataSource.data = response.dashboardData;
         this.dataObj1.yearlyDataSource.sort = this.yearlySort1;
-      } else if(response.durationType === 'Month') {
+      } else if (response.durationType === 'Month') {
         this.dataObj1.monthlyDataSource.data = response.dashboardData;
         this.dataObj1.weeklyDataSource.sort = this.monthlySort1;
-      } else if(response.durationType === 'Week') {
+      } else if (response.durationType === 'Week') {
         this.dataObj1.weeklyDataSource.data = response.dashboardData;
         this.dataObj1.weeklyDataSource.sort = this.weeklySort1;
-      } else if(response.durationType === 'Day') {
+      } else if (response.durationType === 'Day') {
         this.dataObj1.dailyDataSource.data = response.dashboardData;
         this.dataObj1.dailyDataSource.sort = this.dailySort1;
       }
@@ -153,20 +156,32 @@ export class DashboardComponent implements OnInit {
 
   fetchData2() {
     this.dataService.getDashboardData(this.formatReqObject(this.dataForm2)).subscribe(response => {
-      if(response.durationType === 'Year') {
+      if (this.mainFilterChange2) {
+        this.clearData2();
+      }
+      this.mainFilterChange2 = false;
+      if (response.durationType === 'Year') {
         this.dataObj2.yearlyDataSource.data = response.dashboardData;
         this.dataObj2.yearlyDataSource.sort = this.yearlySort2;
-      } else if(response.durationType === 'Month') {
+      } else if (response.durationType === 'Month') {
         this.dataObj2.monthlyDataSource.data = response.dashboardData;
         this.dataObj2.weeklyDataSource.sort = this.monthlySort2;
-      } else if(response.durationType === 'Week') {
+      } else if (response.durationType === 'Week') {
         this.dataObj2.weeklyDataSource.data = response.dashboardData;
         this.dataObj2.weeklyDataSource.sort = this.weeklySort2;
-      } else if(response.durationType === 'Day') {
+      } else if (response.durationType === 'Day') {
         this.dataObj2.dailyDataSource.data = response.dashboardData;
         this.dataObj2.dailyDataSource.sort = this.dailySort2;
       }
     });
+  }
+
+  filterChange1() {
+    this.mainFilterChange1 = true;
+  }
+
+  filterChange2() {
+    this.mainFilterChange2 = true;
   }
 
   formatReqObject(form: FormGroup) {
@@ -180,8 +195,22 @@ export class DashboardComponent implements OnInit {
     };
   }
 
+  clearData1() {
+    this.dataObj1.yearlyDataSource = new MatTableDataSource();
+    this.dataObj1.monthlyDataSource = new MatTableDataSource();
+    this.dataObj1.weeklyDataSource = new MatTableDataSource();
+    this.dataObj1.dailyDataSource = new MatTableDataSource();
+  }
+
+  clearData2() {
+    this.dataObj2.yearlyDataSource = new MatTableDataSource();
+    this.dataObj2.monthlyDataSource = new MatTableDataSource();
+    this.dataObj2.weeklyDataSource = new MatTableDataSource();
+    this.dataObj2.dailyDataSource = new MatTableDataSource();
+  }
+
   displaySnackbar(msg: string, className: string = 'primary') {
-    this._snackBar.openFromComponent(SnackBarComponent, {
+    this.snackBar.openFromComponent(SnackBarComponent, {
       duration: 5000,
       data: { message: msg },
       panelClass: className
