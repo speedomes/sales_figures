@@ -17,6 +17,10 @@
         font-size: 4rem;
         color: $light-grey;
         cursor: pointer;
+
+        &:focus {
+          outline: none;
+        }
       }
     }
 
@@ -28,6 +32,10 @@
         font-size: 2rem;
         font-weight: 700;
         cursor: pointer;
+
+        &:focus {
+          outline: none;
+        }
       }
     }
   }

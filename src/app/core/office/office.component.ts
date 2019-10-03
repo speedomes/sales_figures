@@ -6,6 +6,7 @@ import { DataService } from 'src/app/data.service';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackBarComponent } from 'src/app/shared/snack-bar/snack-bar.component';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-office',
@@ -19,6 +20,8 @@ export class OfficeComponent implements OnInit {
   officeToModify: string;
   showError: boolean = false;
   selectedIndex: number;
+  dataLoaded: boolean = false;
+  placeHolderText: string = environment.placeHolderText;
 
   officeDataSource =  new MatTableDataSource();
   displayedColumns: string[] = ['name'];
@@ -26,9 +29,7 @@ export class OfficeComponent implements OnInit {
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
-  constructor(private dataService: DataService,
-    private _snackBar: MatSnackBar,
-    private changeDetectorRefs: ChangeDetectorRef) { }
+  constructor(private dataService: DataService, private snackBar: MatSnackBar, private changeDetectorRefs: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.officeForm = new FormGroup({
@@ -48,8 +49,9 @@ export class OfficeComponent implements OnInit {
 
   getOffices() {
     this.dataService.getOffices().subscribe((response) => {
-      if(response.offices && response.offices.length > 0) {
+      if (response.offices && response.offices.length > 0) {
         this.officeDataSource.data = response.offices;
+        this.dataLoaded = true;
       } else {
         this.displaySnackbar('No data found');
       }
@@ -122,7 +124,7 @@ export class OfficeComponent implements OnInit {
   }
 
   displaySnackbar(message: string, className: string = 'primary') {
-    this._snackBar.openFromComponent(SnackBarComponent, {
+    this.snackBar.openFromComponent(SnackBarComponent, {
       duration: 5000,
       data: { message: message },
       panelClass: className

@@ -2,6 +2,7 @@
 
 .dashboard-container {
   >.row {
+    margin: 0;
     &.enter-data-wrapper {
       justify-content: center;
     }
@@ -12,7 +13,8 @@
   }
 
   .collection-container {
-    margin: 2rem 0 2rem 0;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
   }
 
   .duration-data-container {
@@ -68,5 +70,12 @@
   .button-wrapper {
     margin: 0;
     justify-content: center;
+  }
+
+  .content-title {
+    margin: 1rem 0 1rem 0;
+    text-align: center;
+    color: $primary-color;
+    font-weight: 700;
   }
 }

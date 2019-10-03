@@ -38,10 +38,10 @@
         [ngClass]="{'highlight-row': i === selectedIndex}">
       </tr>
     </table>
-    <mat-paginator [pageSizeOptions]="[10, 20, 30, 50, 100]" showFirstLastButtons></mat-paginator>
+    <mat-paginator [pageSizeOptions]="[10, 20, 30, 50, 100]" [pageSize]="10" showFirstLastButtons></mat-paginator>
   </div>
   <ng-template #placeholderText>
-    <p class="placeholderText">Data will appear here soon</p>
+    <p class="placeholderText">{{placeHolderText}}</p>
   </ng-template>
   
 </div>

@@ -6,6 +6,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { DataService } from 'src/app/data.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackBarComponent } from 'src/app/shared/snack-bar/snack-bar.component';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-rep',
@@ -16,17 +17,23 @@ export class RepComponent implements OnInit {
 
   repForm: FormGroup;
   selectedIndex: number;
+  dataLoaded: boolean = false;
+  placeHolderText: string = environment.placeHolderText;
   selectedRep;
   repDataSource =  new MatTableDataSource();
   offices: [] = [];
   vehicles: [] = [];
   displayedColumns: string[] = ['id', 'repName', 'officeName', 'vehicleName', 'balance'];
 
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
+  @ViewChild(MatPaginator, {static: false}) set paginator(paginator: MatPaginator) {
+    this.repDataSource.paginator = paginator;
+  }
 
-  constructor(private dataService: DataService,
-    private _snackBar: MatSnackBar) { }
+  @ViewChild(MatSort, {static: false}) set sort(sort: MatSort) {
+    this.repDataSource.sort = sort;
+  }
+
+  constructor(private dataService: DataService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.repForm = new FormGroup({
@@ -37,17 +44,15 @@ export class RepComponent implements OnInit {
       vehicleName: new FormControl('', [Validators.required])
     });
     this.getReps();
-    this.repDataSource.paginator = this.paginator;
-    this.repDataSource.sort = this.sort;
 
     this.dataService.getOffices().subscribe((response) => {
-      if(response && response.offices) {
+      if (response && response.offices) {
         this.offices = response.offices;
       }
     });
-    
+
     this.dataService.getVehicles().subscribe((response) => {
-      if(response && response.vehicles) {
+      if (response && response.vehicles) {
         this.vehicles = response.vehicles;
       }
     });
@@ -56,8 +61,8 @@ export class RepComponent implements OnInit {
   populateData(rowData: any, index) {
     this.selectedIndex = index;
     this.selectedRep = rowData;
-    
-    this.repForm.setValue({ 
+
+    this.repForm.setValue({
       id: rowData.id,
       repName: rowData.repName,
       balance: rowData.balance,
@@ -68,8 +73,9 @@ export class RepComponent implements OnInit {
 
   getReps() {
     this.dataService.getReps().subscribe((response) => {
-      if(response.reps && response.reps.length > 0) {
+      if (response.reps && response.reps.length > 0) {
         this.repDataSource.data = response.reps;
+        this.dataLoaded = true;
       } else {
         this.displaySnackbar('No data found');
       }
@@ -80,7 +86,7 @@ export class RepComponent implements OnInit {
   }
 
   addRep() {
-    if(this.selectedRep &&
+    if (this.selectedRep &&
         (this.repForm.get('repName').value === this.selectedRep.repName)) {
         this.displaySnackbar('Rep name already exists!', 'warning');
         return;
@@ -103,29 +109,24 @@ export class RepComponent implements OnInit {
   }
 
   updateRep() {
-    if(this.repForm.get('repName').value === this.selectedRep.repName) {
-      this.displaySnackbar('No update required!');
-      return;
-    } else {
-      this.dataService.updateRep({
-        id: this.repForm.get('id').value, 
-        name: this.repForm.get('repName').value,
-        balance: this.repForm.get('balance').value,
-        officeId: this.repForm.get('officeName').value,
-        vehicleId: this.repForm.get('vehicleName').value
-      }).subscribe((response) => {
-        this.displaySnackbar((response && response.message) || 'Rep has been updated successfully');
-        this.clearSelection();
-        this.getReps();
-      },
-      (error) => {
-        this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
-      });
-    }
+    this.dataService.updateRep({
+      id: this.repForm.get('id').value, 
+      name: this.repForm.get('repName').value,
+      balance: this.repForm.get('balance').value,
+      officeId: this.repForm.get('officeName').value,
+      vehicleId: this.repForm.get('vehicleName').value
+    }).subscribe((response) => {
+      this.displaySnackbar((response && response.message) || 'Rep has been updated successfully');
+      this.clearSelection();
+      this.getReps();
+    },
+    (error) => {
+      this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
+    });
   }
 
   deleteRep() {
-    if(this.repForm.get('repName').value !== this.selectedRep.repName) {
+    if (this.repForm.get('repName').value !== this.selectedRep.repName) {
       this.displaySnackbar('Please select an rep.', 'warning');
       return;
     } else {
@@ -143,7 +144,7 @@ export class RepComponent implements OnInit {
   }
 
   clearSelection() {
-    this.repForm.setValue({ 
+    this.repForm.setValue({
       id: '',
       repName: '',
       balance: '',
@@ -154,10 +155,10 @@ export class RepComponent implements OnInit {
     this.selectedIndex = undefined;
   }
 
-  displaySnackbar(message: string, className: string = 'primary') {
-    this._snackBar.openFromComponent(SnackBarComponent, {
-      duration: 5000,
-      data: { message: message },
+  displaySnackbar(msg: string, className: string = 'primary') {
+    this.snackBar.openFromComponent(SnackBarComponent, {
+      duration: environment.snackBarTimeOut,
+      data: { message: msg },
       panelClass: className
     });
   }

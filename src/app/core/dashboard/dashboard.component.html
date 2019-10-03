@@ -120,6 +120,7 @@
     <div class="col-sm-6">
       <div class="row duration-data-container" *ngIf="dataObj1.yearlyDataSource.data && dataObj1.yearlyDataSource.data.length > 0">
         <div class="col-sm-12">
+          <h6 class="content-title">Overall Data</h6>
           <div class="mat-elevation-z8 yearlyData">
             <table mat-table [dataSource]="dataObj1.yearlyDataSource" matSort>
               <ng-container matColumnDef="duration">
@@ -182,6 +183,7 @@
     
       <div class="row duration-data-container" *ngIf="dataObj1.monthlyDataSource.data && dataObj1.monthlyDataSource.data.length > 0">
         <div class="col-sm-12">
+          <h6 class="content-title">Yearly Data</h6>
           <div class="mat-elevation-z8 yearlyData">
             <table mat-table [dataSource]="dataObj1.monthlyDataSource" matSort>
               <ng-container matColumnDef="duration">
@@ -244,6 +246,7 @@
     
       <div class="row duration-data-container" *ngIf="dataObj1.weeklyDataSource.data && dataObj1.weeklyDataSource.data.length > 0">
         <div class="col-sm-12">
+          <h6 class="content-title">Monthly Data</h6>
           <div class="mat-elevation-z8 yearlyData">
             <table mat-table [dataSource]="dataObj1.weeklyDataSource" matSort>
               <ng-container matColumnDef="duration">
@@ -306,6 +309,7 @@
     
       <div class="row duration-data-container" *ngIf="dataObj1.dailyDataSource.data && dataObj1.dailyDataSource.data.length > 0">
         <div class="col-sm-12">
+          <h6 class="content-title">Weekly Data</h6>
           <div class="mat-elevation-z8 dailyData">
             <table mat-table [dataSource]="dataObj1.dailyDataSource" matSort>
               <ng-container matColumnDef="duration">

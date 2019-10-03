@@ -5,6 +5,7 @@ import { MatSort } from '@angular/material/sort';
 import { DataService } from 'src/app/data.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackBarComponent } from 'src/app/shared/snack-bar/snack-bar.component';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-splite',
@@ -16,23 +17,24 @@ export class SpliteComponent implements OnInit {
   selectedIndex: number;
   spliteDataSource =  new MatTableDataSource();
   dataLoaded: boolean = false;
+  placeHolderText: string = environment.placeHolderText;
   displayedColumns: string[] = ['date', 'name', 'cash', 'cards', 'viu', 'total'];
 
-  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild(MatPaginator, {static: false}) set paginator(paginator: MatPaginator) {
+    this.spliteDataSource.paginator = paginator;
+  }
+
   @ViewChild(MatSort, {static: false}) set sort(sort: MatSort) {
     this.spliteDataSource.sort = sort;
   }
 
-  constructor(private dataService: DataService,
-    private _snackBar: MatSnackBar) { }
+  constructor(private dataService: DataService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.dataService.getSpliteData().subscribe((response) => {
       this.dataLoaded = true;
-      if(response && response.spliteData.length > 0) {
+      if (response && response.spliteData.length > 0) {
         this.spliteDataSource.data = response.spliteData;
-        this.spliteDataSource.paginator = this.paginator;
-        this.spliteDataSource.sort = this.sort;
       } else {
         this.displaySnackbar('No data found');
       }
@@ -43,10 +45,10 @@ export class SpliteComponent implements OnInit {
     this.selectedIndex = index;
   }
 
-  displaySnackbar(message: string) {
-    this._snackBar.openFromComponent(SnackBarComponent, {
-      duration: 5000,
-      data: { message: message }
+  displaySnackbar(msg: string) {
+    this.snackBar.openFromComponent(SnackBarComponent, {
+      duration: environment.snackBarTimeOut,
+      data: { message: msg }
     });
   }
 }

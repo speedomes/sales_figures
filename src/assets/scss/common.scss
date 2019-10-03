@@ -168,6 +168,6 @@ html, body {
 
   .mat-drawer-container {
     background: $app-bg-color;
-    height: 80vh;
+    min-height: 80vh;
   }
 }

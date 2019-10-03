@@ -6,6 +6,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { DataService } from 'src/app/data.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackBarComponent } from 'src/app/shared/snack-bar/snack-bar.component';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-vehicle',
@@ -18,25 +19,26 @@ export class VehicleComponent implements OnInit {
   selectedVehicle: any;
   showError: boolean = false;
   selectedIndex: number;
-
+  dataLoaded: boolean = false;
+  placeHolderText: string = environment.placeHolderText;
   vehicleDataSource =  new MatTableDataSource();
   displayedColumns: string[] = ['name'];
 
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
+  @ViewChild(MatPaginator, {static: false}) set paginator(paginator: MatPaginator) {
+    this.vehicleDataSource.paginator = paginator;
+  }
 
-  constructor(private dataService: DataService,
-    private _snackBar: MatSnackBar) { }
+  @ViewChild(MatSort, {static: false}) set sort(sort: MatSort) {
+    this.vehicleDataSource.sort = sort;
+  }
+
+  constructor(private dataService: DataService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.getVehicles();
-
     this.vehicleForm = new FormGroup({
       vehicleName: new FormControl('', [Validators.required])
     });
-
-    this.vehicleDataSource.paginator = this.paginator;
-    this.vehicleDataSource.sort = this.sort;
   }
 
   populateData(rowData: any, index) {
@@ -47,8 +49,9 @@ export class VehicleComponent implements OnInit {
 
   getVehicles() {
     this.dataService.getVehicles().subscribe((response) => {
-      if(response.vehicles && response.vehicles.length > 0) {
+      if (response.vehicles && response.vehicles.length > 0) {
         this.vehicleDataSource.data = response.vehicles;
+        this.dataLoaded = true;
       } else {
         this.displaySnackbar('No data found');
       }
@@ -59,7 +62,7 @@ export class VehicleComponent implements OnInit {
   }
 
   addVehicle() {
-    if(this.selectedVehicle &&
+    if (this.selectedVehicle &&
       (this.vehicleForm.get('vehicleName').value === this.selectedVehicle.name)) {
       this.displaySnackbar('Vehicle name already exists!', 'warning');
       return;
@@ -78,7 +81,7 @@ export class VehicleComponent implements OnInit {
   }
 
   updateVehicle() {
-    if(this.vehicleForm.get('vehicleName').value === this.selectedVehicle.name) {
+    if (this.vehicleForm.get('vehicleName').value === this.selectedVehicle.name) {
       this.displaySnackbar('No update required!');
       return;
     } else {
@@ -94,7 +97,7 @@ export class VehicleComponent implements OnInit {
   }
 
   deleteVehicle() {
-    if(this.vehicleForm.get('vehicleName').value !== this.selectedVehicle.name) {
+    if (this.vehicleForm.get('vehicleName').value !== this.selectedVehicle.name) {
       this.displaySnackbar('Please select an vehicle', 'warning');
       return;
     } else {
@@ -114,10 +117,10 @@ export class VehicleComponent implements OnInit {
     this.selectedIndex = undefined;
   }
 
-  displaySnackbar(message: string, className: string = 'primary') {
-    this._snackBar.openFromComponent(SnackBarComponent, {
-      duration: 5000,
-      data: { message: message },
+  displaySnackbar(msg: string, className: string = 'primary') {
+    this.snackBar.openFromComponent(SnackBarComponent, {
+      duration: environment.snackBarTimeOut,
+      data: { message: msg },
       panelClass: className
     });
   }

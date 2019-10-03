@@ -2,7 +2,7 @@
   <h4 class="page-title col">Rep Data</h4>
   <div class="row">
     <div class="rep-data-container col-sm-8">
-      <div class="mat-elevation-z8">
+      <div class="mat-elevation-z8" *ngIf="dataLoaded; else placeholderText">
         <table mat-table [dataSource]="repDataSource" matSort>
           <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
@@ -37,6 +37,14 @@
         </table>
         <mat-paginator [pageSizeOptions]="[10, 20, 30, 50, 100]" showFirstLastButtons></mat-paginator>
       </div>
+      <ng-template #placeholderText>
+        <p class="placeholderText">{{placeHolderText}}</p>
+      </ng-template>
+      <mat-progress-spinner
+        *ngIf="!dataLoaded"
+        class="app-spinner"
+        mode="indeterminate">
+      </mat-progress-spinner>
     </div>
     <div class="action-container col-sm-4">
       <form [formGroup]="repForm">
@@ -84,7 +92,7 @@
           <button mat-raised-button [disabled]="!repForm.valid" (click)="deleteRep()">Delete</button>
         </div>
         <div class="col-sm-12 clear-button">
-          <button mat-raised-button [disabled]="(!repForm.valid) || (!repForm.dirty && !repForm.valid)" (click)="repForm.reset()">Clear</button>
+          <button mat-raised-button [disabled]="(!repForm.valid) || (!repForm.dirty && !repForm.valid)" (click)="clearSelection()">Clear</button>
         </div>
       </div>
     </div>
