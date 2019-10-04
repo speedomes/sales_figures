@@ -106,7 +106,7 @@ export class DashboardComponent implements OnInit {
       this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
     });
 
-    this.dataService.getReps().subscribe((response) => {
+    this.dataService.getReps({}).subscribe((response) => {
       if (response) {
         this.reps = response.reps;
       } else {
@@ -129,6 +129,21 @@ export class DashboardComponent implements OnInit {
     this.weeks = [];
     for (let count = 1; count <= Math.ceil((endDate.diff(startDate, 'days') + 1) / 7); count++) {
       this.weeks.push(count);
+    }
+  }
+
+  fetchRepsByOffice(id) {
+    if (id !=='' && id !== 'all') {
+      this.dataService.getReps({officeId: id}).subscribe((response) => {
+        if (response) {
+          this.reps = response.reps;
+        } else {
+          this.displaySnackbar('No data found', 'warning');
+        }
+      },
+      (error) => {
+        this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
+      });
     }
   }
 
@@ -216,5 +231,4 @@ export class DashboardComponent implements OnInit {
       panelClass: className
     });
   }
-
 }

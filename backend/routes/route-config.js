@@ -792,11 +792,16 @@ database.query(deleteVehicleQuery)
 });
 });
 
-router.get('/api/getReps',(req, res, next) => {
-const RepDataQuery = `SELECT r.id, r.name as repName, o.name as officeName,
+router.post('/api/getReps',(req, res, next) => {
+const officeId = req.body.officeId;
+let RepDataQuery = `SELECT r.id, r.name as repName, o.name as officeName,
     v.name as vehicleName, r.balance, r.office_id,
     r.vehicle_id FROM reps AS r JOIN office AS o ON r.office_id = o.id JOIN vehicle AS v 
     ON r.vehicle_id = v.id`;
+
+if(officeId) {
+  RepDataQuery = RepDataQuery + ` WHERE r.office_id = '${officeId}'`;
+}
 
 database.query(RepDataQuery)
 .then (rows => {

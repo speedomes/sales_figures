@@ -72,7 +72,7 @@ export class RepComponent implements OnInit {
   }
 
   getReps() {
-    this.dataService.getReps().subscribe((response) => {
+    this.dataService.getReps({}).subscribe((response) => {
       if (response.reps && response.reps.length > 0) {
         this.repDataSource.data = response.reps;
         this.dataLoaded = true;

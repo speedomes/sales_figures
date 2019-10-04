@@ -76,7 +76,7 @@ export class AddDataComponent implements OnInit {
       this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
     });
 
-    this.dataService.getReps().subscribe((response) => {
+    this.dataService.getReps({}).subscribe((response) => {
       if(response) {
         this.reps = response.reps;
       } else {

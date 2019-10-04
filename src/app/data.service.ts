@@ -65,8 +65,8 @@ export class DataService {
     return this.httpClient.post(this.API_URL + 'deleteVehicle', data);
   }
 
-  getReps(): Observable<any> {
-    return this.httpClient.get(this.API_URL + 'getReps');
+  getReps(data: {}): Observable<any> {
+    return this.httpClient.post(this.API_URL + 'getReps', data);
   }
 
   addRep(data: {}): Observable<any> {

@@ -11,7 +11,7 @@
         <div class="row data-filter">
           <div class="col-sm-4">
             <div class="field-title">Office</div>
-            <mat-select formControlName="office" class="filter-option form-control" (selectionChange)="filterChange1()">
+            <mat-select formControlName="office" class="filter-option form-control" (selectionChange)="filterChange1(); fetchRepsByOffice($event.value);">
               <mat-option value="">Select an Office</mat-option>
               <mat-option value="all">All Office</mat-option>
               <mat-option *ngFor="let office of offices" [value]="office.id">{{office.name}}</mat-option>
