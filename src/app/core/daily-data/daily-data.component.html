@@ -1,7 +1,7 @@
 <div class="daily-container">
   <h4 class="page-title">Daily Data</h4>
-  <div class="mat-elevation-z8" *ngIf="dataLoaded">
-    <table mat-table [dataSource]="dailyDataSource">
+  <div class="data-container mat-elevation-z8">
+    <table mat-table [dataSource]="dailyDataSource" *ngIf="dataLoaded; else placeholderText">
       <ng-container matColumnDef="date">
         <th mat-header-cell *matHeaderCellDef> Date </th>
         <td mat-cell *matCellDef="let element"> {{element.date}} </td>
@@ -77,13 +77,28 @@
         <td mat-cell *matCellDef="let element"> {{element.repName}} </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns; let i = index;"
         (click)="highlightRow(i)"
         [ngClass]="{'highlight-row': i === selectedIndex}">
       </tr>
     </table>
-    <mat-paginator [pageSize]="10" showFirstLastButtons></mat-paginator>
+    <div #paginatorContainer>
+      <div class="paginator-container" *ngIf="dataLoaded">
+        <mat-paginator [pageSize]="200" showFirstLastButtons></mat-paginator>
+      </div>
+    </div>
   </div>
+  <div class="scrollTo" *ngIf="dataLoaded">
+    <i class="material-icons" (click)="scroll(paginatorContainer)">expand_more</i>
+  </div>
+  <ng-template #placeholderText>
+    <p class="placeholderText">{{placeHolderText}}</p>
+  </ng-template>
+  <mat-progress-spinner
+    *ngIf="!dataLoaded"
+    class="app-spinner"
+    mode="indeterminate">
+  </mat-progress-spinner>
 </div>
 

@@ -38,7 +38,7 @@ const database = new Database({
   user     : process.env.MYSQL_USER,
   password : process.env.MYSQL_PWD,
   database : process.env.MYSQL_DB_NAME,
-  debug: process.env.DEBUG || false
+  debug: false
 });
 
 router.post('/api/getDashboardData',(req, res, next) => {

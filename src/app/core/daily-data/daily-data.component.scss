@@ -14,8 +14,26 @@
     left: 45%;
   }
 
-  table {
-    width: 100%;
+  .data-container {
+    overflow: auto;
+    height: 68vh;
+    position: relative;
+
+    table {
+      width: 100%;
+    }
+  }
+
+  .scrollTo {
+    .material-icons {
+      position: absolute;
+      bottom: 3.2rem;
+      right: 3rem;
+      padding: 0.5rem;
+      background: $primary-color;
+      border-radius: 100%;
+      color: $white;
+      cursor: pointer;
+    }
   }
 }
-
