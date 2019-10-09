@@ -1,6 +1,37 @@
 <div class="daily-container">
   <h4 class="page-title">Daily Data</h4>
+  <div class="row">
+    <div class="filter-container col-sm-12">
+      <h5 class="page-title">Filter By</h5>
+      <form [formGroup]="dataForm" (ngSubmit)="updateData()">
+        <div class="row data-filter">
+          <div class="col-sm-4"></div>
+          <div class="filter-category col-sm-2">
+            <div class="field-title">Year</div>
+            <mat-select formControlName="year" class="filter-option form-control">
+              <mat-option value="">Select</mat-option>
+              <mat-option [value]="y.year" *ngFor="let y of years">{{y.year}}</mat-option>
+            </mat-select>
+          </div>
+          <div class="filter-category col-sm-2">
+            <div class="field-title">Month</div>
+            <mat-select formControlName="month" class="filter-option form-control">
+              <mat-option value="">Select</mat-option>
+              <ng-container *ngIf="dataForm.get('year').value !== null && dataForm.get('year').value !== ''">
+                <mat-option [value]="month" *ngFor="let month of months">{{month}}</mat-option>
+              </ng-container>
+            </mat-select>
+          </div>
+          <div class="col-sm-4"></div>
+        </div>
+        <div class="row button-wrapper">
+          <button mat-raised-button [disabled]="!dataForm.valid">Search</button>
+        </div>
+      </form>
+    </div>
+  </div>
   <div class="data-container mat-elevation-z8">
+    <div #tableTop></div>
     <table mat-table [dataSource]="dailyDataSource" *ngIf="dataLoaded; else placeholderText">
       <ng-container matColumnDef="date">
         <th mat-header-cell *matHeaderCellDef> Date </th>
@@ -23,9 +54,9 @@
       </ng-container>
 
       <ng-container matColumnDef="sold">
-          <th mat-header-cell *matHeaderCellDef> Sold </th>
-          <td mat-cell *matCellDef="let element"> {{element.sold}} </td>
-        </ng-container>
+        <th mat-header-cell *matHeaderCellDef> Sold </th>
+        <td mat-cell *matCellDef="let element"> {{element.sold}} </td>
+      </ng-container>
 
       <ng-container matColumnDef="pulled">
         <th mat-header-cell *matHeaderCellDef> Pulled </th>
@@ -89,8 +120,13 @@
       </div>
     </div>
   </div>
-  <div class="scrollTo" *ngIf="dataLoaded">
-    <i class="material-icons" (click)="scroll(paginatorContainer)">expand_more</i>
+  <div class="scroll-container" *ngIf="dataLoaded">
+    <div class="scrollTo">
+      <i class="material-icons" (click)="scroll(tableTop)">expand_less</i>
+    </div>
+    <div class="scrollTo">
+      <i class="material-icons" (click)="scroll(paginatorContainer)">expand_more</i>
+    </div>
   </div>
   <ng-template #placeholderText>
     <p class="placeholderText">{{placeHolderText}}</p>

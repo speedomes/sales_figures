@@ -24,16 +24,41 @@
     }
   }
 
-  .scrollTo {
-    .material-icons {
-      position: absolute;
-      bottom: 3.2rem;
-      right: 3rem;
-      padding: 0.5rem;
-      background: $primary-color;
-      border-radius: 100%;
-      color: $white;
-      cursor: pointer;
+  .scroll-container {
+    position: absolute;
+    bottom: 24vh;
+    right: 3rem;
+
+    .scrollTo {
+      margin: 3rem 0;
+      .material-icons {
+        padding: 0.5rem;
+        background: $primary-color;
+        border-radius: 100%;
+        color: $white;
+        cursor: pointer;
+        opacity: 0.6;
+
+        &:hover {
+          opacity: 1;
+        }
+      }
+    }
+  }
+
+  .filter-container {
+    .page-title {
+      margin: 1rem 0;
+    }
+    
+    .field-title {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .button-wrapper {
+      margin: 1.5rem 0;
+      justify-content: center;
     }
   }
 }

@@ -33,6 +33,10 @@ export class DataService {
     return this.httpClient.post(this.API_URL + 'getDailyData', data);
   }
 
+  getDailyDataByFilter(data: {}): Observable<any> {
+    return this.httpClient.post(this.API_URL + 'getDailyDataByFilter', data);
+  }
+
   getOffices(): Observable<any> {
     return this.httpClient.get(this.API_URL + 'getOffices');
   }
