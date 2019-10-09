@@ -119,6 +119,9 @@ export class DashboardComponent implements OnInit {
 
     this.dataService.getYears().subscribe((response: any) => {
       this.years = response.yearData;
+    },
+    (error) => {
+      this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
     });
   }
 

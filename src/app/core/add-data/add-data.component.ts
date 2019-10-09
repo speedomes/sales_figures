@@ -6,6 +6,8 @@ import { MatSort } from '@angular/material/sort';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DataService } from 'src/app/data.service';
 import { SnackBarComponent } from 'src/app/shared/snack-bar/snack-bar.component';
+import * as moment from 'moment';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-add-data',
@@ -17,24 +19,14 @@ export class AddDataComponent implements OnInit {
   filterType: string;
   dataForm: FormGroup;
   dataEntryForm: FormGroup;
-  hasDataLoaded: boolean = false;
-  dataSource =  new MatTableDataSource([
-    {
-      date: '2019.02.01',
-      office: 'Oxford',
-      repId: 1231,
-      name: 'Roger Pell',
-      vehicle: 'BV17VYL',
-      sold: 9,
-      pulled: 9,
-      newClients: 0,
-      credit: 404.73,
-      balance: 313.48,
-      in: 0,
-      day1: 0,
-      day2: 0
-    }
-  ]);
+  isSearchStarted: boolean = false;
+  isDataLoaded: boolean = false;
+  placeHolder: string = environment.placeHolderText;
+  dataSource =  new MatTableDataSource();
+  totalPulled: number;
+  totalNewClients: number;
+  totalCredit: number;
+  totalVehicles: number;
 
   offices: [] = [];
   reps: [] = [];
@@ -44,17 +36,20 @@ export class AddDataComponent implements OnInit {
   ];
   weeks: number[] = [];
 
-  displayedColumns: string[] = ['date', 'office', 'repId', 'name', 'vehicle', 'sold',
-      'pulled', 'newClients', 'credit', 'balance', 'in', 'day1', 'day2'];
+  displayedColumns: string[] = ['date', 'officeName', 'repId', 'repName', 'vehicle', 'sold',
+      'pulled', 'newClients', 'credit', 'balance', 'inuse', 'day1', 'day2'];
 
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
-  
-  constructor(private dataService: DataService, private _snackBar: MatSnackBar) { }
+  @ViewChild(MatPaginator, {static: false}) set paginator(paginator: MatPaginator) {
+    this.dataSource.paginator = paginator;
+  }
+
+  @ViewChild(MatSort, {static: false}) set sort(sort: MatSort) {
+    this.dataSource.sort = sort;
+  }
+
+  constructor(private dataService: DataService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
     this.dataForm = new FormGroup({
       year: new FormControl('', [Validators.required]),
       month: new FormControl(''),
@@ -77,7 +72,7 @@ export class AddDataComponent implements OnInit {
     });
 
     this.dataService.getReps({}).subscribe((response) => {
-      if(response) {
+      if (response) {
         this.reps = response.reps;
       } else {
         this.displaySnackbar('No data found', 'warning');
@@ -89,13 +84,47 @@ export class AddDataComponent implements OnInit {
 
     this.dataService.getYears().subscribe((response: any) => {
       this.years = response.yearData;
+    },
+    (error) => {
+      this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
     });
   }
 
+  populateWeeks(event) {
+    const dateObj = moment().isoWeekYear(parseInt(this.dataForm.get('year').value)).toDate();
+    const startDate = moment(dateObj).month(event.value - 1).startOf('month');
+    const endDate = moment(dateObj).month(event.value - 1).endOf('month');
+    this.weeks = [];
+    for (let count = 1; count <= Math.ceil((endDate.diff(startDate, 'days') + 1) / 7); count++) {
+      this.weeks.push(count);
+    }
+  }
+
   filterData() {
+    this.isSearchStarted = true;
     this.dataService.getScopeData(this.formatReqObject(this.dataForm)).subscribe(response => {
-      console.log(response);
+      this.dataSource.data = response.scopeData.data;
+      this.totalPulled = response.scopeData.totalPulled;
+      this.totalNewClients = response.scopeData.totalNewClients;
+      this.totalCredit = response.scopeData.totalCredit;
+      this.totalVehicles = response.scopeData.totalVehicles;
+      this.isDataLoaded = true;
     });
+  }
+
+  fetchRepsByOffice(id) {
+    if (id!== '' && id!== 'all') {
+      this.dataService.getReps({officeId: id}).subscribe((response) => {
+        if (response) {
+          this.reps = response.reps;
+        } else {
+          this.displaySnackbar('No data found', 'warning');
+        }
+      },
+      (error) => {
+        this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
+      });
+    }
   }
 
   saveData() {
@@ -114,7 +143,7 @@ export class AddDataComponent implements OnInit {
   }
 
   displaySnackbar(msg: string, className: string = 'primary') {
-    this._snackBar.openFromComponent(SnackBarComponent, {
+    this.snackBar.openFromComponent(SnackBarComponent, {
       duration: 5000,
       data: { message: msg },
       panelClass: className

@@ -170,4 +170,18 @@ html, body {
     background: $app-bg-color;
     min-height: 79vh;
   }
+
+  .mat-radio-button {
+    &.mat-accent {
+      &.mat-radio-checked {
+        .mat-radio-outer-circle {
+          border-color: $primary-color;
+        }
+
+        .mat-radio-inner-circle, .mat-radio-persistent-ripple, .mat-ripple-element {
+          background-color: $primary-color;
+        }
+      }
+    }
+  }
 }
