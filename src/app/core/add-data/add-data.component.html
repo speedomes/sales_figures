@@ -190,16 +190,20 @@
         <div class="row">
           <div class="col-2"></div>
           <div class="col-2">
-            <input matInput class="form-control" readonly>
+            <mat-label>Total Pulled</mat-label>
+            <input matInput class="form-control" readonly [value]="totalPulled">
           </div>
           <div class="col-2">
-            <input matInput class="form-control" readonly>
+            <mat-label>Total New Clients</mat-label>
+            <input matInput class="form-control" readonly [value]="totalNewClients">
           </div>
           <div class="col-2">
-            <input matInput class="form-control" readonly>
+            <mat-label>Total Credit</mat-label>
+            <input matInput class="form-control" readonly [value]="totalCredit | number: '1.0-2'">
           </div>
           <div class="col-2">
-            <input matInput class="form-control" readonly>
+            <mat-label>Total Vehicles In Use</mat-label>
+            <input matInput class="form-control" readonly [value]="totalVehicles">
           </div>
           <div class="col-2"></div>
         </div>

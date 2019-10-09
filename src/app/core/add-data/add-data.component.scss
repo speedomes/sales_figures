@@ -29,7 +29,7 @@
       }
 
       .mat-progress-spinner {
-        top: 48%;
+        top: 45.5%;
       }
 
       .placeholderText {
@@ -73,6 +73,10 @@
         margin-top: 2rem;
         .pageTitle {
           color: $primary-color;
+        }
+
+        input {
+          padding: 0 0.5rem;
         }
       }
     }

@@ -666,7 +666,7 @@ router.post('/api/getScopeData',(req, res, next) => {
       let totalVehicles = 0;
       rows.forEach((row) => {
         totalPulled += row.pulled;
-        totalNewClients += row.newclients;
+        totalNewClients += row.newClients;
         totalCredit += row.credit;
         totalVehicles++;
       });
