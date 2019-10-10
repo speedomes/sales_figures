@@ -27,6 +27,9 @@ export class AddDataComponent implements OnInit {
   totalNewClients: number;
   totalCredit: number;
   totalVehicles: number;
+  splitCash: number;
+  splitCard: number;
+  totalSplit: number;
 
   offices: [] = [];
   reps: [] = [];
@@ -108,6 +111,9 @@ export class AddDataComponent implements OnInit {
       this.totalNewClients = response.scopeData.totalNewClients;
       this.totalCredit = response.scopeData.totalCredit;
       this.totalVehicles = response.scopeData.totalVehicles;
+      this.splitCash = response.scopeData.cash;
+      this.splitCard = response.scopeData.cards;
+      this.totalSplit = this.splitCash + this.splitCard;
       this.isDataLoaded = true;
     });
   }

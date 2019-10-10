@@ -155,34 +155,34 @@
         </mat-progress-spinner>
       </div>
   
-      <div class="split-data-wrapper">
+      <div class="split-data-wrapper" *ngIf="isDataLoaded">
         <div class="row justify-center">
-          <h5 class="pageTitle">Splite</h5>
+          <h5 class="pageTitle">Split</h5>
         </div>
   
         <div class="row">
           <div class="col-2"></div>
           <div class="col-2">
             <mat-label>Cash</mat-label>
-            <input matInput class="form-control" readonly>
+            <input matInput class="form-control" readonly [value]="splitCash | number: '1.0-2'">
           </div>
           <div class="col-2">
             <mat-label>Card</mat-label>
-            <input matInput class="form-control" readonly>
+            <input matInput class="form-control" readonly [value]="splitCard | number: '1.0-2'">
           </div>
           <div class="col-2">
-            <mat-label>Total Splite</mat-label>
-            <input matInput class="form-control" readonly>
+            <mat-label>Total Split</mat-label>
+            <input matInput class="form-control" readonly [value]="totalSplit | number: '1.0-2'">
           </div>
           <div class="col-2">
             <mat-label>Booke</mat-label>
-            <input matInput class="form-control" readonly>
+            <input matInput class="form-control" readonly [value]="totalVehicles">
           </div>
           <div class="col-2"></div>
         </div>
       </div>
 
-      <div class="total-data-wrapper">
+      <div class="total-data-wrapper" *ngIf="isDataLoaded">
         <div class="row justify-center">
           <h5 class="pageTitle">Totals for listed items</h5>
         </div>

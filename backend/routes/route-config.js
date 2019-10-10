@@ -558,11 +558,13 @@ router.post('/api/getScopeData',(req, res, next) => {
   let scopeDataQuery = `SELECT d.date, d.sold, d.pulled, d.newclients as newClients, d.credit, d.inuse, d.t1 as day1, d.t2 as day2, d.rep_id as repId, r.name as repName,
     v.name as vehicle, d.balance, o.name as officeName
     FROM daily AS d JOIN reps AS r ON d.rep_id = r.id JOIN vehicle AS v ON d.vehicle_id = v.id JOIN office AS o ON r.office_id = o.id WHERE`;
+  let splitDataQuery = `SELECT SUM(cash) as cash, SUM(cards) as cards FROM split WHERE`;
 
   let scopeData = {};
 
   if(req.body.office !== null && req.body.office !== '') {
     scopeDataQuery += ` r.office_id='${req.body.office}' AND`;
+    splitDataQuery += ` r.office_id='${req.body.office}' AND`;
   }
 
   if(req.body.rep !== null && req.body.rep !== '') {
@@ -613,6 +615,7 @@ router.post('/api/getScopeData',(req, res, next) => {
         weekEnd = weekArray[req.body.week - 1].end.format('YYYY.MM.DD');
 
         scopeDataQuery += ` d.date<='${weekEnd}' AND d.date>='${weekStart}' ORDER BY d.date`;
+        splitDataQuery += ` date<='${weekEnd}' AND date>='${weekStart}'`;
       } else {
         let startDateOffset = moment(dateObj).month(req.body.month-1).startOf('month').day() + 1;
 
@@ -634,6 +637,7 @@ router.post('/api/getScopeData',(req, res, next) => {
         let monthEnd =  moment(dateObj).month(req.body.month-1).endOf('month').add(endDateOffset, 'days').format('YYYY.MM.DD');
 
         scopeDataQuery += ` d.date<='${monthEnd}' AND d.date>='${monthStart}' ORDER BY d.date`;
+        splitDataQuery += ` date<='${monthEnd}' AND date>='${monthStart}'`;
       }
     } else {
       let startDateOffset = moment(dateObj).startOf('year').day() + 1;
@@ -656,6 +660,7 @@ router.post('/api/getScopeData',(req, res, next) => {
       let yearEnd =  moment(dateObj).endOf('year').add(endDateOffset, 'days').format('YYYY.MM.DD');
 
       scopeDataQuery += ` d.date<='${yearEnd}' AND d.date>='${yearStart}' ORDER BY d.date`;
+      splitDataQuery += ` date<='${yearEnd}' AND date>='${yearStart}'`;
     }
 
     database.query(scopeDataQuery)
@@ -675,9 +680,18 @@ router.post('/api/getScopeData',(req, res, next) => {
       scopeData.totalNewClients = totalNewClients;
       scopeData.totalCredit = totalCredit;
       scopeData.totalVehicles = totalVehicles;
-      res.status(201).json({
-        message: 'Scope data fetched successfully',
-        scopeData: scopeData
+
+      database.query(splitDataQuery)
+      .then (rows => {
+        scopeData.cash = rows[0].cash;
+        scopeData.cards = rows[0].cards;
+        res.status(201).json({
+          message: 'Scope data fetched successfully',
+          scopeData: scopeData
+        });
+      })
+      .catch(err => {
+        next(err); 
       });
     })
     .catch(err => {
