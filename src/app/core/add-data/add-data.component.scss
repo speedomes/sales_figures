@@ -87,6 +87,35 @@
     }
 
     .filter-by-dateOffice-content {
+      .data-entry-container {
+        .date-wrapper {
+          input {
+            padding: 0 0.5rem;
+          }
+
+          .mat-datepicker-toggle {
+            position: absolute;
+            right: 1rem;
+            bottom: 0%;
+          }
+        }
+
+        .check-wrapper {
+          display: flex;
+          align-items: flex-end;
+          height: 100%;
+          padding: 0.2rem 0;
+        }
+
+        .rep-data-wrapper {
+          margin: 1rem 0;
+        }
+
+        .office-data-wrapper {
+          margin: 1rem 0;
+        }
+      }
+
       .button-container {
         margin-top: 3rem;
         button {

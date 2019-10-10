@@ -31,6 +31,11 @@ export class AddDataComponent implements OnInit {
   splitCard: number;
   totalSplit: number;
 
+  doFilter = {
+    offices: [],
+    reps: []
+  };
+
   offices: [] = [];
   reps: [] = [];
   years: [] = [];
@@ -60,8 +65,6 @@ export class AddDataComponent implements OnInit {
       office: new FormControl(''),
       rep: new FormControl('')
     });
-
-    this.dataEntryForm = new FormGroup({});
 
     this.dataService.getOffices().subscribe((response) => {
       if (response) {
@@ -131,6 +134,65 @@ export class AddDataComponent implements OnInit {
         this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
       });
     }
+  }
+
+  filterUpdate(filterType) {
+    if (filterType === 'filterByDateOffice') {
+      this.dataEntryForm = new FormGroup({
+        office: new FormControl('', [Validators.required]),
+        rep: new FormControl('', [Validators.required]),
+        repSold: new FormControl(''),
+        repPulled: new FormControl(''),
+        repNC: new FormControl(''),
+        repCredit: new FormControl(''),
+        repInt: new FormControl(''),
+        repDay1: new FormControl(''),
+        repDay2: new FormControl(''),
+        repBalance: new FormControl(''),
+        repBalanceB: new FormControl(''),
+        repVehicle: new FormControl(''),
+        date: new FormControl('', [Validators.required])
+      });
+
+      this.dataService.getOffices().subscribe((response) => {
+        if (response) {
+          this.doFilter.offices = response.offices;
+        } else {
+          this.displaySnackbar('No data found', 'warning');
+        }
+      },
+      (error) => {
+        this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
+      });
+
+      this.dataService.getReps({}).subscribe((response) => {
+        if (response) {
+          this.doFilter.reps = response.reps;
+        } else {
+          this.displaySnackbar('No data found', 'warning');
+        }
+      },
+      (error) => {
+        this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
+      });
+    }
+  }
+
+  checkRecord() {
+    const data = {
+      repId: this.dataEntryForm.get('rep').value,
+      officeId: this.dataEntryForm.get('office').value,
+      date: this.dataEntryForm.get('date').value
+    };
+
+    this.dataService.checkRecord(data).subscribe((response: any) => {
+      if (response.records.length > 0) {
+        
+      }
+    },
+    (error) => {
+      this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
+    });
   }
 
   saveData() {

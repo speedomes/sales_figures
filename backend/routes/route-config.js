@@ -564,7 +564,7 @@ router.post('/api/getScopeData',(req, res, next) => {
 
   if(req.body.office !== null && req.body.office !== '') {
     scopeDataQuery += ` r.office_id='${req.body.office}' AND`;
-    splitDataQuery += ` r.office_id='${req.body.office}' AND`;
+    splitDataQuery += ` office_id='${req.body.office}' AND`;
   }
 
   if(req.body.rep !== null && req.body.rep !== '') {
@@ -698,6 +698,23 @@ router.post('/api/getScopeData',(req, res, next) => {
       next(err); 
     });
   }
+});
+
+router.post('/api/checkRecord',(req, res, next) => {
+  const dateToFilter = moment(req.body.date).format('YYYY.MM.DD');
+  const recordQuery = `Select * from daily WHERE rep_id='${req.body.repId}' AND id='${req.body.officeId}' AND date='${dateToFilter}'`;
+
+  database.query(recordQuery)
+  .then (rows => {
+    console.log(rows);
+    res.status(201).json({
+    message: 'Records fetched successfully',
+    records: rows
+    });
+  })
+  .catch(err => {
+      next(err); 
+  });
 });
 
 router.get('/api/getOffices',(req, res, next) => {

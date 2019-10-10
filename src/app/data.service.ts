@@ -92,4 +92,8 @@ export class DataService {
   getScopeData(data: {}): Observable<any> {
     return this.httpClient.post(this.API_URL + 'getScopeData', data);
   }
+
+  checkRecord(data: {}): Observable<any> {
+    return this.httpClient.post(this.API_URL + 'checkRecord', data);
+  }
 }

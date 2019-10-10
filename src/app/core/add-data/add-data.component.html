@@ -7,7 +7,8 @@
     <div class="row justify-center">
       <mat-radio-group
         class="filter-type-wrapper"
-        [(ngModel)]="filterType">
+        [(ngModel)]="filterType"
+        (change) = "filterUpdate($event.value)">
         <mat-radio-button class="filter-type" value="filterByValue">
           Filter By Specified Value
         </mat-radio-button>
@@ -215,111 +216,121 @@
         <h5 class="subHeader">Entering Daily Data</h5>
       </div>
 
-      <form [formGroup]="dataEntryForm" (ngSubmit)="saveData()">
+      <form [formGroup]="dataEntryForm" (ngSubmit)="saveData()" class="data-entry-container">
         <div class="row justify-center">
-          <div class="col-sm-3">
+          <div class="col-sm-2">
             <mat-label class="subHeader">Rep</mat-label>
-            <mat-select class="form-control">
+            <mat-select class="form-control" formControlName="rep">
               <mat-option value="">Select</mat-option>
+              <mat-option *ngFor="let rep of doFilter.reps" [value]="rep.id">{{rep.repName}}</mat-option>
             </mat-select>
           </div>
-        </div>
-
-        <div class="row">
-          <div class="col-1">
-            <mat-label>Sold</mat-label>
-            <input matInput class="form-control">
-          </div>
-          <div class="col-1">
-            <mat-label>Pulled</mat-label>
-            <input matInput class="form-control">
-          </div>
-          <div class="col-1">
-            <mat-label>N/C</mat-label>
-            <input matInput class="form-control">
-          </div>
-          <div class="col-1">
-            <mat-label>Credit</mat-label>
-            <input matInput class="form-control">
-          </div>
-          <div class="col-1">
-            <mat-label>Int</mat-label>
-            <input matInput class="form-control">
-          </div>
-          <div class="col-1">
-            <mat-label>Day 1</mat-label>
-            <input matInput class="form-control">
-          </div>
-          <div class="col-1">
-            <mat-label>Day 2</mat-label>
-            <input matInput class="form-control">
-          </div>
-          <div class="col-1">
-            <mat-label>Balance</mat-label>
-            <input matInput class="form-control">
-          </div>
-          <div class="col-1">
-            <mat-label>Balance B</mat-label>
-            <input matInput class="form-control">
-          </div>
-          <div class="col-sm-3">
-            <mat-label>Vehicle</mat-label>
-            <mat-select class="form-control">
-              <mat-option value="">Select</mat-option>
-            </mat-select>
-          </div>
-        </div>
-      </form>
-
-      <form class="officeDataForm" [formGroup]="dataEntryForm" (ngSubmit)="saveData()">
-        <div class="row justify-center">
-          <div class="col-sm-3">
+          <div class="col-sm-2">
             <mat-label class="subHeader">Office</mat-label>
-            <mat-select class="form-control">
+            <mat-select class="form-control" formControlName="office">
               <mat-option value="">Select</mat-option>
+              <mat-option *ngFor="let office of doFilter.offices" [value]="office.id">{{office.name}}</mat-option>
             </mat-select>
           </div>
-        </div>
-
-        <div class="row justify-center">
-          <div class="col-1">
-            <mat-label>Sold</mat-label>
-            <input matInput class="form-control" readonly>
-          </div>
-          <div class="col-1">
-            <mat-label>Pulled</mat-label>
-            <input matInput class="form-control" readonly>
-          </div>
-          <div class="col-1">
-            <mat-label>N/C</mat-label>
-            <input matInput class="form-control" readonly>
-          </div>
-          <div class="col-1">
-            <mat-label>Credit</mat-label>
-            <input matInput class="form-control" readonly>
-          </div>
-          <div class="col-1">
-            <mat-label>Int</mat-label>
-            <input matInput class="form-control" readonly>
-          </div>
-          <div class="col-1">
-            <mat-label>Day 1</mat-label>
-            <input matInput class="form-control" readonly>
-          </div>
-          <div class="col-1">
-            <mat-label>Day 2</mat-label>
-            <input matInput class="form-control" readonly>
-          </div>
-        </div>
-      </form>
-
-      <form class="officeDataForm" [formGroup]="dataEntryForm" (ngSubmit)="saveData()">
-        <div class="row justify-center">
-          <div class="col-sm-3">
+          <div class="col-sm-2 date-wrapper">
             <mat-label class="subHeader">Date</mat-label>
-            <input matInput [matDatepicker]="dp" placeholder="Moment.js datepicker">
+            <input matInput [matDatepicker]="dp" placeholder="Pick a Date" class="form-control" formControlName="date" (click)="dp.open()">
             <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
             <mat-datepicker #dp></mat-datepicker>
+          </div>
+          <div class="col-sm-2">
+            <div class="check-wrapper">
+              <button mat-raised-button (click)="checkRecord()" 
+                [disabled]="!dataEntryForm.get('rep').valid || !dataEntryForm.get('office').valid || !dataEntryForm.get('date').valid">
+              Check For Existing Record
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="row justify-center rep-data-wrapper">
+          <div class="row justify-center">
+            <mat-label class="subHeader">Rep Data</mat-label>
+          </div>
+          <div class="row justify-center">
+            <div class="col-1">
+              <mat-label>Sold</mat-label>
+              <input matInput class="form-control" formControlName="repSold">
+            </div>
+            <div class="col-1">
+              <mat-label>Pulled</mat-label>
+              <input matInput class="form-control" formControlName="repPulled">
+            </div>
+            <div class="col-1">
+              <mat-label>N/C</mat-label>
+              <input matInput class="form-control" formControlName="repNC">
+            </div>
+            <div class="col-1">
+              <mat-label>Credit</mat-label>
+              <input matInput class="form-control" formControlName="repCredit">
+            </div>
+            <div class="col-1">
+              <mat-label>Int</mat-label>
+              <input matInput class="form-control" formControlName="repInt">
+            </div>
+            <div class="col-1">
+              <mat-label>Day 1</mat-label>
+              <input matInput class="form-control" formControlName="repDay1">
+            </div>
+            <div class="col-1">
+              <mat-label>Day 2</mat-label>
+              <input matInput class="form-control" formControlName="repDay2">
+            </div>
+            <div class="col-1">
+              <mat-label>Balance</mat-label>
+              <input matInput class="form-control" formControlName="repBalance">
+            </div>
+            <div class="col-1">
+              <mat-label>Balance B</mat-label>
+              <input matInput class="form-control" formControlName="repBalanceB">
+            </div>
+            <div class="col-sm-2">
+              <mat-label>Vehicle</mat-label>
+              <mat-select class="form-control" formControlName="repVehicle">
+                <mat-option value="">Select</mat-option>
+              </mat-select>
+            </div>
+          </div>
+        </div>
+
+        <div class="row justify-center office-data-wrapper">
+          <div class="row justify-center">
+            <mat-label class="subHeader">Office Data</mat-label>
+          </div>
+          <div class="row justify-center">
+            <div class="col-1">
+              <mat-label>Sold</mat-label>
+              <input matInput class="form-control" readonly>
+            </div>
+            <div class="col-1">
+              <mat-label>Pulled</mat-label>
+              <input matInput class="form-control" readonly>
+            </div>
+            <div class="col-1">
+              <mat-label>N/C</mat-label>
+              <input matInput class="form-control" readonly>
+            </div>
+            <div class="col-1">
+              <mat-label>Credit</mat-label>
+              <input matInput class="form-control" readonly>
+            </div>
+            <div class="col-1">
+              <mat-label>Int</mat-label>
+              <input matInput class="form-control" readonly>
+            </div>
+            <div class="col-1">
+              <mat-label>Day 1</mat-label>
+              <input matInput class="form-control" readonly>
+            </div>
+            <div class="col-1">
+              <mat-label>Day 2</mat-label>
+              <input matInput class="form-control" readonly>
+            </div>
           </div>
         </div>
 
@@ -343,9 +354,7 @@
           <button mat-raised-button type="button">Save Split</button>
           <button mat-raised-button type="button">Update</button>
         </div>
-      </form>
 
-      <form class="officeDataForm" [formGroup]="dataEntryForm" (ngSubmit)="saveData()">
         <div class="row justify-center">
           <h5 class="subHeader">KPI</h5>
         </div>
@@ -384,6 +393,7 @@
             <input matInput class="form-control">
           </div>
         </div>
+
         <div class="row justify-center">
           <div class="col-sm">
             <mat-label>Sold</mat-label>
@@ -414,6 +424,7 @@
             <input matInput class="form-control">
           </div>
         </div>
+
         <div class="row justify-center">
           <div class="col-sm">
             <mat-label>Sold</mat-label>
