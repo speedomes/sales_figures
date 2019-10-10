@@ -1,7 +1,7 @@
-<div class="splite-container">
-  <h4 class="page-title">Splite Data</h4>
+<div class="split-container">
+  <h4 class="page-title">Split Data</h4>
   <div class="mat-elevation-z8" *ngIf="dataLoaded; else placeholderText">
-    <table mat-table [dataSource]="spliteDataSource" matSort>
+    <table mat-table [dataSource]="splitDataSource" matSort>
       <ng-container matColumnDef="date">
         <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
         <td mat-cell *matCellDef="let element"> {{element.date}} </td>

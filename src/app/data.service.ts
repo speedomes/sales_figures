@@ -85,8 +85,8 @@ export class DataService {
     return this.httpClient.post(this.API_URL + 'deleteRep', data);
   }
 
-  getSpliteData(): Observable<any> {
-    return this.httpClient.get(this.API_URL + 'getSpliteData');
+  getSplitData(): Observable<any> {
+    return this.httpClient.get(this.API_URL + 'getSplitData');
   }
 
   getScopeData(data: {}): Observable<any> {

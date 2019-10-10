@@ -9,7 +9,7 @@ import { TotalComponent } from './total/total.component';
 import { OfficeComponent } from './office/office.component';
 import { VehicleComponent } from './vehicle/vehicle.component';
 import { RepComponent } from './rep/rep.component';
-import { SpliteComponent } from './splite/splite.component';
+import { SplitComponent } from './split/split.component';
 import { SharedModule } from '../shared/shared.module';
 import { HeaderComponent } from './header/header.component';
 import { FooterComponent } from './footer/footer.component';
@@ -28,7 +28,7 @@ import { AddDataComponent } from './add-data/add-data.component';
     OfficeComponent,
     VehicleComponent,
     RepComponent,
-    SpliteComponent,
+    SplitComponent,
     HeaderComponent,
     FooterComponent,
     WelcomeComponent,

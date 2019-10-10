@@ -9,7 +9,7 @@ import { TotalComponent } from './total/total.component';
 import { OfficeComponent } from './office/office.component';
 import { VehicleComponent } from './vehicle/vehicle.component';
 import { RepComponent } from './rep/rep.component';
-import { SpliteComponent } from './splite/splite.component';
+import { SplitComponent } from './split/split.component';
 import { AddDataComponent } from './add-data/add-data.component';
 
 const routes: Routes = [
@@ -23,8 +23,8 @@ const routes: Routes = [
       { path: 'office', component: OfficeComponent },
       { path: 'vehicle', component: VehicleComponent },
       { path: 'rep', component: RepComponent },
-      { path: 'splite', component: SpliteComponent },
-      { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+      { path: 'split', component: SplitComponent },
+      { path: '', redirectTo: 'add-data', pathMatch: 'full' }
     ]
   }
 ];

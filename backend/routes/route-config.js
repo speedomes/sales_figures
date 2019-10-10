@@ -950,16 +950,16 @@ router.get('/api/getTotalData',(req, res, next) => {
   });
 });
 
-router.get('/api/getSpliteData',(req, res, next) => {
-  const spliteDataQuery = `SELECT s.date, o.name, s.cash, s.cards, s.viu,
+router.get('/api/getSplitData',(req, res, next) => {
+  const splitDataQuery = `SELECT s.date, o.name, s.cash, s.cards, s.viu,
       FORMAT((s.cash + s.cards), 2) as total
       FROM split as s join office as o on s.office_id=o.id`;
 
-  database.query(spliteDataQuery)
+  database.query(splitDataQuery)
   .then (rows => {
       res.status(201).json({
-      message: 'Splite data fetched successfully.',
-      spliteData: rows
+      message: 'Split data fetched successfully.',
+      splitData: rows
       });
   })
   .catch(err => {
