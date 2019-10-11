@@ -49,14 +49,20 @@ router.post('/api/getDashboardData',(req, res, next) => {
     from daily as d join reps as r on d.rep_id = r.id 
     join office as o on r.office_id = o.id where`;
 
+  let holidayQuery = `SELECT count(d.sold) as holidays from daily as d
+    join reps as r on d.rep_id = r.id join office as o on r.office_id = o.id
+    where sold=-1`;
+
   let dashboardDataCollection = [];
 
   if(req.body.office !== null) {
     dashboardQuery += ` o.id='${req.body.office}' and`;
+    holidayQuery += ` and o.id='${req.body.office}'`;
   }
 
   if(req.body.rep !== null) {
     dashboardQuery += ` r.id='${req.body.rep}' and`;
+    holidayQuery += ` and r.id='${req.body.rep}'`;
   }
 
   if(req.body.year !== '') {
@@ -117,11 +123,10 @@ router.post('/api/getDashboardData',(req, res, next) => {
             })
           );
 
-          const holidayQuery = `SELECT count(d.sold) as holidays from daily as d
-              join reps as r on d.rep_id = r.id join office as o on r.office_id = o.id
-              where date='${filterDate}' and sold=-1`;
-            
-          holidayQueryPromiseArray.push(database.query(holidayQuery)
+          let hQuery = '';
+          hQuery = holidayQuery + ` and date='${filterDate}'`;
+
+          holidayQueryPromiseArray.push(database.query(hQuery)
             .then(rows => {
               holidaysData = rows[0];
               holidaysData['day'] = filterDate;
@@ -180,11 +185,10 @@ router.post('/api/getDashboardData',(req, res, next) => {
             })
           );
 
-          const holidayQuery = `SELECT count(d.sold) as holidays from daily as d
-              join reps as r on d.rep_id = r.id join office as o on r.office_id = o.id
-              where date<='${end}' and date>='${start}' and sold=-1`;
-            
-          holidayQueryPromiseArray.push(database.query(holidayQuery)
+          let hQuery = '';
+          hQuery = holidayQuery + ` and date<='${end}' and date>='${start}'`;
+
+          holidayQueryPromiseArray.push(database.query(hQuery)
             .then(rows => {
               holidaysData = rows[0];
               holidaysData['week'] = week;
@@ -264,12 +268,11 @@ router.post('/api/getDashboardData',(req, res, next) => {
           startDate = moment(dateObj).month(count).startOf('month').format('YYYY.MM.DD');
           endDate = moment(dateObj).month(count).endOf('month').format('YYYY.MM.DD');
 
-          const holidayQuery = `SELECT count(d.sold) as holidays from daily as d
-            join reps as r on d.rep_id = r.id join office as o on r.office_id = o.id
-            where date<='${endDate}' and date>='${startDate}' and sold=-1`;
+          let hQuery = '';
+          hQuery = holidayQuery + ` and date<='${endDate}' and date>='${startDate}'`;
           let holidaysData = {};
 
-          holidayQueryPromiseArray.push(database.query(holidayQuery)
+          holidayQueryPromiseArray.push(database.query(hQuery)
             .then(rows => {
               holidaysData['month'] = count + 1;
               holidaysData['holidays'] = rows[0].holidays;
@@ -317,15 +320,16 @@ router.post('/api/getDashboardData',(req, res, next) => {
         endDate = endDate.add(7, 'days');
       }
       const yearQuery = dashboardQuery + ` date<='${endDate.format('YYYY.MM.DD')}' and date>='${startDate.format('YYYY.MM.DD')}'`;
+      let hQuery = '';
+      hQuery = holidayQuery + ` and date<='${endDate.format('YYYY.MM.DD')}' and date>='${startDate.format('YYYY.MM.DD')}'`;
+
       let yearlyData = [];
 
       dashboardPromiseArray.push(database.query(yearQuery)
         .then(rows => {
           yearlyData = rows[0];
           yearlyData['duration'] = year;
-          return database.query(`SELECT count(d.sold) as holidays from daily as d
-            join reps as r on d.rep_id = r.id join office as o on r.office_id = o.id
-            where date<='${endDate}' and date>='${startDate}' and sold=-1`);
+          return database.query(hQuery);
         })
         .then(rows => {
           yearlyData['holidays'] = rows[0].holidays;
@@ -706,7 +710,6 @@ router.post('/api/checkRecord',(req, res, next) => {
 
   database.query(recordQuery)
   .then (rows => {
-    console.log(rows);
     res.status(201).json({
     message: 'Records fetched successfully',
     records: rows
