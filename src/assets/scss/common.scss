@@ -11,6 +11,14 @@ html, body {
     background-color: $primary-color;
     color: $white;
     font-weight: 600;
+
+    &:focus {
+      outline: none;
+    }
+  }
+
+  .mat-input-element {
+    border: 1px solid $border-grey;
   }
 
   .mat-paginator-page-size-select {
