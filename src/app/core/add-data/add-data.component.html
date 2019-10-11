@@ -1,235 +1,25 @@
 <div class="add-data-container">
   <h4 class="page-title">Add Data</h4>
   <div class="filter-type-container">
-    <div class="row justify-center">
-      <mat-label class="filter-type-title">Filter Mode</mat-label>
-    </div>
-    <div class="row justify-center">
-      <mat-radio-group
-        class="filter-type-wrapper"
-        [(ngModel)]="filterType"
-        (change) = "filterUpdate($event.value)">
-        <mat-radio-button class="filter-type" value="filterByValue">
-          Filter By Specified Value
-        </mat-radio-button>
-        <mat-radio-button class="filter-type" value="filterByDateOffice">
-          Filter By Date & Office
-        </mat-radio-button>
-      </mat-radio-group>
-    </div>
-
-    <div class="filter-by-value-content" *ngIf="filterType === 'filterByValue'">
-      <form [formGroup]="dataForm" (ngSubmit)="filterData()">
-        <div class="row">
-          <div class="col-sm-1"></div>
-          <div class="col-sm-2">
-            <mat-label>Year</mat-label>
-            <mat-select class="form-control" formControlName="year">
-              <mat-option value="">Select</mat-option>
-              <mat-option [value]="y.year" *ngFor="let y of years">{{y.year}}</mat-option>
-            </mat-select>
-          </div>
-          <div class="col-sm-2">
-            <mat-label>Month</mat-label>
-            <mat-select class="form-control" formControlName="month" (selectionChange)="populateWeeks($event)">
-              <mat-option value="">Select</mat-option>
-              <ng-container *ngIf="dataForm.get('year').value !== null && dataForm.get('year').value !== ''">
-                <mat-option [value]="month" *ngFor="let month of months">{{month}}</mat-option>
-              </ng-container>
-            </mat-select>
-          </div>
-          <div class="col-sm-2">
-            <mat-label>Week</mat-label>
-            <mat-select class="form-control" formControlName="week">
-              <mat-option value="">Select</mat-option>
-              <ng-container *ngIf="dataForm.get('month').value !== null && dataForm.get('month').value !== ''">
-                <mat-option [value]="week" *ngFor="let week of weeks">{{week}}</mat-option>
-              </ng-container>
-            </mat-select>
-          </div>
-          <div class="col-sm-2">
-            <mat-label>Office</mat-label>
-            <mat-select class="form-control" formControlName="office" (selectionChange)="fetchRepsByOffice($event.value);">
-              <mat-option value="">Select</mat-option>
-              <mat-option value="all">All Office</mat-option>
-              <mat-option *ngFor="let office of offices" [value]="office.id">{{office.name}}</mat-option>
-            </mat-select>
-          </div>
-          <div class="col-sm-2">
-            <mat-label>Rep</mat-label>
-            <mat-select class="form-control" formControlName="rep">
-              <mat-option value="">Select</mat-option>
-              <mat-option value="all">All Rep</mat-option>
-              <mat-option *ngFor="let rep of reps" [value]="rep.id">{{rep.repName}}</mat-option>
-            </mat-select>
-          </div>
-          <div class="col-sm-1"></div>
-        </div>
-
-        <div class="row justify-center button-container">
-          <button mat-raised-button type="submit" [disabled]="!dataForm.valid">Search</button>
-          <button mat-raised-button type="button" [disabled]="!dataForm.valid">Clear Filters</button>
-        </div>
-      </form>
-
-      <div class="row data-table-wrapper">
-        <div class="mat-elevation-z8 col-sm-12 data-table" *ngIf="isDataLoaded; else placeHolderText">
-          <table mat-table [dataSource]="dataSource" matSort>
-            <ng-container matColumnDef="date">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
-              <td mat-cell *matCellDef="let element"> {{element.date}} </td>
-            </ng-container>
-      
-            <ng-container matColumnDef="officeName">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Office </th>
-              <td mat-cell *matCellDef="let element"> {{element.officeName}} </td>
-            </ng-container>
-      
-            <ng-container matColumnDef="repId">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> RepID </th>
-              <td mat-cell *matCellDef="let element"> {{element.repId}} </td>
-            </ng-container>
-      
-            <ng-container matColumnDef="repName">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
-              <td mat-cell *matCellDef="let element"> {{element.repName}} </td>
-            </ng-container>
-      
-            <ng-container matColumnDef="vehicle">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Vehicle </th>
-              <td mat-cell *matCellDef="let element"> {{element.vehicle}} </td>
-            </ng-container>
-      
-            <ng-container matColumnDef="sold">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Sold </th>
-              <td mat-cell *matCellDef="let element"> {{element.sold}} </td>
-            </ng-container>
-      
-            <ng-container matColumnDef="pulled">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Pulled </th>
-              <td mat-cell *matCellDef="let element"> {{element.pulled}} </td>
-            </ng-container>
-      
-            <ng-container matColumnDef="newClients">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> New Clients </th>
-              <td mat-cell *matCellDef="let element"> {{element.newClients}} </td>
-            </ng-container>
-      
-            <ng-container matColumnDef="credit">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Credit </th>
-              <td mat-cell *matCellDef="let element"> {{element.credit}} </td>
-            </ng-container>
-      
-            <ng-container matColumnDef="balance">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Balance </th>
-              <td mat-cell *matCellDef="let element"> {{element.balance}} </td>
-            </ng-container>
-  
-            <ng-container matColumnDef="inuse">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> In </th>
-              <td mat-cell *matCellDef="let element"> {{element.inuse}} </td>
-            </ng-container>
-  
-            <ng-container matColumnDef="day1">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Day 1 </th>
-              <td mat-cell *matCellDef="let element"> {{element.day1}} </td>
-            </ng-container>
-  
-            <ng-container matColumnDef="day2">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header> Day 2 </th>
-              <td mat-cell *matCellDef="let element"> {{element.day2}} </td>
-            </ng-container>
-      
-            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-            <tr mat-row *matRowDef="let row; columns: displayedColumns;">
-            </tr>
-          </table>
-          <mat-paginator [pageSizeOptions]="[50, 100, 150, 200]" [pageSize]="20" showFirstLastButtons></mat-paginator>
-        </div>
-        <ng-template #placeHolderText>
-          <p *ngIf="isSearchStarted" class="placeholderText">{{placeHolder}}</p>
-        </ng-template>
-        <mat-progress-spinner
-          *ngIf="isSearchStarted && !isDataLoaded"
-          class="app-spinner"
-          mode="indeterminate">
-        </mat-progress-spinner>
-      </div>
-  
-      <div class="split-data-wrapper" *ngIf="isDataLoaded">
-        <div class="row justify-center">
-          <h5 class="pageTitle">Split</h5>
-        </div>
-  
-        <div class="row">
-          <div class="col-2"></div>
-          <div class="col-2">
-            <mat-label>Cash</mat-label>
-            <input matInput class="form-control" readonly [value]="splitCash | number: '1.0-2'">
-          </div>
-          <div class="col-2">
-            <mat-label>Card</mat-label>
-            <input matInput class="form-control" readonly [value]="splitCard | number: '1.0-2'">
-          </div>
-          <div class="col-2">
-            <mat-label>Total Split</mat-label>
-            <input matInput class="form-control" readonly [value]="totalSplit | number: '1.0-2'">
-          </div>
-          <div class="col-2">
-            <mat-label>Booke</mat-label>
-            <input matInput class="form-control" readonly [value]="totalVehicles">
-          </div>
-          <div class="col-2"></div>
-        </div>
-      </div>
-
-      <div class="total-data-wrapper" *ngIf="isDataLoaded">
-        <div class="row justify-center">
-          <h5 class="pageTitle">Totals for listed items</h5>
-        </div>
-  
-        <div class="row">
-          <div class="col-2"></div>
-          <div class="col-2">
-            <mat-label>Total Pulled</mat-label>
-            <input matInput class="form-control" readonly [value]="totalPulled">
-          </div>
-          <div class="col-2">
-            <mat-label>Total New Clients</mat-label>
-            <input matInput class="form-control" readonly [value]="totalNewClients">
-          </div>
-          <div class="col-2">
-            <mat-label>Total Credit</mat-label>
-            <input matInput class="form-control" readonly [value]="totalCredit | number: '1.0-2'">
-          </div>
-          <div class="col-2">
-            <mat-label>Total Vehicles In Use</mat-label>
-            <input matInput class="form-control" readonly [value]="totalVehicles">
-          </div>
-          <div class="col-2"></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="filter-by-dateOffice-content" *ngIf="filterType === 'filterByDateOffice'">
+    <div class="filter-by-dateOffice-content">
       <div class="row justify-center">
         <h5 class="subHeader">Entering Daily Data</h5>
       </div>
 
-      <form [formGroup]="dataEntryForm" (ngSubmit)="saveData()" class="data-entry-container">
+      <form [formGroup]="dataEntryForm" class="data-entry-container">
         <div class="row justify-center">
+          <div class="col-sm-2">
+            <mat-label class="subHeader">Office</mat-label>
+            <mat-select class="form-control" formControlName="office" (selectionChange)="fetchRepsByOffice($event.value)">
+              <mat-option value="">Select</mat-option>
+              <mat-option *ngFor="let office of doFilter.offices" [value]="office.id">{{office.name}}</mat-option>
+            </mat-select>
+          </div>
           <div class="col-sm-2">
             <mat-label class="subHeader">Rep</mat-label>
             <mat-select class="form-control" formControlName="rep">
               <mat-option value="">Select</mat-option>
               <mat-option *ngFor="let rep of doFilter.reps" [value]="rep.id">{{rep.repName}}</mat-option>
-            </mat-select>
-          </div>
-          <div class="col-sm-2">
-            <mat-label class="subHeader">Office</mat-label>
-            <mat-select class="form-control" formControlName="office">
-              <mat-option value="">Select</mat-option>
-              <mat-option *ngFor="let office of doFilter.offices" [value]="office.id">{{office.name}}</mat-option>
             </mat-select>
           </div>
           <div class="col-sm-2 date-wrapper">
@@ -293,6 +83,8 @@
               <mat-label>Vehicle</mat-label>
               <mat-select class="form-control" formControlName="repVehicle">
                 <mat-option value="">Select</mat-option>
+                <mat-option value="own">Own</mat-option>
+                <mat-option *ngFor="let vehicle of vehicles" [value]="vehicle.id">{{vehicle.name}}</mat-option>
               </mat-select>
             </div>
           </div>
@@ -305,31 +97,31 @@
           <div class="row justify-center">
             <div class="col-1">
               <mat-label>Sold</mat-label>
-              <input matInput class="form-control" readonly>
+              <input matInput class="form-control" readonly formControlName="officeSold">
             </div>
             <div class="col-1">
               <mat-label>Pulled</mat-label>
-              <input matInput class="form-control" readonly>
+              <input matInput class="form-control" readonly formControlName="officePulled">
             </div>
             <div class="col-1">
               <mat-label>N/C</mat-label>
-              <input matInput class="form-control" readonly>
+              <input matInput class="form-control" readonly formControlName="officeNewClients">
             </div>
             <div class="col-1">
               <mat-label>Credit</mat-label>
-              <input matInput class="form-control" readonly>
+              <input matInput class="form-control" readonly formControlName="officeCredit">
             </div>
             <div class="col-1">
               <mat-label>Int</mat-label>
-              <input matInput class="form-control" readonly>
+              <input matInput class="form-control" readonly formControlName="officeInt">
             </div>
             <div class="col-1">
               <mat-label>Day 1</mat-label>
-              <input matInput class="form-control" readonly>
+              <input matInput class="form-control" readonly formControlName="officeDay1">
             </div>
             <div class="col-1">
               <mat-label>Day 2</mat-label>
-              <input matInput class="form-control" readonly>
+              <input matInput class="form-control" readonly formControlName="officeDay2">
             </div>
           </div>
         </div>
@@ -337,22 +129,26 @@
         <div class="row justify-center">
           <div class="col-2">
             <mat-label>Cash/Cheque</mat-label>
-            <input matInput class="form-control">
+            <input matInput class="form-control" formControlName="cash">
           </div>
           <div class="col-2">
             <mat-label>Card Machine</mat-label>
-            <input matInput class="form-control">
+            <input matInput class="form-control"  formControlName="cards">
+          </div>
+          <div class="col-2">
+            <mat-label>Total</mat-label>
+            <input matInput class="form-control" formControlName="totalPayment" readonly>
           </div>
           <div class="col-2">
             <mat-label>Vehicles in use</mat-label>
-            <input matInput class="form-control">
+            <input matInput class="form-control" formControlName="viu">
           </div>
         </div>
 
         <div class="row justify-center button-container">
-          <button mat-raised-button type="submit">Save Record</button>
-          <button mat-raised-button type="button">Save Split</button>
-          <button mat-raised-button type="button">Update</button>
+          <button mat-raised-button (click)="chooseRecordAction()" [disabled]="!isEnableSaveRecord">Save Record</button>
+          <button mat-raised-button (click)="saveSplit()()" [disabled]="!isEnableSaveRecord">Save Split</button>
+          <button mat-raised-button [disabled]="!isEnableSaveRecord">Update</button>
         </div>
 
         <div class="row justify-center">

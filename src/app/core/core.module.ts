@@ -17,6 +17,7 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { CoreRoutingModule } from './core-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddDataComponent } from './add-data/add-data.component';
+import { DataFilterByValueComponent } from './data-filter-by-value/data-filter-by-value.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { AddDataComponent } from './add-data/add-data.component';
     HeaderComponent,
     FooterComponent,
     WelcomeComponent,
-    AddDataComponent
+    AddDataComponent,
+    DataFilterByValueComponent
   ],
   imports: [
     CommonModule,

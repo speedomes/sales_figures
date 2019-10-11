@@ -11,12 +11,14 @@ import { VehicleComponent } from './vehicle/vehicle.component';
 import { RepComponent } from './rep/rep.component';
 import { SplitComponent } from './split/split.component';
 import { AddDataComponent } from './add-data/add-data.component';
+import { DataFilterByValueComponent } from './data-filter-by-value/data-filter-by-value.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent,
     children: [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'add-data', component: AddDataComponent },
+      { path: 'data-filter', component: DataFilterByValueComponent },
       { path: 'report', component: ReportComponent },
       { path: 'daily-data', component: DailyDataComponent },
       { path: 'total', component: TotalComponent },

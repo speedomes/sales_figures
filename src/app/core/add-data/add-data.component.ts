@@ -6,7 +6,6 @@ import { MatSort } from '@angular/material/sort';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DataService } from 'src/app/data.service';
 import { SnackBarComponent } from 'src/app/shared/snack-bar/snack-bar.component';
-import * as moment from 'moment';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -19,17 +18,8 @@ export class AddDataComponent implements OnInit {
   filterType: string;
   dataForm: FormGroup;
   dataEntryForm: FormGroup;
-  isSearchStarted: boolean = false;
-  isDataLoaded: boolean = false;
-  placeHolder: string = environment.placeHolderText;
-  dataSource =  new MatTableDataSource();
-  totalPulled: number;
-  totalNewClients: number;
-  totalCredit: number;
-  totalVehicles: number;
-  splitCash: number;
-  splitCard: number;
-  totalSplit: number;
+  isEnableSaveRecord: boolean = false;
+  existingOrderId;
 
   doFilter = {
     offices: [],
@@ -38,134 +28,57 @@ export class AddDataComponent implements OnInit {
 
   offices: [] = [];
   reps: [] = [];
+  vehicles: [] = [];
   years: [] = [];
-  months: number[] = [
-    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
-  ];
-  weeks: number[] = [];
 
   displayedColumns: string[] = ['date', 'officeName', 'repId', 'repName', 'vehicle', 'sold',
       'pulled', 'newClients', 'credit', 'balance', 'inuse', 'day1', 'day2'];
 
-  @ViewChild(MatPaginator, {static: false}) set paginator(paginator: MatPaginator) {
-    this.dataSource.paginator = paginator;
-  }
-
-  @ViewChild(MatSort, {static: false}) set sort(sort: MatSort) {
-    this.dataSource.sort = sort;
-  }
-
   constructor(private dataService: DataService, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
-    this.dataForm = new FormGroup({
-      year: new FormControl('', [Validators.required]),
-      month: new FormControl(''),
-      week: new FormControl(''),
-      office: new FormControl(''),
-      rep: new FormControl('')
+    this.dataEntryForm = new FormGroup({
+      office: new FormControl('', [Validators.required]),
+      rep: new FormControl('', [Validators.required]),
+      repSold: new FormControl(''),
+      repPulled: new FormControl(''),
+      repNC: new FormControl(''),
+      repCredit: new FormControl(''),
+      repInt: new FormControl(''),
+      repDay1: new FormControl(''),
+      repDay2: new FormControl(''),
+      repBalance: new FormControl(''),
+      repBalanceB: new FormControl(''),
+      repVehicle: new FormControl(''),
+      date: new FormControl('', [Validators.required]),
+      officeSold: new FormControl(''),
+      officePulled: new FormControl(''),
+      officeNewClients: new FormControl(''),
+      officeCredit: new FormControl(''),
+      officeInt: new FormControl(''),
+      officeDay1: new FormControl(''),
+      officeDay2: new FormControl(''),
+      cash: new FormControl(''),
+      cards: new FormControl(''),
+      totalPayment: new FormControl(''),
+      viu: new FormControl('')
     });
 
     this.dataService.getOffices().subscribe((response) => {
       if (response) {
-        this.offices = response.offices;
+        this.doFilter.offices = response.offices;
       } else {
         this.displaySnackbar('No data found', 'warning');
       }
     },
     (error) => {
       this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
-    });
-
-    this.dataService.getReps({}).subscribe((response) => {
-      if (response) {
-        this.reps = response.reps;
-      } else {
-        this.displaySnackbar('No data found', 'warning');
-      }
-    },
-    (error) => {
-      this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
-    });
-
-    this.dataService.getYears().subscribe((response: any) => {
-      this.years = response.yearData;
-    },
-    (error) => {
-      this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
-    });
-  }
-
-  populateWeeks(event) {
-    const dateObj = moment().isoWeekYear(parseInt(this.dataForm.get('year').value)).toDate();
-    const startDate = moment(dateObj).month(event.value - 1).startOf('month');
-    const endDate = moment(dateObj).month(event.value - 1).endOf('month');
-    this.weeks = [];
-    for (let count = 1; count <= Math.ceil((endDate.diff(startDate, 'days') + 1) / 7); count++) {
-      this.weeks.push(count);
-    }
-  }
-
-  filterData() {
-    this.isSearchStarted = true;
-    this.dataService.getScopeData(this.formatReqObject(this.dataForm)).subscribe(response => {
-      this.dataSource.data = response.scopeData.data;
-      this.totalPulled = response.scopeData.totalPulled;
-      this.totalNewClients = response.scopeData.totalNewClients;
-      this.totalCredit = response.scopeData.totalCredit;
-      this.totalVehicles = response.scopeData.totalVehicles;
-      this.splitCash = response.scopeData.cash;
-      this.splitCard = response.scopeData.cards;
-      this.totalSplit = this.splitCash + this.splitCard;
-      this.isDataLoaded = true;
     });
   }
 
   fetchRepsByOffice(id) {
     if (id!== '' && id!== 'all') {
       this.dataService.getReps({officeId: id}).subscribe((response) => {
-        if (response) {
-          this.reps = response.reps;
-        } else {
-          this.displaySnackbar('No data found', 'warning');
-        }
-      },
-      (error) => {
-        this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
-      });
-    }
-  }
-
-  filterUpdate(filterType) {
-    if (filterType === 'filterByDateOffice') {
-      this.dataEntryForm = new FormGroup({
-        office: new FormControl('', [Validators.required]),
-        rep: new FormControl('', [Validators.required]),
-        repSold: new FormControl(''),
-        repPulled: new FormControl(''),
-        repNC: new FormControl(''),
-        repCredit: new FormControl(''),
-        repInt: new FormControl(''),
-        repDay1: new FormControl(''),
-        repDay2: new FormControl(''),
-        repBalance: new FormControl(''),
-        repBalanceB: new FormControl(''),
-        repVehicle: new FormControl(''),
-        date: new FormControl('', [Validators.required])
-      });
-
-      this.dataService.getOffices().subscribe((response) => {
-        if (response) {
-          this.doFilter.offices = response.offices;
-        } else {
-          this.displaySnackbar('No data found', 'warning');
-        }
-      },
-      (error) => {
-        this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
-      });
-
-      this.dataService.getReps({}).subscribe((response) => {
         if (response) {
           this.doFilter.reps = response.reps;
         } else {
@@ -186,8 +99,48 @@ export class AddDataComponent implements OnInit {
     };
 
     this.dataService.checkRecord(data).subscribe((response: any) => {
+      this.isEnableSaveRecord = true;
       if (response.records.length > 0) {
-        
+        const record = response.records[0];
+        this.existingOrderId = record.id;
+        const repData = {
+          repSold: record.sold,
+          repPulled: record.pulled,
+          repNC: record.newclients,
+          repCredit: record.credit,
+          repInt: record.inuse,
+          repDay1: record.t1,
+          repDay2: record.t2,
+          repBalance: record.balance,
+          repBalanceB: record.balanceb,
+          repVehicle: record.vehicle_id,
+        };
+        this.dataEntryForm.patchValue(repData);
+      }
+
+      if (response.officeRecords.length > 0) {
+        const officeRecord = response.officeRecords[0];
+        const officeData = {
+          officeSold: officeRecord.sold,
+          officePulled: officeRecord.pulled,
+          officeNewClients: officeRecord.newclients,
+          officeCredit: officeRecord.credit,
+          officeInt: officeRecord.inuse,
+          officeDay1: officeRecord.day1,
+          officeDay2: officeRecord.day2
+        };
+        this.dataEntryForm.patchValue(officeData);
+      }
+
+      if (response.splitRecords.length > 0) {
+        const splitRecord = response.splitRecords[0];
+        const splitData = {
+          cash: splitRecord.cash,
+          cards: splitRecord.cards,
+          totalPayment: splitRecord.cash + splitRecord.cards,
+          viu: splitRecord.viu
+        };
+        this.dataEntryForm.patchValue(splitData);
       }
     },
     (error) => {
@@ -195,19 +148,77 @@ export class AddDataComponent implements OnInit {
     });
   }
 
-  saveData() {
-
+  chooseRecordAction() {
+    if (this.existingOrderId) {
+      this.updateRecord();
+    } else {
+      this.addRecord();
+    }
+    this.dataEntryForm.reset();
   }
 
-  formatReqObject(form: FormGroup) {
-    return {
-      office: form.get('office').value === 'all' ? null : form.get('office').value,
-      rep: form.get('rep').value === 'all' ? null : form.get('rep').value,
-      year: form.get('year').value,
-      month: form.get('month').value,
-      week: form.get('week').value,
-      years: this.years
+  addRecord() {
+    const recordDetails = {
+      date: this.dataEntryForm.get('date').value,
+      vehicleId: this.dataEntryForm.get('repVehicle').value,
+      sold: this.dataEntryForm.get('repSold').value,
+      pulled: this.dataEntryForm.get('repPulled').value,
+      newClients: this.dataEntryForm.get('repNC').value,
+      credit: this.dataEntryForm.get('repCredit').value,
+      balance: this.dataEntryForm.get('repBalance').value,
+      inuse: this.dataEntryForm.get('repInt').value,
+      day1: this.dataEntryForm.get('repDay1').value,
+      day2: this.dataEntryForm.get('repDay2').value,
+      repId: this.dataEntryForm.get('rep').value,
+      balanceB: this.dataEntryForm.get('repBalanceB').value
     };
+
+    this.dataService.addRecord(recordDetails).subscribe((response: any) => {
+      console.log(response);
+    },
+    (error) => {
+      this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
+    });
+  }
+
+  updateRecord() {
+    const recordDetails = {
+      date: this.dataEntryForm.get('date').value,
+      vehicleId: this.dataEntryForm.get('repVehicle').value,
+      sold: this.dataEntryForm.get('repSold').value,
+      pulled: this.dataEntryForm.get('repPulled').value,
+      newClients: this.dataEntryForm.get('repNC').value,
+      credit: this.dataEntryForm.get('repCredit').value,
+      balance: this.dataEntryForm.get('repBalance').value,
+      inuse: this.dataEntryForm.get('repInt').value,
+      day1: this.dataEntryForm.get('repDay1').value,
+      day2: this.dataEntryForm.get('repDay2').value,
+      repId: this.dataEntryForm.get('rep').value,
+      balanceB: this.dataEntryForm.get('repBalanceB').value,
+      orderId: this.existingOrderId
+    };
+
+    this.dataService.addRecord(recordDetails).subscribe((response: any) => {
+      console.log(response);
+    },
+    (error) => {
+      this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
+    });
+  }
+
+  saveSplit() {
+    const splitRecord = {
+      cash: this.dataEntryForm.get('cash').value,
+      cards: this.dataEntryForm.get('cards').value,
+      viu: this.dataEntryForm.get('viu').value
+    };
+
+    this.dataService.saveSplit(splitRecord).subscribe((response: any) => {
+      console.log(response);
+    },
+    (error) => {
+      this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
+    });
   }
 
   displaySnackbar(msg: string, className: string = 'primary') {
@@ -217,5 +228,4 @@ export class AddDataComponent implements OnInit {
       panelClass: className
     });
   }
-
 }

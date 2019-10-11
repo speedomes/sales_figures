@@ -96,4 +96,16 @@ export class DataService {
   checkRecord(data: {}): Observable<any> {
     return this.httpClient.post(this.API_URL + 'checkRecord', data);
   }
+
+  addRecord(data: {}): Observable<any> {
+    return this.httpClient.post(this.API_URL + 'addRecord', data);
+  }
+
+  updateRecord(data: {}): Observable<any> {
+    return this.httpClient.post(this.API_URL + 'updateRecord', data);
+  }
+
+  saveSplit(data: {}): Observable<any> {
+    return this.httpClient.post(this.API_URL + 'saveSplit', data);
+  }
 }

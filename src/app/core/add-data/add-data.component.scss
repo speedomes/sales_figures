@@ -1,6 +1,10 @@
 @import "../../../assets/scss/variables.scss";
 
 .add-data-container {
+  .justify-center {
+    justify-content: center;
+  }
+  
   .filter-type-container {
 
     .row {
@@ -17,75 +21,6 @@
       font-weight: bold;
     }
     
-    .data-table-wrapper {
-      position: relative;
-      min-height: 10rem;
-      margin: 3rem;
-
-      .data-table {
-        padding: 0;
-        table {
-          width: 100%;
-        }
-      }
-
-      .mat-progress-spinner {
-        top: 16%;
-      }
-
-      .placeholderText {
-        position: relative;
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        top: 0;
-        left: 0;
-      }
-    }
-
-    .justify-center {
-      justify-content: center;
-    }
-
-    .filter-by-value-content {
-      margin-top: 2rem;
-      .button-container {
-        margin-top: 2rem;
-        button {
-          margin-right: 1rem;
-        }
-      }
-
-      mat-label {
-        margin-bottom: 1rem;
-        display: block;
-        text-align: center;
-      }
-
-      .split-data-wrapper {
-        margin-top: 2rem;
-        .pageTitle {
-          color: $primary-color;
-        }
-
-        input {
-          padding: 0 0.5rem;
-        }
-      }
-
-      .total-data-wrapper {
-        margin-top: 2rem;
-        .pageTitle {
-          color: $primary-color;
-        }
-
-        input {
-          padding: 0 0.5rem;
-        }
-      }
-    }
-
     .filter-by-dateOffice-content {
       .data-entry-container {
         .date-wrapper {

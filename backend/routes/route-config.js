@@ -706,17 +706,104 @@ router.post('/api/getScopeData',(req, res, next) => {
 
 router.post('/api/checkRecord',(req, res, next) => {
   const dateToFilter = moment(req.body.date).format('YYYY.MM.DD');
-  const recordQuery = `Select * from daily WHERE rep_id='${req.body.repId}' AND id='${req.body.officeId}' AND date='${dateToFilter}'`;
+  const recordQuery = `Select * from daily WHERE rep_id='${req.body.repId}' AND date='${dateToFilter}'`;
+  const officeRecordQuery = `Select sold, pulled, newclients, credit, inuse, t1 as day1, t2 as day2 from daily WHERE id='${req.body.officeId}' AND date='${dateToFilter}'`;
+  const splitQuery = `SELECT cash, cards, viu FROM split WHERE office_id='${req.body.officeId}' AND date='${dateToFilter}'`;
 
+  console.log(recordQuery);
   database.query(recordQuery)
   .then (rows => {
-    res.status(201).json({
-    message: 'Records fetched successfully',
-    records: rows
+    const repRecords = rows;
+    let officeRecords = [];
+    let splitRecords = [];
+    
+    database.query(officeRecordQuery)
+    .then(rows => {
+      officeRecords = rows;
+      database.query(splitQuery)
+      .then (rows => {
+        splitRecords = rows;
+        res.status(201).json({
+          message: 'Records fetched successfully',
+          records: repRecords,
+          officeRecords: officeRecords,
+          splitRecords: splitRecords
+        });
+      })
+      .catch(err => {
+        next(err); 
+      });
+    })
+    .catch(err => {
+      next(err); 
     });
   })
   .catch(err => {
+    next(err); 
+  });
+});
+
+router.post('/api/addRecord',(req, res) => {
+  const dateToFilter = moment(req.body.date).format('YYYY.MM.DD');
+  const addRecordQuery = `Insert daily(date, vehicle_id, sold, pulled, newclients, credit, balance, inuse, t1, t2, rep_id, balanceb)
+    VALUES ('${dateToFilter}', '${req.body.vehicleId}', '${req.body.sold}', '${req.body.pulled}', '${req.body.newClients}', '${req.body.credit}',
+    '${req.body.balance}', '${req.body.inuse}', '${req.body.day1}', '${req.body.day2}', '${req.body.repId}', '${req.body.balanceB}')`;
+  
+  const updateRepTableQuery = `Update reps  SET balance='${req.body.balance}', balanceb='${req.body.balanceB}', vehicle_id='${req.body.vehicleId}'
+    WHERE id= '${req.body.repId}'`;
+
+  database.query(addRecordQuery)
+  .then (() => {
+    database.query(updateRepTableQuery)
+    .catch(err => {
       next(err); 
+    });
+
+    res.status(201).json({
+      message: 'Record added successfully',
+    });
+  })
+  .catch(err => {
+    next(err); 
+  });
+});
+
+router.post('/api/updateRecord',(req, res) => {
+  const updateRecordQuery = `Update daily  SET vehicle_id='${req.body.vehicleId}', sold='${req.body.sold}', pulled='${req.body.pulled}',
+    newclients='${req.body.newClients}', credit='${req.body.credit}', balance='${req.body.balance}', inuse='${req.body.inuse}', 
+    t1='${req.body.day1}', t2='${req.body.day2}', balanceb='${req.body.balanceB}', rep_id='${req.body.repId}'  WHERE id='${req.body.orderId}'`;
+
+  const updateRepTableQuery = `Update reps  SET balance='${req.body.balance}', balanceb='${req.body.balanceB}', vehicle_id='${req.body.vehicleId}'
+    WHERE id='${req.body.repId}'`;
+
+  database.query(updateRecordQuery)
+  .then (() => {
+    database.query(updateRepTableQuery)
+    .catch(err => {
+      next(err); 
+    });
+
+    res.status(201).json({
+      message: 'Record updated successfully',
+    });
+  })
+  .catch(err => {
+    next(err); 
+  });
+});
+
+router.post('/api/saveSplit',(req, res) => {
+  const addRecordQuery = ``;
+
+  console.log(addRecordQuery);
+  database.query(addRecordQuery)
+  .then (() => {
+    res.status(201).json({
+      message: 'Split record has been updated successfully',
+    });
+  })
+  .catch(err => {
+    next(err); 
   });
 });
 
