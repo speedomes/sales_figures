@@ -30,7 +30,6 @@ export class DataFilterByValueComponent implements OnInit {
   totalSplit: number;
   offices: [] = [];
   reps: [] = [];
-  vehicles: [] = [];
   years: [] = [];
   months: number[] = [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
@@ -70,30 +69,8 @@ export class DataFilterByValueComponent implements OnInit {
       this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
     });
 
-    this.dataService.getReps({}).subscribe((response) => {
-      if (response) {
-        this.reps = response.reps;
-      } else {
-        this.displaySnackbar('No data found', 'warning');
-      }
-    },
-    (error) => {
-      this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
-    });
-
     this.dataService.getYears().subscribe((response: any) => {
       this.years = response.yearData;
-    },
-    (error) => {
-      this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
-    });
-
-    this.dataService.getVehicles().subscribe((response) => {
-      if (response) {
-        this.vehicles = response.vehicles;
-      } else {
-        this.displaySnackbar('No data found', 'warning');
-      }
     },
     (error) => {
       this.displaySnackbar('Internal Server Error. Please try later.', 'warning');

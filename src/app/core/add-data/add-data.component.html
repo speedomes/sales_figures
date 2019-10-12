@@ -32,7 +32,7 @@
             <div class="check-wrapper">
               <button mat-raised-button (click)="checkRecord()" 
                 [disabled]="!dataEntryForm.get('rep').valid || !dataEntryForm.get('office').valid || !dataEntryForm.get('date').valid">
-              Check For Existing Record
+              Search
               </button>
             </div>
           </div>
@@ -88,6 +88,10 @@
               </mat-select>
             </div>
           </div>
+        </div>
+
+        <div class="row justify-center button-container">
+          <button mat-raised-button (click)="chooseRecordAction()" [disabled]="!isEnableSaveRecord">Save Record</button>
         </div>
 
         <div class="row justify-center office-data-wrapper">
@@ -146,7 +150,6 @@
         </div>
 
         <div class="row justify-center button-container">
-          <button mat-raised-button (click)="chooseRecordAction()" [disabled]="!isEnableSaveRecord">Save Record</button>
           <button mat-raised-button (click)="saveSplit()()" [disabled]="!isEnableSaveRecord">Save Split</button>
           <button mat-raised-button [disabled]="!isEnableSaveRecord">Update</button>
         </div>
@@ -160,6 +163,9 @@
         </div>
 
         <div class="row justify-center">
+          <div class="data-label">
+            <mat-label>WT</mat-label>
+          </div>
           <div class="col-sm">
             <mat-label>Sold</mat-label>
             <input matInput class="form-control">
@@ -191,6 +197,9 @@
         </div>
 
         <div class="row justify-center">
+          <div class="data-label">
+            <mat-label>MT</mat-label>
+          </div>
           <div class="col-sm">
             <mat-label>Sold</mat-label>
             <input matInput class="form-control">
@@ -222,6 +231,9 @@
         </div>
 
         <div class="row justify-center">
+          <div class="data-label">
+            <mat-label>YTD</mat-label>
+          </div>
           <div class="col-sm">
             <mat-label>Sold</mat-label>
             <input matInput class="form-control">
@@ -257,6 +269,77 @@
         </div>
 
         <div class="row justify-center">
+          <div class="data-label">
+            <mat-label>WT</mat-label>
+          </div>
+          <div class="col-sm">
+            <mat-label>Sold</mat-label>
+            <input matInput class="form-control">
+          </div>
+          <div class="col-sm">
+            <mat-label>Pulled</mat-label>
+            <input matInput class="form-control">
+          </div>
+          <div class="col-sm">
+            <mat-label>New Clients</mat-label>
+            <input matInput class="form-control">
+          </div>
+          <div class="col-sm">
+            <mat-label>Credit</mat-label>
+            <input matInput class="form-control">
+          </div>
+          <div class="col-sm">
+            <mat-label>Interviews</mat-label>
+            <input matInput class="form-control">
+          </div>
+          <div class="col-sm">
+            <mat-label>Trainees 1</mat-label>
+            <input matInput class="form-control">
+          </div>
+          <div class="col-sm">
+            <mat-label>Trainees 2</mat-label>
+            <input matInput class="form-control">
+          </div>
+        </div>
+
+        <div class="row justify-center">
+          <div class="data-label">
+            <mat-label>MT</mat-label>
+          </div>
+          <div class="col-sm">
+            <mat-label>Sold</mat-label>
+            <input matInput class="form-control">
+          </div>
+          <div class="col-sm">
+            <mat-label>Pulled</mat-label>
+            <input matInput class="form-control">
+          </div>
+          <div class="col-sm">
+            <mat-label>New Clients</mat-label>
+            <input matInput class="form-control">
+          </div>
+          <div class="col-sm">
+            <mat-label>Credit</mat-label>
+            <input matInput class="form-control">
+          </div>
+          <div class="col-sm">
+            <mat-label>Interviews</mat-label>
+            <input matInput class="form-control">
+          </div>
+          <div class="col-sm">
+            <mat-label>Trainees 1</mat-label>
+            <input matInput class="form-control">
+          </div>
+          <div class="col-sm">
+            <mat-label>Trainees 2</mat-label>
+            <input matInput class="form-control">
+          </div>
+        </div>
+
+        <div class="row justify-center">
+          <div class="data-label">
+            <mat-label>YTD</mat-label>
+          </div>
           <div class="col-sm">
             <mat-label>Sold</mat-label>
             <input matInput class="form-control">

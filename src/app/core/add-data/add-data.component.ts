@@ -74,6 +74,17 @@ export class AddDataComponent implements OnInit {
     (error) => {
       this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
     });
+
+    this.dataService.getVehicles().subscribe((response) => {
+      if (response) {
+        this.vehicles = response.vehicles;
+      } else {
+        this.displaySnackbar('No data found', 'warning');
+      }
+    },
+    (error) => {
+      this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
+    });
   }
 
   fetchRepsByOffice(id) {
@@ -100,6 +111,7 @@ export class AddDataComponent implements OnInit {
 
     this.dataService.checkRecord(data).subscribe((response: any) => {
       this.isEnableSaveRecord = true;
+      console.log(response);
       if (response.records.length > 0) {
         const record = response.records[0];
         this.existingOrderId = record.id;
@@ -123,7 +135,7 @@ export class AddDataComponent implements OnInit {
         const officeData = {
           officeSold: officeRecord.sold,
           officePulled: officeRecord.pulled,
-          officeNewClients: officeRecord.newclients,
+          officeNewClients: officeRecord.newClients,
           officeCredit: officeRecord.credit,
           officeInt: officeRecord.inuse,
           officeDay1: officeRecord.day1,
@@ -137,7 +149,7 @@ export class AddDataComponent implements OnInit {
         const splitData = {
           cash: splitRecord.cash,
           cards: splitRecord.cards,
-          totalPayment: splitRecord.cash + splitRecord.cards,
+          totalPayment: (splitRecord.cash + splitRecord.cards).toFixed(2),
           viu: splitRecord.viu
         };
         this.dataEntryForm.patchValue(splitData);
@@ -198,7 +210,7 @@ export class AddDataComponent implements OnInit {
       orderId: this.existingOrderId
     };
 
-    this.dataService.addRecord(recordDetails).subscribe((response: any) => {
+    this.dataService.updateRecord(recordDetails).subscribe((response: any) => {
       console.log(response);
     },
     (error) => {

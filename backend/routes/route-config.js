@@ -707,7 +707,10 @@ router.post('/api/getScopeData',(req, res, next) => {
 router.post('/api/checkRecord',(req, res, next) => {
   const dateToFilter = moment(req.body.date).format('YYYY.MM.DD');
   const recordQuery = `Select * from daily WHERE rep_id='${req.body.repId}' AND date='${dateToFilter}'`;
-  const officeRecordQuery = `Select sold, pulled, newclients, credit, inuse, t1 as day1, t2 as day2 from daily WHERE id='${req.body.officeId}' AND date='${dateToFilter}'`;
+  const officeRecordQuery = `Select sum(d.sold) as sold, sum(d.pulled) as pulled, sum(d.newclients) as newClients,
+    sum(d.credit) as credit, sum(d.inuse) as inuse, sum(d.t1) as day1, sum(d.t2) as day2
+    from daily AS d JOIN reps AS r ON d.rep_id = r.id JOIN office AS o ON r.office_id = o.id WHERE 
+    o.id='${req.body.officeId}' AND d.date='${dateToFilter}'`;
   const splitQuery = `SELECT cash, cards, viu FROM split WHERE office_id='${req.body.officeId}' AND date='${dateToFilter}'`;
 
   console.log(recordQuery);
