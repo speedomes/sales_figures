@@ -111,7 +111,6 @@ export class AddDataComponent implements OnInit {
 
     this.dataService.checkRecord(data).subscribe((response: any) => {
       this.isEnableSaveRecord = true;
-      console.log(response);
       if (response.records.length > 0) {
         const record = response.records[0];
         this.existingOrderId = record.id;

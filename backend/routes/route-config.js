@@ -713,7 +713,6 @@ router.post('/api/checkRecord',(req, res, next) => {
     o.id='${req.body.officeId}' AND d.date='${dateToFilter}'`;
   const splitQuery = `SELECT cash, cards, viu FROM split WHERE office_id='${req.body.officeId}' AND date='${dateToFilter}'`;
 
-  console.log(recordQuery);
   database.query(recordQuery)
   .then (rows => {
     const repRecords = rows;
