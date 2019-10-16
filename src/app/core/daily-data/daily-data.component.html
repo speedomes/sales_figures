@@ -30,9 +30,9 @@
       </form>
     </div>
   </div>
-  <div class="data-container mat-elevation-z8" *ngIf="dataLoaded; else placeholderText">
+  <div class="data-container mat-elevation-z8">
     <div #tableTop></div>
-    <table mat-table [dataSource]="dailyDataSource">
+    <table mat-table [dataSource]="dailyDataSource" *ngIf="dataLoaded; else placeholderText">
       <ng-container matColumnDef="date">
         <th mat-header-cell *matHeaderCellDef> Date </th>
         <td mat-cell *matCellDef="let element"> {{element.date}} </td>
