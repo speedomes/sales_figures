@@ -35,13 +35,14 @@ export class DataFilterByValueComponent implements OnInit {
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
   ];
   weeks: number[] = [];
+  isDataComplete: boolean = false;
+  isDataSearched: boolean = false;
+  isPaginationClicked: boolean = false;
 
   displayedColumns: string[] = ['date', 'officeName', 'repId', 'repName', 'vehicle', 'sold',
     'pulled', 'newClients', 'credit', 'balance', 'inuse', 'day1', 'day2'];
 
-  @ViewChild(MatPaginator, {static: false}) set paginator(paginator: MatPaginator) {
-    this.dataSource.paginator = paginator;
-  }
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
 
   @ViewChild(MatSort, {static: false}) set sort(sort: MatSort) {
     this.dataSource.sort = sort;
@@ -87,10 +88,12 @@ export class DataFilterByValueComponent implements OnInit {
     }
   }
 
-  filterData() {
+  filterData(sOffset = 1, eOffset = 300) {
     this.isSearchStarted = true;
-    this.dataService.getScopeData(this.formatReqObject(this.dataForm)).subscribe(response => {
-      this.dataSource.data = response.scopeData.data;
+    this.dataService.getScopeData(this.formatReqObject(this.dataForm, sOffset, eOffset)).subscribe(response => {
+      this.isDataSearched = true;
+      this.dataSource.data = this.isPaginationClicked ? this.dataSource.data.concat(response.scopeData.data) : response.scopeData.data;
+      this.dataSource.paginator = this.paginator;
       this.totalPulled = response.scopeData.totalPulled;
       this.totalNewClients = response.scopeData.totalNewClients;
       this.totalCredit = response.scopeData.totalCredit;
@@ -99,6 +102,21 @@ export class DataFilterByValueComponent implements OnInit {
       this.splitCard = response.scopeData.cards;
       this.totalSplit = this.splitCash + this.splitCard;
       this.isDataLoaded = true;
+
+      if (this.dataSource.paginator) {
+        const subscription = !this.isDataComplete && this.dataSource.paginator.page.subscribe((data) => {
+          const isDataFetchRequired = (data.pageIndex > data.previousPageIndex);
+
+          if (isDataFetchRequired) {
+            this.isPaginationClicked = true;
+            this.isDataLoaded = false;
+            this.filterData(this.dataSource.data.length + 1, 200);
+            this.isDataLoaded = true;
+            this.isPaginationClicked = false;
+            subscription.unsubscribe();
+          }
+        });
+      }
     });
   }
 
@@ -117,14 +135,16 @@ export class DataFilterByValueComponent implements OnInit {
     }
   }
 
-  formatReqObject(form: FormGroup) {
+  formatReqObject(form: FormGroup, sOffset, eOffset) {
     return {
       office: form.get('office').value === 'all' ? null : form.get('office').value,
       rep: form.get('rep').value === 'all' ? null : form.get('rep').value,
       year: form.get('year').value,
       month: form.get('month').value,
       week: form.get('week').value,
-      years: this.years
+      years: this.years,
+      startLimit: sOffset,
+      endLimit: eOffset
     };
   }
 

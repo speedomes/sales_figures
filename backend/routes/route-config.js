@@ -235,17 +235,16 @@ router.post('/api/getDashboardData',(req, res, next) => {
     } else {
       const dashboardPromiseArray = [];
       for(let count=0; count <=11; count++) {
-        startDate = moment(dateObj).month(count).startOf('month').startOf('isoWeek').isoWeekday('Tuesday');
-        if(startDate.month() < count) {
-          startDate = startDate.add(7, 'days');
-        }
+        let startDateOffset = moment(dateObj).month(count).startOf('month').day();
+        startDateOffset = getStartDateOffset(startDateOffset);
 
-        endDate = moment(dateObj).month(count+1).startOf('month').isoWeekday('Monday');
-        if(endDate.month() === count) {
-          endDate = endDate.add(7, 'days');
-        }
+        let endDateOffset = moment(dateObj).month(count).endOf('month').day();
+        endDateOffset = getEndDateOffset(endDateOffset);
 
-        const monthQuery = dashboardQuery + ` date<='${endDate.format('YYYY.MM.DD')}' and date>='${startDate.format('YYYY.MM.DD')}'`;
+        const monthStart = moment(dateObj).month(count).startOf('month').add(startDateOffset, 'days').format('YYYY.MM.DD');
+        const monthEnd =  moment(dateObj).month(count).endOf('month').add(endDateOffset, 'days').format('YYYY.MM.DD');
+
+        const monthQuery = dashboardQuery + ` date<='${monthEnd}' and date>='${monthStart}'`;
         let monthlyData = [];
 
         dashboardPromiseArray.push(database.query(monthQuery)
@@ -264,12 +263,19 @@ router.post('/api/getDashboardData',(req, res, next) => {
 
         const holidayQueryPromiseArray = [];
 
-        for(let count=0; count <=11; count++) {
-          startDate = moment(dateObj).month(count).startOf('month').format('YYYY.MM.DD');
-          endDate = moment(dateObj).month(count).endOf('month').format('YYYY.MM.DD');
+        for (let count=0; count <=11; count++) {
+          let startDateOffset = moment(dateObj).month(count).startOf('month').day();
+          startDateOffset = getStartDateOffset(startDateOffset);
+
+          let endDateOffset = moment(dateObj).month(count).endOf('month').day();
+          endDateOffset = getEndDateOffset(endDateOffset);
+
+          const monthStart = moment(dateObj).month(count).startOf('month').add(startDateOffset, 'days').format('YYYY.MM.DD');
+          const monthEnd =  moment(dateObj).month(count).endOf('month').add(endDateOffset, 'days').format('YYYY.MM.DD');
 
           let hQuery = '';
-          hQuery = holidayQuery + ` and date<='${endDate}' and date>='${startDate}'`;
+          hQuery = holidayQuery + ` and date<='${monthEnd}' and date>='${monthStart}'`;
+          console.log(monthStart, monthEnd);
           let holidaysData = {};
 
           holidayQueryPromiseArray.push(database.query(hQuery)
@@ -491,21 +497,11 @@ router.post('/api/getDailyDataByFilter',(req, res, next) => {
     const dateObj = moment().isoWeekYear(parseInt(req.body.year)).toDate();
 
     if (req.body.month !== '') {
-      let startDateOffset = moment(dateObj).month(req.body.month-1).startOf('month').day() + 1;
+      let startDateOffset = moment(dateObj).month(req.body.month-1).startOf('month').day();
+      startDateOffset = getStartDateOffset(startDateOffset);
 
-      if(startDateOffset > 2) {
-        startDateOffset = 7 - (startDateOffset -2);
-      } else if (startDateOffset < 2) {
-        startDateOffset++;
-      }
-
-      let endDateOffset = moment(dateObj).month(req.body.month-1).endOf('month').day() + 1;
-
-      if(endDateOffset !== 1) {
-        endDateOffset = 7 - (endDateOffset - 1);
-      } else {
-        endDateOffset = 0;
-      }
+      let endDateOffset = moment(dateObj).month(req.body.month-1).endOf('month').day();
+      endDateOffset = getEndDateOffset(endDateOffset);
 
       let monthStart = moment(dateObj).month(req.body.month-1).startOf('month').add(startDateOffset, 'days').format('YYYY.MM.DD');
       let monthEnd =  moment(dateObj).month(req.body.month-1).endOf('month').add(endDateOffset, 'days').format('YYYY.MM.DD');
@@ -523,21 +519,11 @@ router.post('/api/getDailyDataByFilter',(req, res, next) => {
         next(err); 
       });
     } else {
-      let startDateOffset = moment(dateObj).startOf('year').day() + 1;
+      let startDateOffset = moment(dateObj).startOf('year').day();
+      startDateOffset = getStartDateOffset(startDateOffset);
 
-      if(startDateOffset > 2) {
-        startDateOffset = 7 - (startDateOffset -2);
-      } else if (startDateOffset < 2) {
-        startDateOffset++;
-      }
-
-      let endDateOffset = moment(dateObj).endOf('year').day() + 1;
-
-      if(endDateOffset !== 1) {
-        endDateOffset = 7 - (endDateOffset - 1);
-      } else {
-        endDateOffset = 0;
-      }
+      let endDateOffset = moment(dateObj).endOf('year').day();
+      endDateOffset = getEndDateOffset(endDateOffset);
 
       let yearStart = moment(dateObj).startOf('year').add(startDateOffset, 'days').format('YYYY.MM.DD');
       let yearEnd =  moment(dateObj).endOf('year').add(endDateOffset, 'days').format('YYYY.MM.DD');
@@ -559,6 +545,8 @@ router.post('/api/getDailyDataByFilter',(req, res, next) => {
 });
 
 router.post('/api/getScopeData',(req, res, next) => {
+  const startLimit = parseInt(req.body.startLimit);
+  const endLimit = parseInt(req.body.endLimit);
   let scopeDataQuery = `SELECT d.date, d.sold, d.pulled, d.newclients as newClients, d.credit, d.inuse, d.t1 as day1, d.t2 as day2, d.rep_id as repId, r.name as repName,
     v.name as vehicle, d.balance, o.name as officeName
     FROM daily AS d JOIN reps AS r ON d.rep_id = r.id JOIN vehicle AS v ON d.vehicle_id = v.id JOIN office AS o ON r.office_id = o.id WHERE`;
@@ -579,21 +567,11 @@ router.post('/api/getScopeData',(req, res, next) => {
     const dateObj = moment().isoWeekYear(parseInt(req.body.year)).toDate();
     if (req.body.month !== '') {
       if (req.body.week !== '') {
-        let startDateOffset = moment(dateObj).month(req.body.month-1).startOf('month').day() + 1;
+        let startDateOffset = moment(dateObj).month(req.body.month-1).startOf('month').day();
+        startDateOffset = getStartDateOffset(startDateOffset);
 
-        if(startDateOffset > 2) {
-          startDateOffset = 7 - (startDateOffset -2);
-        } else if (startDateOffset < 2) {
-          startDateOffset++;
-        }
-
-        let endDateOffset = moment(dateObj).month(req.body.month-1).endOf('month').day() + 1;
-
-        if(endDateOffset !== 1) {
-          endDateOffset = 7 - (endDateOffset - 1);
-        } else {
-          endDateOffset = 0;
-        }
+        let endDateOffset = moment(dateObj).month(req.body.month-1).endOf('month').day();
+        endDateOffset = getEndDateOffset(endDateOffset);
 
         let monthStart = moment(dateObj).month(req.body.month-1).startOf('month').add(startDateOffset, 'days');
         let monthEnd =  moment(dateObj).month(req.body.month-1).endOf('month').add(endDateOffset, 'days');
@@ -621,21 +599,11 @@ router.post('/api/getScopeData',(req, res, next) => {
         scopeDataQuery += ` d.date<='${weekEnd}' AND d.date>='${weekStart}' ORDER BY d.date`;
         splitDataQuery += ` date<='${weekEnd}' AND date>='${weekStart}'`;
       } else {
-        let startDateOffset = moment(dateObj).month(req.body.month-1).startOf('month').day() + 1;
+        let startDateOffset = moment(dateObj).month(req.body.month-1).startOf('month').day();
+        startDateOffset = getStartDateOffset(startDateOffset);
 
-        if(startDateOffset > 2) {
-          startDateOffset = 7 - (startDateOffset -2);
-        } else if (startDateOffset < 2) {
-          startDateOffset++;
-        }
-
-        let endDateOffset = moment(dateObj).month(req.body.month-1).endOf('month').day() + 1;
-
-        if(endDateOffset !== 1) {
-          endDateOffset = 7 - (endDateOffset - 1);
-        } else {
-          endDateOffset = 0;
-        }
+        let endDateOffset = moment(dateObj).month(req.body.month-1).endOf('month').day();
+        endDateOffset = getEndDateOffset(endDateOffset);
 
         let monthStart = moment(dateObj).month(req.body.month-1).startOf('month').add(startDateOffset, 'days').format('YYYY.MM.DD');
         let monthEnd =  moment(dateObj).month(req.body.month-1).endOf('month').add(endDateOffset, 'days').format('YYYY.MM.DD');
@@ -644,21 +612,11 @@ router.post('/api/getScopeData',(req, res, next) => {
         splitDataQuery += ` date<='${monthEnd}' AND date>='${monthStart}'`;
       }
     } else {
-      let startDateOffset = moment(dateObj).startOf('year').day() + 1;
+      let startDateOffset = moment(dateObj).startOf('year').day();
+      startDateOffset = getStartDateOffset(startDateOffset);
 
-      if(startDateOffset > 2) {
-        startDateOffset = 7 - (startDateOffset -2);
-      } else if (startDateOffset < 2) {
-        startDateOffset++;
-      }
-
-      let endDateOffset = moment(dateObj).endOf('year').day() + 1;
-
-      if(endDateOffset !== 1) {
-        endDateOffset = 7 - (endDateOffset - 1);
-      } else {
-        endDateOffset = 0;
-      }
+      let endDateOffset = moment(dateObj).endOf('year').day();
+      endDateOffset = getEndDateOffset(endDateOffset);
 
       let yearStart = moment(dateObj).startOf('year').add(startDateOffset, 'days').format('YYYY.MM.DD');
       let yearEnd =  moment(dateObj).endOf('year').add(endDateOffset, 'days').format('YYYY.MM.DD');
@@ -666,6 +624,10 @@ router.post('/api/getScopeData',(req, res, next) => {
       scopeDataQuery += ` d.date<='${yearEnd}' AND d.date>='${yearStart}' ORDER BY d.date`;
       splitDataQuery += ` date<='${yearEnd}' AND date>='${yearStart}'`;
     }
+
+    scopeDataQuery += ` LIMIT ${startLimit},${endLimit}`;
+
+    console.log(scopeDataQuery);
 
     database.query(scopeDataQuery)
     .then (rows => {
@@ -1058,5 +1020,31 @@ router.get('/api/getSplitData',(req, res, next) => {
       next(err); 
   });
 });
+
+function getStartDateOffset(startDateOffset) {
+  if(startDateOffset > 2) {
+    startDateOffset = 7 - (startDateOffset -2);
+  } else if (startDateOffset === 1) {
+    startDateOffset = 1;
+  } else if (startDateOffset === 0) {
+    startDateOffset = 2;
+  } else {
+    startDateOffset = 0;
+  }
+
+  return startDateOffset;
+}
+
+function getEndDateOffset(endDateOffset) {
+  if(endDateOffset > 1) {
+    endDateOffset = 7 - (endDateOffset - 1);
+  } else if (endDateOffset === 0) {
+    endDateOffset = 1;
+  } else {
+    endDateOffset = 0;
+  }
+
+  return endDateOffset;
+}
 
 module.exports = router;

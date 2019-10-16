@@ -35,7 +35,8 @@ export class DailyDataComponent implements OnInit {
     this.dailyDataSource.paginator = paginator;
   }
 
-  constructor(private dataService: DataService,  private snackBar: MatSnackBar) { }
+  constructor(private dataService: DataService,  private snackBar: MatSnackBar,
+    private changeDetectorRefs: ChangeDetectorRef) { }
 
   ngOnInit() {
     this.dataForm = new FormGroup({
@@ -57,7 +58,7 @@ export class DailyDataComponent implements OnInit {
     this.dataService.getDailyData({startLimit: sOffset, endLimit: eOffset}).subscribe((response) => {
       if (response.dailyData.length > 0) {
         this.dailyDataSource.data = this.dailyDataSource.data.concat(response.dailyData);
-
+        this.dataLoaded = true;
         if (this.dailyDataSource.paginator) {
           const subscription = !this.isDataComplete && this.dailyDataSource.paginator.page.subscribe((data) => {
             const isDataFetchRequired = (data.pageIndex > data.previousPageIndex);
@@ -70,24 +71,27 @@ export class DailyDataComponent implements OnInit {
               } else {
                 this.fetchData(this.dailyDataSource.data.length + 1, 200);
               }
+              this.dataLoaded = true;
               subscription.unsubscribe();
             }
           });
         }
       } else {
         this.isDataComplete = true;
+        this.dataLoaded = true;
         console.log('data complete');
       }
     },
     (error) => {
       this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
     });
-    this.dataLoaded = true;
   }
 
   updateData(sOffset: number = 1, eOffset: number = 300) {
+    this.dataLoaded = false;
     if (this.isResetData) {
-      this.dailyDataSource = new MatTableDataSource();
+      this.dailyDataSource.data = [];
+      this.changeDetectorRefs.detectChanges();
     }
 
     this.isFilteredData = true;
@@ -101,19 +105,20 @@ export class DailyDataComponent implements OnInit {
     this.dataService.getDailyDataByFilter(filterConfig).subscribe((response) => {
       if (response.dailyData.length > 0) {
         this.dailyDataSource.data = this.dailyDataSource.data.concat(response.dailyData);
-
+        this.dataLoaded = true;
         if (this.dailyDataSource.paginator) {
           const subscription = this.dailyDataSource.paginator.page.subscribe((data) => {
+            this.dataLoaded = false;
             const isDataFetchRequired = (data.pageIndex > data.previousPageIndex);
 
             if (isDataFetchRequired) {
-              this.dataLoaded = false;
               if (this.isFilteredData) {
                 this.isResetData = false;
                 this.updateData(this.dailyDataSource.data.length + 1, 200);
               } else {
                 this.fetchData(this.dailyDataSource.data.length + 1, 200);
               }
+              this.dataLoaded = true;
               subscription.unsubscribe();
             }
           });
@@ -124,9 +129,9 @@ export class DailyDataComponent implements OnInit {
       }
     },
     (error) => {
+      this.dataLoaded = true;
       this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
     });
-    this.dataLoaded = true;
   }
 
   highlightRow(index) {

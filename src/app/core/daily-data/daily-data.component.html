@@ -25,14 +25,14 @@
           <div class="col-sm-4"></div>
         </div>
         <div class="row button-wrapper">
-          <button mat-raised-button [disabled]="!dataForm.valid">Search</button>
+          <button mat-raised-button [disabled]="!dataForm.valid" type="submit">Search</button>
         </div>
       </form>
     </div>
   </div>
-  <div class="data-container mat-elevation-z8">
+  <div class="data-container mat-elevation-z8" *ngIf="dataLoaded; else placeholderText">
     <div #tableTop></div>
-    <table mat-table [dataSource]="dailyDataSource" *ngIf="dataLoaded; else placeholderText">
+    <table mat-table [dataSource]="dailyDataSource">
       <ng-container matColumnDef="date">
         <th mat-header-cell *matHeaderCellDef> Date </th>
         <td mat-cell *matCellDef="let element"> {{element.date}} </td>
@@ -120,6 +120,11 @@
       </div>
     </div>
   </div>
+  <mat-progress-spinner
+    *ngIf="!dataLoaded"
+    class="app-spinner"
+    mode="indeterminate">
+  </mat-progress-spinner>
   <div class="scroll-container" *ngIf="dataLoaded">
     <div class="scrollTo">
       <i class="material-icons" (click)="scroll(tableTop)">expand_less</i>
@@ -131,10 +136,5 @@
   <ng-template #placeholderText>
     <p class="placeholderText">{{placeHolderText}}</p>
   </ng-template>
-  <mat-progress-spinner
-    *ngIf="!dataLoaded"
-    class="app-spinner"
-    mode="indeterminate">
-  </mat-progress-spinner>
 </div>
 

@@ -7,6 +7,12 @@
 
   .data-table {
     padding: 0;
+    display: none;
+
+    &.showTableWrapper {
+      display: block;
+    }
+    
     table {
       width: 100%;
     }
@@ -65,6 +71,14 @@
 
     input {
       padding: 0 0.5rem;
+    }
+  }
+}
+
+::ng-deep {
+  .mat-paginator {
+    .mat-paginator-range-label, .mat-paginator-navigation-first, .mat-paginator-navigation-last {
+      display: none;
     }
   }
 }
