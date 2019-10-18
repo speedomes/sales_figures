@@ -76,6 +76,10 @@ html, body {
       box-shadow: none;
       border-color: $border-grey;
     }
+
+    &[readonly] {
+      background-color: #e9ecef;
+    }
   }
 
   .page-title {

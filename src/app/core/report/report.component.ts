@@ -8,6 +8,8 @@ import { AngularCsv } from 'angular-csv-ext/dist/Angular-csv';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { DataService } from 'src/app/data.service';
 import { MatTableDataSource } from '@angular/material/table';
+import { SnackBarComponent } from 'src/app/shared/snack-bar/snack-bar.component';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-report',
@@ -36,8 +38,7 @@ export class ReportComponent implements OnInit {
   @ViewChild('cPaginator', {static: false}) cPaginator: MatPaginator;
   @ViewChild('cSort', {static: false}) cSort: MatSort;
 
-  constructor(private dataService: DataService,
-    private changeDetectorRefs: ChangeDetectorRef) { }
+  constructor(private dataService: DataService, private changeDetectorRefs: ChangeDetectorRef, private snackBar: MatSnackBar) { }
 
   ngOnInit() {
     this.reportForm = new FormGroup({
@@ -78,12 +79,14 @@ export class ReportComponent implements OnInit {
       this.newClientsDataSource.paginator = this.cPaginator;
       this.newClientsDataSource.sort = this.cSort;
       this.changeDetectorRefs.detectChanges();
+    },
+    (error) => {
+      this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
     });
   }
 
   exportToCSV() {
     const dataLabels = ['Name', 'Office', 'Week', 'Month', 'Year','','Name', 'Office', 'Week', 'Month', 'Year'];
-      
     const csvOptions = {
       fieldSeparator: ',',
       quoteStrings: '"',
@@ -96,12 +99,12 @@ export class ReportComponent implements OnInit {
       headers: dataLabels,
       nullToEmptyString: true,
     };
-    
-    let dataCollection = [];
+
+    const dataCollection = [];
 
     this.pulledDataSource.data.forEach((data: any, index) => {
       const data1: any = this.newClientsDataSource.data[index];
-      let reportObj = {
+      const reportObj = {
         name: data.repName,
         office: data.officeName,
         week: data.wData,
@@ -118,5 +121,13 @@ export class ReportComponent implements OnInit {
     });
 
     new AngularCsv(dataCollection, "Report", csvOptions);
+  }
+
+  displaySnackbar(msg: string, className: string = 'primary') {
+    this.snackBar.openFromComponent(SnackBarComponent, {
+      duration: 5000,
+      data: { message: msg },
+      panelClass: className
+    });
   }
 }

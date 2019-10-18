@@ -3,21 +3,28 @@
   <form [formGroup]="reportForm" (ngSubmit)="generateReport()">
     <div class="data-filter">
       <div class="row">
-        <mat-form-field class="filter-option col-sm-2">
-          <mat-label>Select a Year</mat-label>
-          <mat-select formControlName="year">
+        <div class="filter-option col-sm-2">
+          <mat-label>Year</mat-label>
+          <mat-select formControlName="year" class="form-control">
+            <mat-option value="">Select</mat-option>
             <mat-option [value]="y.year" *ngFor="let y of years">{{y.year}}</mat-option>
           </mat-select>
-        </mat-form-field>
+        </div>
     
-        <mat-form-field class="filter-option col-sm-2">
-          <mat-label>Select a Week</mat-label>
-          <mat-select formControlName="week">
+        <div class="filter-option col-sm-2">
+          <mat-label>Week</mat-label>
+          <mat-select formControlName="week" class="form-control">
+            <mat-option value="">Select</mat-option>
             <mat-option *ngFor="let no of totalWeeks" [value]="no">{{no}}</mat-option>
           </mat-select>
-        </mat-form-field>
-    
-        <div class="col-sm-2 export-csv-button-wrapper">
+        </div>
+      </div>
+
+      <div class="row generate-report-button-wrapper">
+        <div class="generate-report-button col-sm-auto">
+          <button mat-raised-button type="submit" [disabled]="!reportForm.valid">Generate Report</button>
+        </div>
+        <div class="export-csv-button-wrapper col-sm-auto">
           <button
             class="export-csv-button"
             mat-raised-button
@@ -26,12 +33,6 @@
             >
             Save to CSV
           </button>
-        </div>
-      </div>
-
-      <div class="row generate-report-button-wrapper">
-        <div class="generate-report-button">
-          <button mat-raised-button type="submit" [disabled]="!reportForm.valid">Generate Report</button>
         </div>
       </div>
     </div>

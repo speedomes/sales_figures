@@ -148,6 +148,17 @@ export class DataFilterByValueComponent implements OnInit {
     };
   }
 
+  resetForm() {
+    this.dataForm.reset();
+    this.dataForm.patchValue({
+      year: '',
+      month: '',
+      week: '',
+      office: '',
+      rep: ''
+    });
+  }
+
   displaySnackbar(msg: string, className: string = 'primary') {
     this.snackBar.openFromComponent(SnackBarComponent, {
       duration: 5000,
@@ -155,5 +166,4 @@ export class DataFilterByValueComponent implements OnInit {
       panelClass: className
     });
   }
-
 }

@@ -22,12 +22,19 @@
     }
 
     .generate-report-button-wrapper {
-      margin: 1rem 0;
+      margin: 3rem 0;
       justify-content: center;
     }
 
     .filter-option {
       display: inline-block;
+      
+      mat-label {
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 1rem;
+      }
     }
   }
 
