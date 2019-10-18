@@ -1,8 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { MatTableDataSource } from '@angular/material/table';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DataService } from 'src/app/data.service';
 import { SnackBarComponent } from 'src/app/shared/snack-bar/snack-bar.component';
@@ -18,8 +15,10 @@ export class AddDataComponent implements OnInit {
   filterType: string;
   dataForm: FormGroup;
   dataEntryForm: FormGroup;
-  isEnableSaveRecord: boolean = false;
+  isEnableSaveRecord = false;
   existingOrderId;
+  hasSplitData = false;
+  splitDataId: number;
 
   doFilter = {
     offices: [],
@@ -89,6 +88,7 @@ export class AddDataComponent implements OnInit {
 
   fetchRepsByOffice(id) {
     if (id!== '' && id!== 'all') {
+      this.dataEntryForm.patchValue({ rep: ''});
       this.dataService.getReps({officeId: id}).subscribe((response) => {
         if (response) {
           this.doFilter.reps = response.reps;
@@ -127,6 +127,8 @@ export class AddDataComponent implements OnInit {
           repVehicle: record.vehicle_id,
         };
         this.dataEntryForm.patchValue(repData);
+      } else {
+        this.displaySnackbar('No data found');
       }
 
       if (response.officeRecords.length > 0) {
@@ -144,7 +146,9 @@ export class AddDataComponent implements OnInit {
       }
 
       if (response.splitRecords.length > 0) {
+        this.hasSplitData = true;
         const splitRecord = response.splitRecords[0];
+        this.splitDataId = splitRecord.id;
         const splitData = {
           cash: splitRecord.cash,
           cards: splitRecord.cards,
@@ -165,7 +169,7 @@ export class AddDataComponent implements OnInit {
     } else {
       this.addRecord();
     }
-    this.dataEntryForm.reset();
+    this.resetForm();
   }
 
   addRecord() {
@@ -185,7 +189,8 @@ export class AddDataComponent implements OnInit {
     };
 
     this.dataService.addRecord(recordDetails).subscribe((response: any) => {
-      console.log(response);
+      this.displaySnackbar('Record has been saved successfully');
+      this.resetForm();
     },
     (error) => {
       this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
@@ -210,7 +215,8 @@ export class AddDataComponent implements OnInit {
     };
 
     this.dataService.updateRecord(recordDetails).subscribe((response: any) => {
-      console.log(response);
+      this.displaySnackbar('Record data has been updated successfully');
+      this.resetForm();
     },
     (error) => {
       this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
@@ -221,14 +227,52 @@ export class AddDataComponent implements OnInit {
     const splitRecord = {
       cash: this.dataEntryForm.get('cash').value,
       cards: this.dataEntryForm.get('cards').value,
-      viu: this.dataEntryForm.get('viu').value
+      viu: this.dataEntryForm.get('viu').value,
+      officeId: this.dataEntryForm.get('office').value,
+      date: this.dataEntryForm.get('date').value,
+      id: this.splitDataId || -1
     };
 
-    this.dataService.saveSplit(splitRecord).subscribe((response: any) => {
+    if (this.hasSplitData) {
+      this.dataService.updateSplit(splitRecord).subscribe((response: any) => {
+        this.displaySnackbar('Split data has been updated successfully');
+        this.resetForm();
+      },
+      (error) => {
+        this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
+      });
+    } else {
+      this.dataService.saveSplit(splitRecord).subscribe((response: any) => {
+        this.displaySnackbar('Split data has been saved successfully');
+        
+      },
+      (error) => {
+        this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
+      });
+    }
+  }
+
+  getKPIData() {
+    const filterConfig = {
+      date: this.dataEntryForm.get('date').value,
+      repId: this.dataEntryForm.get('rep').value,
+      officeId: this.dataEntryForm.get('office').value
+    };
+
+    this.dataService.getKPIData(filterConfig).subscribe((response: any) => {
       console.log(response);
     },
     (error) => {
       this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
+    });
+  }
+
+  resetForm() {
+    this.dataEntryForm.reset();
+    this.dataEntryForm.patchValue({
+      rep: '',
+      office: '',
+      repVehicle: ''
     });
   }
 

@@ -108,4 +108,12 @@ export class DataService {
   saveSplit(data: {}): Observable<any> {
     return this.httpClient.post(this.API_URL + 'saveSplit', data);
   }
+
+  updateSplit(data: {}): Observable<any> {
+    return this.httpClient.post(this.API_URL + 'updateSplit', data);
+  }
+
+  getKPIData(data: {}): Observable<any> {
+    return this.httpClient.post(this.API_URL + 'getKPIData', data);
+  }
 }

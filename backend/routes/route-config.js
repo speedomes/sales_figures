@@ -673,7 +673,7 @@ router.post('/api/checkRecord',(req, res, next) => {
     sum(d.credit) as credit, sum(d.inuse) as inuse, sum(d.t1) as day1, sum(d.t2) as day2
     from daily AS d JOIN reps AS r ON d.rep_id = r.id JOIN office AS o ON r.office_id = o.id WHERE 
     o.id='${req.body.officeId}' AND d.date='${dateToFilter}'`;
-  const splitQuery = `SELECT cash, cards, viu FROM split WHERE office_id='${req.body.officeId}' AND date='${dateToFilter}'`;
+  const splitQuery = `SELECT id, cash, cards, viu FROM split WHERE office_id='${req.body.officeId}' AND date='${dateToFilter}'`;
 
   database.query(recordQuery)
   .then (rows => {
@@ -757,10 +757,24 @@ router.post('/api/updateRecord',(req, res) => {
 });
 
 router.post('/api/saveSplit',(req, res) => {
-  const addRecordQuery = ``;
+  const saveSplitQuery = `Insert split(date, office_id, cash, cards, viu ) VALUES (${req.body.date}, ${req.body.officeId}, ${req.body.cash}, 
+    ${req.body.cards}, ${req.body.viu})`;
 
-  console.log(addRecordQuery);
-  database.query(addRecordQuery)
+  database.query(saveSplitQuery)
+  .then (() => {
+    res.status(201).json({
+      message: 'Split record has been added successfully',
+    });
+  })
+  .catch(err => {
+    next(err); 
+  });
+});
+
+router.post('/api/updateSplit',(req, res) => {
+  const updateSplitQuery = `Update split  SET cash=${req.body.cash}, cards=${req.body.cards}, viu=${req.body.viu} WHERE id=${req.body.id}`;
+
+  database.query(updateSplitQuery)
   .then (() => {
     res.status(201).json({
       message: 'Split record has been updated successfully',
@@ -769,6 +783,23 @@ router.post('/api/saveSplit',(req, res) => {
   .catch(err => {
     next(err); 
   });
+});
+
+router.post('/api/getKPIData',(req, res) => {
+  const getKPIDataQuery = `SELECT sum(sold), sum(pulled), sum(newclients), sum(credit), sum(inuse), sum(t1), sum(t2) from daily
+    WHERE rep_id=${req.body.repId}`;
+
+  const dateToFilter = moment(req.body.date).format('YYYY.MM.DD');
+
+  // database.query(updateSplitQuery)
+  // .then (() => {
+  //   res.status(201).json({
+  //     message: 'Split record has been updated successfully',
+  //   });
+  // })
+  // .catch(err => {
+  //   next(err); 
+  // });
 });
 
 router.get('/api/getOffices',(req, res, next) => {

@@ -111,7 +111,7 @@
               <mat-label>N/C</mat-label>
               <input matInput class="form-control" readonly formControlName="officeNewClients">
             </div>
-            <div class="col-1">
+            <div class="col-2">
               <mat-label>Credit</mat-label>
               <input matInput class="form-control" readonly formControlName="officeCredit">
             </div>
@@ -151,7 +151,7 @@
 
         <div class="row justify-center button-container">
           <button mat-raised-button (click)="saveSplit()" [disabled]="!isEnableSaveRecord">Save Split</button>
-          <button mat-raised-button [disabled]="!isEnableSaveRecord">Update</button>
+          <button mat-raised-button [disabled]="!isEnableSaveRecord" (click)="getKPIData()">Update</button>
         </div>
 
         <div class="row justify-center">
