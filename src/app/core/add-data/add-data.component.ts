@@ -60,7 +60,49 @@ export class AddDataComponent implements OnInit {
       cash: new FormControl(''),
       cards: new FormControl(''),
       totalPayment: new FormControl(''),
-      viu: new FormControl('')
+      viu: new FormControl(''),
+      repWSold: new FormControl(''),
+      repWPulled: new FormControl(''),
+      repWNewClients: new FormControl(''),
+      repWCredit: new FormControl(''),
+      repWInt: new FormControl(''),
+      repWTra1: new FormControl(''),
+      repWTra2: new FormControl(''),
+      repMSold: new FormControl(''),
+      repMPulled: new FormControl(''),
+      repMNewClients: new FormControl(''),
+      repMCredit: new FormControl(''),
+      repMInt: new FormControl(''),
+      repMTra1: new FormControl(''),
+      repMTra2: new FormControl(''),
+      repYSold: new FormControl(''),
+      repYPulled: new FormControl(''),
+      repYNewClients: new FormControl(''),
+      repYCredit: new FormControl(''),
+      repYInt: new FormControl(''),
+      repYTra1: new FormControl(''),
+      repYTra2: new FormControl(''),
+      officeWSold: new FormControl(''),
+      officeWPulled: new FormControl(''),
+      officeWNewClients: new FormControl(''),
+      officeWCredit: new FormControl(''),
+      officeWInt: new FormControl(''),
+      officeWTra1: new FormControl(''),
+      officeWTra2: new FormControl(''),
+      officeMSold: new FormControl(''),
+      officeMPulled: new FormControl(''),
+      officeMNewClients: new FormControl(''),
+      officeMCredit: new FormControl(''),
+      officeMInt: new FormControl(''),
+      officeMTra1: new FormControl(''),
+      officeMTra2: new FormControl(''),
+      officeYSold: new FormControl(''),
+      officeYPulled: new FormControl(''),
+      officeYNewClients: new FormControl(''),
+      officeYCredit: new FormControl(''),
+      officeYInt: new FormControl(''),
+      officeYTra1: new FormControl(''),
+      officeYTra2: new FormControl('')
     });
 
     this.dataService.getOffices().subscribe((response) => {
@@ -103,6 +145,7 @@ export class AddDataComponent implements OnInit {
   }
 
   checkRecord() {
+    this.resetKPIData();
     const data = {
       repId: this.dataEntryForm.get('rep').value,
       officeId: this.dataEntryForm.get('office').value,
@@ -260,7 +303,54 @@ export class AddDataComponent implements OnInit {
     };
 
     this.dataService.getKPIData(filterConfig).subscribe((response: any) => {
-      console.log(response);
+      if (Object.entries(response.data).length > 0) {
+        this.dataEntryForm.patchValue({
+          repWSold: response.data.repWSold,
+          repWPulled: response.data.repWPulled,
+          repWNewClients: response.data.repWNewClients,
+          repWCredit: response.data.repWCredit.toFixed(2),
+          repWInt: response.data.repWInt,
+          repWTra1: response.data.repWTra1,
+          repWTra2: response.data.repWTra2,
+          repMSold: response.data.repMSold,
+          repMPulled: response.data.repMPulled,
+          repMNewClients: response.data.repMNewClients,
+          repMCredit: response.data.repMCredit.toFixed(2),
+          repMInt: response.data.repMInt,
+          repMTra1: response.data.repMTra1,
+          repMTra2: response.data.repMTra2,
+          repYSold: response.data.repYSold,
+          repYPulled: response.data.repYPulled,
+          repYNewClients: response.data.repYNewClients,
+          repYCredit: response.data.repYCredit.toFixed(2),
+          repYInt: response.data.repYInt,
+          repYTra1: response.data.repYTra1,
+          repYTra2: response.data.repYTra2,
+          officeWSold: response.data.officeWSold,
+          officeWPulled: response.data.officeWPulled,
+          officeWNewClients: response.data.officeWNewClients,
+          officeWCredit: response.data.officeWCredit.toFixed(2),
+          officeWInt: response.data.officeWInt,
+          officeWTra1: response.data.officeWTra1,
+          officeWTra2: response.data.officeWTra2,
+          officeMSold: response.data.officeMSold,
+          officeMPulled: response.data.officeMPulled,
+          officeMNewClients: response.data.officeMNewClients,
+          officeMCredit: response.data.officeMCredit.toFixed(2),
+          officeMInt: response.data.officeMInt,
+          officeMTra1: response.data.officeMTra1,
+          officeMTra2: response.data.officeMTra2,
+          officeYSold: response.data.officeYSold,
+          officeYPulled: response.data.officeYPulled,
+          officeYNewClients: response.data.officeYNewClients,
+          officeYCredit: response.data.officeYCredit.toFixed(2),
+          officeYInt: response.data.officeYInt,
+          officeYTra1: response.data.officeYTra1,
+          officeYTra2: response.data.officeYTra2
+        });
+      } else {
+        this.displaySnackbar('No data found');
+      }
     },
     (error) => {
       this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
@@ -273,6 +363,53 @@ export class AddDataComponent implements OnInit {
       rep: '',
       office: '',
       repVehicle: ''
+    });
+  }
+
+  resetKPIData() {
+    this.dataEntryForm.patchValue({
+      repWSold: '',
+      repWPulled: '',
+      repWNewClients: '',
+      repWCredit: '',
+      repWInt: '',
+      repWTra1: '',
+      repWTra2: '',
+      repMSold: '',
+      repMPulled: '',
+      repMNewClients: '',
+      repMCredit: '',
+      repMInt: '',
+      repMTra1: '',
+      repMTra2: '',
+      repYSold: '',
+      repYPulled: '',
+      repYNewClients: '',
+      repYCredit: '',
+      repYInt: '',
+      repYTra1: '',
+      repYTra2: '',
+      officeWSold: '',
+      officeWPulled: '',
+      officeWNewClients: '',
+      officeWCredit: '',
+      officeWInt: '',
+      officeWTra1: '',
+      officeWTra2: '',
+      officeMSold: '',
+      officeMPulled: '',
+      officeMNewClients: '',
+      officeMCredit: '',
+      officeMInt: '',
+      officeMTra1: '',
+      officeMTra2: '',
+      officeYSold: '',
+      officeYPulled: '',
+      officeYNewClients: '',
+      officeYCredit: '',
+      officeYInt: '',
+      officeYTra1: '',
+      officeYTra2: ''
     });
   }
 
