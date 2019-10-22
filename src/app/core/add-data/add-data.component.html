@@ -24,7 +24,13 @@
           </div>
           <div class="col-sm-2 date-wrapper">
             <mat-label class="subHeader">Date</mat-label>
-            <input matInput [matDatepicker]="dp" placeholder="Pick a Date" class="form-control" formControlName="date" (click)="dp.open()">
+            <input matInput
+              [matDatepicker]="dp"
+              placeholder="Pick a Date"
+              class="form-control"
+              formControlName="date"
+              [max]="maxDate"
+              (click)="dp.open()">
             <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
             <mat-datepicker #dp></mat-datepicker>
           </div>

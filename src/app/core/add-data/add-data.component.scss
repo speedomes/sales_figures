@@ -33,6 +33,10 @@
             right: 1rem;
             bottom: 0%;
           }
+
+          .mat-datepicker-toggle-active {
+            color: $primary-color;
+          }
         }
 
         .check-wrapper {
@@ -90,6 +94,17 @@
           background: $primary-color;
           color: $white;
         }
+      }
+    }
+  }
+}
+
+::ng-deep {
+  .mat-datepicker-toggle {
+    button {
+      &:focus {
+        outline: none;
+        background-color: transparent;
       }
     }
   }

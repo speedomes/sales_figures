@@ -196,4 +196,20 @@ html, body {
       }
     }
   }
+
+  .mat-calendar-body-cell {
+    .mat-calendar-body-cell-content {
+      &.mat-calendar-body-today {
+        background-color: $primary-color !important;
+        border-color: transparent;
+        color: $white;
+      }
+    }
+  }
+
+  .mat-calendar-previous-button, .mat-calendar-next-button {
+    &:focus {
+      outline: none;
+    }
+  }
 }

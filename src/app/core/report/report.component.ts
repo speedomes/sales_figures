@@ -61,8 +61,8 @@ export class ReportComponent implements OnInit {
   }
 
   generateReport() {
-    this.startDate = moment(moment().isoWeekYear(this.reportForm.get('year').value).isoWeekday('Tuesday').isoWeek(this.reportForm.get('week').value).toDate()).format('YYYY.MM.DD');
-    this.endDate = moment(moment().isoWeekYear(this.reportForm.get('year').value).isoWeekday('Monday').isoWeek(this.reportForm.get('week').value + 1).toDate()).format('YYYY.MM.DD');;
+    this.startDate = moment(moment().isoWeekYear(this.reportForm.get('year').value).isoWeekday('Tuesday').isoWeek(this.reportForm.get('week').value).toDate()).format('DD.MM.YYYY');
+    this.endDate = moment(moment().isoWeekYear(this.reportForm.get('year').value).isoWeekday('Monday').isoWeek(this.reportForm.get('week').value + 1).toDate()).format('DD.MM.YYYY');;
     this.dataService.getReport({
       year: this.reportForm.get('year').value,
       week: this.reportForm.get('week').value,

@@ -4,6 +4,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { DataService } from 'src/app/data.service';
 import { SnackBarComponent } from 'src/app/shared/snack-bar/snack-bar.component';
 import { environment } from 'src/environments/environment';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-add-data',
@@ -19,6 +20,7 @@ export class AddDataComponent implements OnInit {
   existingOrderId;
   hasSplitData = false;
   splitDataId: number;
+  maxDate = moment().toISOString();
 
   doFilter = {
     offices: [],
@@ -358,11 +360,30 @@ export class AddDataComponent implements OnInit {
   }
 
   resetForm() {
-    this.dataEntryForm.reset();
     this.dataEntryForm.patchValue({
       rep: '',
       office: '',
-      repVehicle: ''
+      repVehicle: '',
+      repSold: '',
+      repPulled: '',
+      repNC: '',
+      repCredit: '',
+      repInt: '',
+      repDay1: '',
+      repDay2: '',
+      repBalance: '',
+      repBalanceB: '',
+      officeSold: '',
+      officePulled: '',
+      officeNewClients: '',
+      officeCredit: '',
+      officeInt: '',
+      officeDay1: '',
+      officeDay2: '',
+      cash: '',
+      cards: '',
+      totalPayment: '',
+      viu: ''
     });
   }
 

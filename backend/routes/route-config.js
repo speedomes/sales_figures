@@ -3,6 +3,7 @@ const router = express.Router();
 const moment = require('moment');
 const Promise = require('promise');
 const mysql = require('mysql');
+const dateFormat = 'DD.MM.YYYY';
 
 class Database {
   constructor(config) {
@@ -67,12 +68,12 @@ router.post('/api/getDashboardData',(req, res, next) => {
 
   if(req.body.year !== '') {
     const dateObj = moment().isoWeekYear(parseInt(req.body.year)).toDate();
-    let startDate = moment(dateObj).startOf('year').format('YYYY.MM.DD');
-    let endDate = moment(dateObj).endOf('year').format('YYYY.MM.DD');
+    let startDate = moment(dateObj).startOf('year').format(dateFormat);
+    let endDate = moment(dateObj).endOf('year').format(dateFormat);
 
     if(req.body.month !== '') {
-      startDate = moment(dateObj).month(req.body.month-1).startOf('month').format('YYYY.MM.DD');
-      endDate = moment(dateObj).month(req.body.month-1).endOf('month').format('YYYY.MM.DD');
+      startDate = moment(dateObj).month(req.body.month-1).startOf('month').format(dateFormat);
+      endDate = moment(dateObj).month(req.body.month-1).endOf('month').format(dateFormat);
       
       if(req.body.week !== '') {
         let monthStart = moment(dateObj).month(req.body.month-1).startOf('month').startOf('isoWeek').isoWeekday('Tuesday');
@@ -111,7 +112,7 @@ router.post('/api/getDashboardData',(req, res, next) => {
         endDate = weekArray[req.body.week - 1].end;
 
         for (let count=0; count<= endDate.diff(startDate, 'days'); count++) {
-          const filterDate = startDate.clone().add(count, 'days').format('YYYY.MM.DD');
+          const filterDate = startDate.clone().add(count, 'days').format(dateFormat);
           const weekQuery = dashboardQuery + ` date='${filterDate}'`;
 
           dashboardPromiseArray.push(database.query(weekQuery)
@@ -172,8 +173,8 @@ router.post('/api/getDashboardData',(req, res, next) => {
         endDate = weekEnd;
 
         while(isMonthEnd) {
-          const start = startDate.format('YYYY.MM.DD');
-          const end = endDate.format('YYYY.MM.DD');
+          const start = startDate.format(dateFormat);
+          const end = endDate.format(dateFormat);
           const weekQuery = dashboardQuery + ` date<='${end}' and date>='${start}'`;
           const week = weekNo;
           
@@ -241,8 +242,8 @@ router.post('/api/getDashboardData',(req, res, next) => {
         let endDateOffset = moment(dateObj).month(count).endOf('month').day();
         endDateOffset = getEndDateOffset(endDateOffset);
 
-        const monthStart = moment(dateObj).month(count).startOf('month').add(startDateOffset, 'days').format('YYYY.MM.DD');
-        const monthEnd =  moment(dateObj).month(count).endOf('month').add(endDateOffset, 'days').format('YYYY.MM.DD');
+        const monthStart = moment(dateObj).month(count).startOf('month').add(startDateOffset, 'days').format(dateFormat);
+        const monthEnd =  moment(dateObj).month(count).endOf('month').add(endDateOffset, 'days').format(dateFormat);
 
         const monthQuery = dashboardQuery + ` date<='${monthEnd}' and date>='${monthStart}'`;
         let monthlyData = [];
@@ -270,8 +271,8 @@ router.post('/api/getDashboardData',(req, res, next) => {
           let endDateOffset = moment(dateObj).month(count).endOf('month').day();
           endDateOffset = getEndDateOffset(endDateOffset);
 
-          const monthStart = moment(dateObj).month(count).startOf('month').add(startDateOffset, 'days').format('YYYY.MM.DD');
-          const monthEnd =  moment(dateObj).month(count).endOf('month').add(endDateOffset, 'days').format('YYYY.MM.DD');
+          const monthStart = moment(dateObj).month(count).startOf('month').add(startDateOffset, 'days').format(dateFormat);
+          const monthEnd =  moment(dateObj).month(count).endOf('month').add(endDateOffset, 'days').format(dateFormat);
 
           let hQuery = '';
           hQuery = holidayQuery + ` and date<='${monthEnd}' and date>='${monthStart}'`;
@@ -325,9 +326,9 @@ router.post('/api/getDashboardData',(req, res, next) => {
       if(endDate.year() === year) {
         endDate = endDate.add(7, 'days');
       }
-      const yearQuery = dashboardQuery + ` date<='${endDate.format('YYYY.MM.DD')}' and date>='${startDate.format('YYYY.MM.DD')}'`;
+      const yearQuery = dashboardQuery + ` date<='${endDate.format(dateFormat)}' and date>='${startDate.format(dateFormat)}'`;
       let hQuery = '';
-      hQuery = holidayQuery + ` and date<='${endDate.format('YYYY.MM.DD')}' and date>='${startDate.format('YYYY.MM.DD')}'`;
+      hQuery = holidayQuery + ` and date<='${endDate.format(dateFormat)}' and date>='${startDate.format(dateFormat)}'`;
 
       let yearlyData = [];
 
@@ -373,12 +374,12 @@ router.get('/api/getYears',(req, res) => {
 router.post('/api/getReport',(req, res, next) => {
   const sDate = moment().isoWeekYear(parseInt(req.body.year)).isoWeekday('Tuesday').isoWeek(parseInt(req.body.week)).toDate();
   const eDate = moment().isoWeekYear(parseInt(req.body.year)).isoWeekday('Monday').isoWeek(parseInt(req.body.week) + 1).toDate();
-  const weekStartDate = moment(sDate).format('YYYY.MM.DD');
-  const weekEndDate = moment(eDate).format('YYYY.MM.DD');
-  const monthStartDate = moment(sDate).startOf('month').format('YYYY.MM.DD');
-  const monthEndDate = moment(eDate).endOf('month').format('YYYY.MM.DD');
-  const yearStartDate = moment(sDate).startOf('year').format('YYYY.MM.DD');
-  const yearEndDate = moment(eDate).endOf('year').format('YYYY.MM.DD');
+  const weekStartDate = moment(sDate).format(dateFormat);
+  const weekEndDate = moment(eDate).format(dateFormat);
+  const monthStartDate = moment(sDate).startOf('month').format(dateFormat);
+  const monthEndDate = moment(eDate).endOf('month').format(dateFormat);
+  const yearStartDate = moment(sDate).startOf('year').format(dateFormat);
+  const yearEndDate = moment(eDate).endOf('year').format(dateFormat);
 
   const wPulledQuery = `select sum(d.pulled) as wData, r.name as repName, 
   o.name as officeName, r.id as repId 
@@ -503,8 +504,8 @@ router.post('/api/getDailyDataByFilter',(req, res, next) => {
       let endDateOffset = moment(dateObj).month(req.body.month-1).endOf('month').day();
       endDateOffset = getEndDateOffset(endDateOffset);
 
-      let monthStart = moment(dateObj).month(req.body.month-1).startOf('month').add(startDateOffset, 'days').format('YYYY.MM.DD');
-      let monthEnd =  moment(dateObj).month(req.body.month-1).endOf('month').add(endDateOffset, 'days').format('YYYY.MM.DD');
+      let monthStart = moment(dateObj).month(req.body.month-1).startOf('month').add(startDateOffset, 'days').format(dateFormat);
+      let monthEnd =  moment(dateObj).month(req.body.month-1).endOf('month').add(endDateOffset, 'days').format(dateFormat);
 
       dailyDataQuery += ` WHERE d.date<='${monthEnd}' AND d.date>='${monthStart}' ORDER BY d.date LIMIT ${startLimit},${endLimit}`;
 
@@ -525,8 +526,8 @@ router.post('/api/getDailyDataByFilter',(req, res, next) => {
       let endDateOffset = moment(dateObj).endOf('year').day();
       endDateOffset = getEndDateOffset(endDateOffset);
 
-      let yearStart = moment(dateObj).startOf('year').add(startDateOffset, 'days').format('YYYY.MM.DD');
-      let yearEnd =  moment(dateObj).endOf('year').add(endDateOffset, 'days').format('YYYY.MM.DD');
+      let yearStart = moment(dateObj).startOf('year').add(startDateOffset, 'days').format(dateFormat);
+      let yearEnd =  moment(dateObj).endOf('year').add(endDateOffset, 'days').format(dateFormat);
 
       dailyDataQuery += ` WHERE d.date<='${yearEnd}' AND d.date>='${yearStart}' ORDER BY d.date LIMIT ${startLimit},${endLimit}`;
 
@@ -593,8 +594,8 @@ router.post('/api/getScopeData',(req, res, next) => {
           }
         }
 
-        weekStart = weekArray[req.body.week - 1].start.format('YYYY.MM.DD');
-        weekEnd = weekArray[req.body.week - 1].end.format('YYYY.MM.DD');
+        weekStart = weekArray[req.body.week - 1].start.format(dateFormat);
+        weekEnd = weekArray[req.body.week - 1].end.format(dateFormat);
 
         scopeDataQuery += ` d.date<='${weekEnd}' AND d.date>='${weekStart}' ORDER BY d.date`;
         splitDataQuery += ` date<='${weekEnd}' AND date>='${weekStart}'`;
@@ -605,8 +606,8 @@ router.post('/api/getScopeData',(req, res, next) => {
         let endDateOffset = moment(dateObj).month(req.body.month-1).endOf('month').day();
         endDateOffset = getEndDateOffset(endDateOffset);
 
-        let monthStart = moment(dateObj).month(req.body.month-1).startOf('month').add(startDateOffset, 'days').format('YYYY.MM.DD');
-        let monthEnd =  moment(dateObj).month(req.body.month-1).endOf('month').add(endDateOffset, 'days').format('YYYY.MM.DD');
+        let monthStart = moment(dateObj).month(req.body.month-1).startOf('month').add(startDateOffset, 'days').format(dateFormat);
+        let monthEnd =  moment(dateObj).month(req.body.month-1).endOf('month').add(endDateOffset, 'days').format(dateFormat);
 
         scopeDataQuery += ` d.date<='${monthEnd}' AND d.date>='${monthStart}' ORDER BY d.date`;
         splitDataQuery += ` date<='${monthEnd}' AND date>='${monthStart}'`;
@@ -618,8 +619,8 @@ router.post('/api/getScopeData',(req, res, next) => {
       let endDateOffset = moment(dateObj).endOf('year').day();
       endDateOffset = getEndDateOffset(endDateOffset);
 
-      let yearStart = moment(dateObj).startOf('year').add(startDateOffset, 'days').format('YYYY.MM.DD');
-      let yearEnd =  moment(dateObj).endOf('year').add(endDateOffset, 'days').format('YYYY.MM.DD');
+      let yearStart = moment(dateObj).startOf('year').add(startDateOffset, 'days').format(dateFormat);
+      let yearEnd =  moment(dateObj).endOf('year').add(endDateOffset, 'days').format(dateFormat);
 
       scopeDataQuery += ` d.date<='${yearEnd}' AND d.date>='${yearStart}' ORDER BY d.date`;
       splitDataQuery += ` date<='${yearEnd}' AND date>='${yearStart}'`;
@@ -667,7 +668,7 @@ router.post('/api/getScopeData',(req, res, next) => {
 });
 
 router.post('/api/checkRecord',(req, res, next) => {
-  const dateToFilter = moment(req.body.date).format('YYYY.MM.DD');
+  const dateToFilter = moment(req.body.date).format(dateFormat);
   const recordQuery = `Select * from daily WHERE rep_id='${req.body.repId}' AND date='${dateToFilter}'`;
   const officeRecordQuery = `Select sum(d.sold) as sold, sum(d.pulled) as pulled, sum(d.newclients) as newClients,
     sum(d.credit) as credit, sum(d.inuse) as inuse, sum(d.t1) as day1, sum(d.t2) as day2
@@ -708,7 +709,7 @@ router.post('/api/checkRecord',(req, res, next) => {
 });
 
 router.post('/api/addRecord',(req, res) => {
-  const dateToFilter = moment(req.body.date).format('YYYY.MM.DD');
+  const dateToFilter = moment(req.body.date).format(dateFormat);
   const addRecordQuery = `Insert daily(date, vehicle_id, sold, pulled, newclients, credit, balance, inuse, t1, t2, rep_id, balanceb)
     VALUES ('${dateToFilter}', '${req.body.vehicleId}', '${req.body.sold}', '${req.body.pulled}', '${req.body.newClients}', '${req.body.credit}',
     '${req.body.balance}', '${req.body.inuse}', '${req.body.day1}', '${req.body.day2}', '${req.body.repId}', '${req.body.balanceB}')`;
@@ -804,8 +805,8 @@ router.post('/api/getKPIData',(req, res) => {
   weekStartOffset = getStartDateOffset(weekStartOffset);
   weekEndOffset = getEndDateOffset(weekEndOffset);
 
-  const weekStart = dateToFilter.startOf('week').add(weekStartOffset, 'days').format('YYYY.MM.DD');
-  const weekEnd = dateToFilter.endOf('week').add(weekEndOffset, 'days').format('YYYY.MM.DD');
+  const weekStart = dateToFilter.startOf('week').add(weekStartOffset, 'days').format(dateFormat);
+  const weekEnd = dateToFilter.endOf('week').add(weekEndOffset, 'days').format(dateFormat);
   const weeklyRKPIDataQuery = getRKPIDataQuery + ` AND date<='${weekEnd}' AND date>='${weekStart}'`;
   const weeklyRTotalSoldQuery = totalRSoldQuery + ` AND date<='${weekEnd}' AND date>='${weekStart}'`;
   const weeklyOKPIDataQuery = getOKPIDataQuery + ` AND date<='${weekEnd}' AND date>='${weekStart}'`;
@@ -816,8 +817,8 @@ router.post('/api/getKPIData',(req, res) => {
   monthStartOffset = getStartDateOffset(monthStartOffset);
   monthEndOffset = getEndDateOffset(monthEndOffset);
 
-  const monthStart = dateToFilter.startOf('month').add(monthStartOffset, 'days').format('YYYY.MM.DD');
-  const monthEnd = dateToFilter.endOf('month').add(monthEndOffset, 'days').format('YYYY.MM.DD');
+  const monthStart = dateToFilter.startOf('month').add(monthStartOffset, 'days').format(dateFormat);
+  const monthEnd = dateToFilter.endOf('month').add(monthEndOffset, 'days').format(dateFormat);
   const monthlyRKPIDataQuery = getRKPIDataQuery + ` AND date<='${monthEnd}' AND date>='${monthStart}'`;
   const monthlyRTotalSoldQuery = totalRSoldQuery + ` AND date<='${monthEnd}' AND date>='${monthStart}'`;
   const monthlyOKPIDataQuery = getOKPIDataQuery + ` AND date<='${monthEnd}' AND date>='${monthStart}'`;
@@ -828,8 +829,8 @@ router.post('/api/getKPIData',(req, res) => {
   yearStartOffset = getStartDateOffset(yearStartOffset);
   yearEndOffset = getEndDateOffset(yearEndOffset);
 
-  const yearStart = dateToFilter.startOf('year').add(yearStartOffset, 'days').format('YYYY.MM.DD');
-  const yearEnd = dateToFilter.startOf('year').add(yearEndOffset, 'days').format('YYYY.MM.DD');
+  const yearStart = dateToFilter.startOf('year').add(yearStartOffset, 'days').format(dateFormat);
+  const yearEnd = dateToFilter.startOf('year').add(yearEndOffset, 'days').format(dateFormat);
   const yearlyRKPIDataQuery = getRKPIDataQuery + ` AND date<='${yearEnd}' AND date>='${yearStart}'`;
   const yearlyRTotalSoldQuery = totalRSoldQuery + ` AND date<='${yearEnd}' AND date>='${yearStart}'`;
   const yearlyOKPIDataQuery = getOKPIDataQuery + ` AND date<='${yearEnd}' AND date>='${yearStart}'`;
@@ -1159,8 +1160,8 @@ router.post('/api/deleteRep',(req, res) => {
 });
 
 router.get('/api/getTotalData',(req, res, next) => {
-  const yearStartDate = moment().startOf('year').format('YYYY.MM.DD');
-  const today = moment().format('YYYY.MM.DD');
+  const yearStartDate = moment().startOf('year').format(dateFormat);
+  const today = moment().format(dateFormat);
 
   const transFlexQuery = `select count(vehicle_id) as count from daily as d 
   join vehicle as v on d.vehicle_id=v.id Where d.date>='${yearStartDate}' 
