@@ -142,6 +142,11 @@ export class AddDataComponent implements OnInit {
       (error) => {
         this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
       });
+    } else {
+      this.doFilter.reps = [];
+      this.dataEntryForm.patchValue({
+        rep: ''
+      });
     }
   }
 
