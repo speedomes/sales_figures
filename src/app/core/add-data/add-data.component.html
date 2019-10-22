@@ -24,7 +24,7 @@
           </div>
           <div class="col-sm-2 date-wrapper">
             <mat-label class="subHeader">Date</mat-label>
-            <input matInput
+            <input matInput type="number"
               [matDatepicker]="dp"
               placeholder="Pick a Date"
               class="form-control"
@@ -51,39 +51,39 @@
           <div class="row justify-center">
             <div class="col-1">
               <mat-label>Sold</mat-label>
-              <input matInput class="form-control" formControlName="repSold">
+              <input matInput type="number" class="form-control" formControlName="repSold">
             </div>
             <div class="col-1">
               <mat-label>Pulled</mat-label>
-              <input matInput class="form-control" formControlName="repPulled">
+              <input matInput type="number" class="form-control" formControlName="repPulled">
             </div>
             <div class="col-1">
               <mat-label>N/C</mat-label>
-              <input matInput class="form-control" formControlName="repNC">
+              <input matInput type="number" class="form-control" formControlName="repNC">
             </div>
             <div class="col-1">
               <mat-label>Credit</mat-label>
-              <input matInput class="form-control" formControlName="repCredit">
+              <input matInput type="number" class="form-control" formControlName="repCredit">
             </div>
             <div class="col-1">
               <mat-label>Int</mat-label>
-              <input matInput class="form-control" formControlName="repInt">
+              <input matInput type="number" class="form-control" formControlName="repInt">
             </div>
             <div class="col-1">
               <mat-label>Day 1</mat-label>
-              <input matInput class="form-control" formControlName="repDay1">
+              <input matInput type="number" class="form-control" formControlName="repDay1">
             </div>
             <div class="col-1">
               <mat-label>Day 2</mat-label>
-              <input matInput class="form-control" formControlName="repDay2">
+              <input matInput type="number" class="form-control" formControlName="repDay2">
             </div>
             <div class="col-1">
               <mat-label>Balance</mat-label>
-              <input matInput class="form-control" formControlName="repBalance">
+              <input matInput type="number" class="form-control" formControlName="repBalance">
             </div>
             <div class="col-1">
               <mat-label>Balance B</mat-label>
-              <input matInput class="form-control" formControlName="repBalanceB">
+              <input matInput type="number" class="form-control" formControlName="repBalanceB">
             </div>
             <div class="col-sm-2">
               <mat-label>Vehicle</mat-label>
@@ -97,7 +97,8 @@
         </div>
 
         <div class="row justify-center button-container">
-          <button mat-raised-button (click)="chooseRecordAction()" [disabled]="!isEnableSaveRecord">Save Record</button>
+          <button mat-raised-button (click)="chooseRecordAction()" 
+          [disabled]="!dataEntryForm.get('rep').valid || !dataEntryForm.get('office').valid || !dataEntryForm.get('date').valid">Save Record</button>
         </div>
 
         <div class="row justify-center office-data-wrapper">
@@ -107,31 +108,31 @@
           <div class="row justify-center">
             <div class="col-1">
               <mat-label>Sold</mat-label>
-              <input matInput class="form-control" readonly formControlName="officeSold">
+              <input matInput type="number" class="form-control" readonly formControlName="officeSold">
             </div>
             <div class="col-1">
               <mat-label>Pulled</mat-label>
-              <input matInput class="form-control" readonly formControlName="officePulled">
+              <input matInput type="number" class="form-control" readonly formControlName="officePulled">
             </div>
             <div class="col-1">
               <mat-label>N/C</mat-label>
-              <input matInput class="form-control" readonly formControlName="officeNewClients">
+              <input matInput type="number" class="form-control" readonly formControlName="officeNewClients">
             </div>
             <div class="col-2">
               <mat-label>Credit</mat-label>
-              <input matInput class="form-control" readonly formControlName="officeCredit">
+              <input matInput type="number" class="form-control" readonly formControlName="officeCredit">
             </div>
             <div class="col-1">
               <mat-label>Int</mat-label>
-              <input matInput class="form-control" readonly formControlName="officeInt">
+              <input matInput type="number" class="form-control" readonly formControlName="officeInt">
             </div>
             <div class="col-1">
               <mat-label>Day 1</mat-label>
-              <input matInput class="form-control" readonly formControlName="officeDay1">
+              <input matInput type="number" class="form-control" readonly formControlName="officeDay1">
             </div>
             <div class="col-1">
               <mat-label>Day 2</mat-label>
-              <input matInput class="form-control" readonly formControlName="officeDay2">
+              <input matInput type="number" class="form-control" readonly formControlName="officeDay2">
             </div>
           </div>
         </div>
@@ -139,24 +140,24 @@
         <div class="row justify-center">
           <div class="col-2">
             <mat-label>Cash/Cheque</mat-label>
-            <input matInput class="form-control" formControlName="cash">
+            <input matInput type="number" class="form-control" formControlName="cash">
           </div>
           <div class="col-2">
             <mat-label>Card Machine</mat-label>
-            <input matInput class="form-control"  formControlName="cards">
+            <input matInput type="number" class="form-control"  formControlName="cards">
           </div>
           <div class="col-2">
             <mat-label>Total</mat-label>
-            <input matInput class="form-control" formControlName="totalPayment" readonly>
+            <input matInput type="number" class="form-control" formControlName="totalPayment" readonly>
           </div>
           <div class="col-2">
             <mat-label>Vehicles in use</mat-label>
-            <input matInput class="form-control" formControlName="viu">
+            <input matInput type="number" class="form-control" formControlName="viu">
           </div>
         </div>
 
         <div class="row justify-center button-container">
-          <button mat-raised-button (click)="saveSplit()" [disabled]="!isEnableSaveRecord">Save Split</button>
+          <button mat-raised-button (click)="saveSplit()" [disabled]="!dataEntryForm.get('rep').valid || !dataEntryForm.get('office').valid || !dataEntryForm.get('date').valid">Save Split</button>
           <button mat-raised-button (click)="getKPIData()">Update</button>
         </div>
 
@@ -174,31 +175,31 @@
           </div>
           <div class="col-sm">
             <mat-label>Sold</mat-label>
-            <input matInput class="form-control" formControlName="repWSold">
+            <input matInput type="number" class="form-control" formControlName="repWSold">
           </div>
           <div class="col-sm">
             <mat-label>Pulled</mat-label>
-            <input matInput class="form-control" formControlName="repWPulled">
+            <input matInput type="number" class="form-control" formControlName="repWPulled">
           </div>
           <div class="col-sm">
             <mat-label>New Clients</mat-label>
-            <input matInput class="form-control" formControlName="repWNewClients">
+            <input matInput type="number" class="form-control" formControlName="repWNewClients">
           </div>
           <div class="col-sm">
             <mat-label>Credit</mat-label>
-            <input matInput class="form-control" formControlName="repWCredit">
+            <input matInput type="number" class="form-control" formControlName="repWCredit">
           </div>
           <div class="col-sm">
             <mat-label>Interviews</mat-label>
-            <input matInput class="form-control" formControlName="repWInt">
+            <input matInput type="number" class="form-control" formControlName="repWInt">
           </div>
           <div class="col-sm">
             <mat-label>Trainees 1</mat-label>
-            <input matInput class="form-control" formControlName="repWTra1">
+            <input matInput type="number" class="form-control" formControlName="repWTra1">
           </div>
           <div class="col-sm">
             <mat-label>Trainees 2</mat-label>
-            <input matInput class="form-control" formControlName="repWTra2">
+            <input matInput type="number" class="form-control" formControlName="repWTra2">
           </div>
         </div>
 
@@ -208,31 +209,31 @@
           </div>
           <div class="col-sm">
             <mat-label>Sold</mat-label>
-            <input matInput class="form-control" formControlName="repMSold">
+            <input matInput type="number" class="form-control" formControlName="repMSold">
           </div>
           <div class="col-sm">
             <mat-label>Pulled</mat-label>
-            <input matInput class="form-control" formControlName="repMPulled">
+            <input matInput type="number" class="form-control" formControlName="repMPulled">
           </div>
           <div class="col-sm">
             <mat-label>New Clients</mat-label>
-            <input matInput class="form-control" formControlName="repMNewClients">
+            <input matInput type="number" class="form-control" formControlName="repMNewClients">
           </div>
           <div class="col-sm">
             <mat-label>Credit</mat-label>
-            <input matInput class="form-control" formControlName="repMCredit">
+            <input matInput type="number" class="form-control" formControlName="repMCredit">
           </div>
           <div class="col-sm">
             <mat-label>Interviews</mat-label>
-            <input matInput class="form-control" formControlName="repMInt">
+            <input matInput type="number" class="form-control" formControlName="repMInt">
           </div>
           <div class="col-sm">
             <mat-label>Trainees 1</mat-label>
-            <input matInput class="form-control" formControlName="repMTra1">
+            <input matInput type="number" class="form-control" formControlName="repMTra1">
           </div>
           <div class="col-sm">
             <mat-label>Trainees 2</mat-label>
-            <input matInput class="form-control" formControlName="repMTra2">
+            <input matInput type="number" class="form-control" formControlName="repMTra2">
           </div>
         </div>
 
@@ -242,31 +243,31 @@
           </div>
           <div class="col-sm">
             <mat-label>Sold</mat-label>
-            <input matInput class="form-control" formControlName="repYSold">
+            <input matInput type="number" class="form-control" formControlName="repYSold">
           </div>
           <div class="col-sm">
             <mat-label>Pulled</mat-label>
-            <input matInput class="form-control" formControlName="repYPulled">
+            <input matInput type="number" class="form-control" formControlName="repYPulled">
           </div>
           <div class="col-sm">
             <mat-label>New Clients</mat-label>
-            <input matInput class="form-control" formControlName="repYNewClients">
+            <input matInput type="number" class="form-control" formControlName="repYNewClients">
           </div>
           <div class="col-sm">
             <mat-label>Credit</mat-label>
-            <input matInput class="form-control" formControlName="repYCredit">
+            <input matInput type="number" class="form-control" formControlName="repYCredit">
           </div>
           <div class="col-sm">
             <mat-label>Interviews</mat-label>
-            <input matInput class="form-control" formControlName="repYInt">
+            <input matInput type="number" class="form-control" formControlName="repYInt">
           </div>
           <div class="col-sm">
             <mat-label>Trainees 1</mat-label>
-            <input matInput class="form-control" formControlName="repYTra1">
+            <input matInput type="number" class="form-control" formControlName="repYTra1">
           </div>
           <div class="col-sm">
             <mat-label>Trainees 2</mat-label>
-            <input matInput class="form-control" formControlName="repYTra2">
+            <input matInput type="number" class="form-control" formControlName="repYTra2">
           </div>
         </div>
 
@@ -280,31 +281,31 @@
           </div>
           <div class="col-sm">
             <mat-label>Sold</mat-label>
-            <input matInput class="form-control" formControlName="officeWSold">
+            <input matInput type="number" class="form-control" formControlName="officeWSold">
           </div>
           <div class="col-sm">
             <mat-label>Pulled</mat-label>
-            <input matInput class="form-control" formControlName="officeWPulled">
+            <input matInput type="number" class="form-control" formControlName="officeWPulled">
           </div>
           <div class="col-sm">
             <mat-label>New Clients</mat-label>
-            <input matInput class="form-control" formControlName="officeWNewClients">
+            <input matInput type="number" class="form-control" formControlName="officeWNewClients">
           </div>
           <div class="col-sm">
             <mat-label>Credit</mat-label>
-            <input matInput class="form-control" formControlName="officeWCredit">
+            <input matInput type="number" class="form-control" formControlName="officeWCredit">
           </div>
           <div class="col-sm">
             <mat-label>Interviews</mat-label>
-            <input matInput class="form-control" formControlName="officeWInt">
+            <input matInput type="number" class="form-control" formControlName="officeWInt">
           </div>
           <div class="col-sm">
             <mat-label>Trainees 1</mat-label>
-            <input matInput class="form-control" formControlName="officeWTra1">
+            <input matInput type="number" class="form-control" formControlName="officeWTra1">
           </div>
           <div class="col-sm">
             <mat-label>Trainees 2</mat-label>
-            <input matInput class="form-control" formControlName="officeWTra2">
+            <input matInput type="number" class="form-control" formControlName="officeWTra2">
           </div>
         </div>
 
@@ -314,31 +315,31 @@
           </div>
           <div class="col-sm">
             <mat-label>Sold</mat-label>
-            <input matInput class="form-control" formControlName="officeMSold">
+            <input matInput type="number" class="form-control" formControlName="officeMSold">
           </div>
           <div class="col-sm">
             <mat-label>Pulled</mat-label>
-            <input matInput class="form-control" formControlName="officeMPulled">
+            <input matInput type="number" class="form-control" formControlName="officeMPulled">
           </div>
           <div class="col-sm">
             <mat-label>New Clients</mat-label>
-            <input matInput class="form-control" formControlName="officeMNewClients">
+            <input matInput type="number" class="form-control" formControlName="officeMNewClients">
           </div>
           <div class="col-sm">
             <mat-label>Credit</mat-label>
-            <input matInput class="form-control" formControlName="officeMCredit">
+            <input matInput type="number" class="form-control" formControlName="officeMCredit">
           </div>
           <div class="col-sm">
             <mat-label>Interviews</mat-label>
-            <input matInput class="form-control" formControlName="officeMInt">
+            <input matInput type="number" class="form-control" formControlName="officeMInt">
           </div>
           <div class="col-sm">
             <mat-label>Trainees 1</mat-label>
-            <input matInput class="form-control" formControlName="officeMTra1">
+            <input matInput type="number" class="form-control" formControlName="officeMTra1">
           </div>
           <div class="col-sm">
             <mat-label>Trainees 2</mat-label>
-            <input matInput class="form-control" formControlName="officeMTra2">
+            <input matInput type="number" class="form-control" formControlName="officeMTra2">
           </div>
         </div>
 
@@ -348,31 +349,31 @@
           </div>
           <div class="col-sm">
             <mat-label>Sold</mat-label>
-            <input matInput class="form-control" formControlName="officeYSold">
+            <input matInput type="number" class="form-control" formControlName="officeYSold">
           </div>
           <div class="col-sm">
             <mat-label>Pulled</mat-label>
-            <input matInput class="form-control" formControlName="officeYPulled">
+            <input matInput type="number" class="form-control" formControlName="officeYPulled">
           </div>
           <div class="col-sm">
             <mat-label>New Clients</mat-label>
-            <input matInput class="form-control" formControlName="officeYNewClients">
+            <input matInput type="number" class="form-control" formControlName="officeYNewClients">
           </div>
           <div class="col-sm">
             <mat-label>Credit</mat-label>
-            <input matInput class="form-control" formControlName="officeYCredit">
+            <input matInput type="number" class="form-control" formControlName="officeYCredit">
           </div>
           <div class="col-sm">
             <mat-label>Interviews</mat-label>
-            <input matInput class="form-control" formControlName="officeYInt">
+            <input matInput type="number" class="form-control" formControlName="officeYInt">
           </div>
           <div class="col-sm">
             <mat-label>Trainees 1</mat-label>
-            <input matInput class="form-control" formControlName="officeYTra1">
+            <input matInput type="number" class="form-control" formControlName="officeYTra1">
           </div>
           <div class="col-sm">
             <mat-label>Trainees 2</mat-label>
-            <input matInput class="form-control" formControlName="officeYTra2">
+            <input matInput type="number" class="form-control" formControlName="officeYTra2">
           </div>
         </div>
       </form>
