@@ -16,7 +16,8 @@ import { SnackBarComponent } from 'src/app/shared/snack-bar/snack-bar.component'
 export class DailyDataComponent implements OnInit {
 
   selectedIndex: number;
-  dataLoaded: boolean = false;
+  dataLoaded = false;
+  noDataFound = false;
   dailyDataSource = new MatTableDataSource();
   placeHolderText: string = environment.placeHolderText;
   dataForm: FormGroup;
@@ -24,9 +25,9 @@ export class DailyDataComponent implements OnInit {
   months: number[] = [
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
   ];
-  isFilteredData: boolean = false;
-  isResetData: boolean = true;
-  isDataComplete: boolean = false;
+  isFilteredData = false;
+  isResetData = true;
+  isDataComplete = false;
 
   displayedColumns: string[] = ['date', 'office', 'repId', 'vehicle', 'sold',
     'pulled', 'clients', 'credit', 'balance', 'unused', 'in', 'day1', 'day2', 'st', 'name'];
@@ -45,7 +46,9 @@ export class DailyDataComponent implements OnInit {
     });
 
     this.dataService.getYears().subscribe((response: any) => {
-      this.years = response.yearData;
+      this.years = response.yearData.filter((data) => {
+        return data.year != null;
+      });
     },
     (error) => {
       this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
@@ -56,6 +59,7 @@ export class DailyDataComponent implements OnInit {
 
   fetchData(sOffset, eOffset) {
     this.dataService.getDailyData({startLimit: sOffset, endLimit: eOffset}).subscribe((response) => {
+      this.dataLoaded = true;
       if (response.dailyData.length > 0) {
         this.dailyDataSource.data = this.dailyDataSource.data.concat(response.dailyData);
         this.dataLoaded = true;
@@ -78,7 +82,6 @@ export class DailyDataComponent implements OnInit {
         }
       } else {
         this.isDataComplete = true;
-        this.dataLoaded = true;
         console.log('data complete');
       }
     },
@@ -125,6 +128,7 @@ export class DailyDataComponent implements OnInit {
         }
       } else {
         this.isDataComplete = true;
+        this.noDataFound = true;
         console.log('data complete');
       }
     },

@@ -10,13 +10,13 @@
 
   .mat-progress-spinner {
     position: absolute;
-    top: 43.5%;
+    top: 60vh;
     left: 47%;
   }
 
   .data-container {
     overflow: auto;
-    height: 68vh;
+    min-height: 30vh;
     position: relative;
 
     table {
@@ -25,8 +25,9 @@
   }
 
   .scroll-container {
+    display: none;
     position: absolute;
-    bottom: 24vh;
+    bottom: 27%;
     right: 3rem;
 
     .scrollTo {

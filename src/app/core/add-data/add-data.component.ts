@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ɵConsole } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DataService } from 'src/app/data.service';
@@ -63,7 +63,7 @@ export class AddDataComponent implements OnInit {
       repBalance: new FormControl(''),
       repBalanceB: new FormControl(''),
       repVehicle: new FormControl(''),
-      date: new FormControl('', [Validators.required]),
+      date: new FormControl({ value: '', disabled: true}, [Validators.required]),
       officeSold: new FormControl(''),
       officePulled: new FormControl(''),
       officeNewClients: new FormControl(''),
@@ -180,6 +180,7 @@ export class AddDataComponent implements OnInit {
         this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
       });
     } else {
+      this.dataEntryForm.get('date').disable();
       this.doFilter.reps = [];
       this.dataEntryForm.patchValue({
         rep: ''
@@ -188,6 +189,7 @@ export class AddDataComponent implements OnInit {
   }
 
   repChanged() {
+    this.dataEntryForm.get('date').enable();
     if (this.dataEntryForm.get('date').value && this.dataEntryForm.get('date').value !== '') {
       this.checkRecord();
     }
@@ -195,7 +197,7 @@ export class AddDataComponent implements OnInit {
 
   checkRecord() {
     this.resetKPIData();
-    const dateToFilter = moment(this.dataEntryForm.get('date').value).format('DD.MM.YYYY');
+    const dateToFilter = moment(this.dataEntryForm.get('date').value).format('YYYY.MM.DD');
 
     const data = {
       repId: this.dataEntryForm.get('rep').value,
@@ -217,7 +219,7 @@ export class AddDataComponent implements OnInit {
           repDay2: record.t2,
           repBalance: record.balance,
           repBalanceB: record.balanceb,
-          repVehicle: record.vehicle_id,
+          repVehicle: record.vehicle_id
         };
         this.dataEntryForm.patchValue(repData);
       } else {

@@ -31,7 +31,6 @@
               formControlName="date"
               [max]="maxDate"
               (dateChange)="checkRecord()"
-              [disabled] = "!dataEntryForm.get('rep').valid || !dataEntryForm.get('office').valid"
               (click)="dp.open()">
             <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
             <mat-datepicker #dp></mat-datepicker>

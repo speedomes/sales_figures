@@ -3,7 +3,7 @@ const router = express.Router();
 const moment = require('moment');
 const Promise = require('promise');
 const mysql = require('mysql');
-const dateFormat = 'DD.MM.YYYY';
+const dateFormat = 'YYYY.MM.DD';
 
 class Database {
   constructor(config) {
@@ -53,8 +53,6 @@ router.post('/api/getDashboardData',(req, res, next) => {
   let holidayQuery = `SELECT count(d.sold) as holidays from daily as d
     join reps as r on d.rep_id = r.id join office as o on r.office_id = o.id
     where sold=-1`;
-
-  let dashboardDataCollection = [];
 
   if(req.body.office !== null) {
     dashboardQuery += ` o.id='${req.body.office}' and`;
