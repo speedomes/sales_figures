@@ -15,12 +15,12 @@ import { MomentDateAdapter } from '@angular/material-moment-adapter';
   providers: [
     { provide: DateAdapter, useClass: MomentDateAdapter },
     { provide: MAT_DATE_FORMATS, useValue: {
-      parse: {
-        dateInput: 'MM/DD/YYYY',
-      },
       display: {
-        dateInput: 'DD/MM/YYYY'
-      },
+        dateInput: 'DD/MM/YYYY',
+        monthYearLabel: 'MMM YYYY',
+        dateA11yLabel: 'LL',
+        monthYearA11yLabel: 'MMMM YYYY'
+      }
     }}
   ]
 })
