@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ɵConsole } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { DataService } from 'src/app/data.service';
@@ -195,10 +195,12 @@ export class AddDataComponent implements OnInit {
 
   checkRecord() {
     this.resetKPIData();
+    const dateToFilter = moment(this.dataEntryForm.get('date').value).format('DD.MM.YYYY');
+
     const data = {
       repId: this.dataEntryForm.get('rep').value,
       officeId: this.dataEntryForm.get('office').value,
-      date: this.dataEntryForm.get('date').value
+      date: dateToFilter
     };
 
     this.dataService.checkRecord(data).subscribe((response: any) => {

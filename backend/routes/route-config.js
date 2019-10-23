@@ -276,7 +276,6 @@ router.post('/api/getDashboardData',(req, res, next) => {
 
           let hQuery = '';
           hQuery = holidayQuery + ` and date<='${monthEnd}' and date>='${monthStart}'`;
-          console.log(monthStart, monthEnd);
           let holidaysData = {};
 
           holidayQueryPromiseArray.push(database.query(hQuery)
@@ -628,8 +627,6 @@ router.post('/api/getScopeData',(req, res, next) => {
 
     scopeDataQuery += ` LIMIT ${startLimit},${endLimit}`;
 
-    console.log(scopeDataQuery);
-
     database.query(scopeDataQuery)
     .then (rows => {
       let totalPulled = 0;
@@ -668,13 +665,12 @@ router.post('/api/getScopeData',(req, res, next) => {
 });
 
 router.post('/api/checkRecord',(req, res, next) => {
-  const dateToFilter = moment(req.body.date).format(dateFormat);
-  const recordQuery = `Select * from daily WHERE rep_id='${req.body.repId}' AND date='${dateToFilter}'`;
+  const recordQuery = `Select * from daily WHERE rep_id='${req.body.repId}' AND date='${req.body.date}'`;
   const officeRecordQuery = `Select sum(d.sold) as sold, sum(d.pulled) as pulled, sum(d.newclients) as newClients,
     sum(d.credit) as credit, sum(d.inuse) as inuse, sum(d.t1) as day1, sum(d.t2) as day2
     from daily AS d JOIN reps AS r ON d.rep_id = r.id JOIN office AS o ON r.office_id = o.id WHERE 
-    o.id='${req.body.officeId}' AND d.date='${dateToFilter}'`;
-  const splitQuery = `SELECT id, cash, cards, viu FROM split WHERE office_id='${req.body.officeId}' AND date='${dateToFilter}'`;
+    o.id='${req.body.officeId}' AND d.date='${req.body.date}'`;
+  const splitQuery = `SELECT id, cash, cards, viu FROM split WHERE office_id='${req.body.officeId}' AND date='${req.body.date}'`;
 
   database.query(recordQuery)
   .then (rows => {
@@ -831,7 +827,7 @@ router.post('/api/getKPIData',(req, res) => {
   yearEndOffset = getEndDateOffset(yearEndOffset);
 
   const yearStart = dateToFilter.startOf('year').add(yearStartOffset, 'days').format(dateFormat);
-  const yearEnd = dateToFilter.startOf('year').add(yearEndOffset, 'days').format(dateFormat);
+  const yearEnd = dateToFilter.endOf('year').add(yearEndOffset, 'days').format(dateFormat);
   const yearlyRKPIDataQuery = getRKPIDataQuery + ` AND date<='${yearEnd}' AND date>='${yearStart}'`;
   const yearlyRTotalSoldQuery = totalRSoldQuery + ` AND date<='${yearEnd}' AND date>='${yearStart}'`;
   const yearlyOKPIDataQuery = getOKPIDataQuery + ` AND date<='${yearEnd}' AND date>='${yearStart}'`;
@@ -912,52 +908,54 @@ router.post('/api/getKPIData',(req, res) => {
         database.query(yearlyOTotalSoldQuery)
         .then (rows => {
           allKPIData.yearlyOData.sold = rows[0].sold;
+          const responseData = {
+            repWSold: allKPIData.weeklyRData.sold,
+            repWPulled: allKPIData.weeklyRData.pulled,
+            repWNewClients: allKPIData.weeklyRData.newClients,
+            repWCredit: allKPIData.weeklyRData.credit,
+            repWInt: allKPIData.weeklyRData.inuse,
+            repWTra1: allKPIData.weeklyRData.tra1,
+            repWTra2: allKPIData.weeklyRData.tra2,
+            repMSold: allKPIData.monthlyRData.sold,
+            repMPulled: allKPIData.monthlyRData.pulled,
+            repMNewClients: allKPIData.monthlyRData.newClients,
+            repMCredit: allKPIData.monthlyRData.credit,
+            repMInt: allKPIData.monthlyRData.inuse,
+            repMTra1: allKPIData.monthlyRData.tra1,
+            repMTra2: allKPIData.monthlyRData.tra2,
+            repYSold: allKPIData.yearlyRData.sold,
+            repYPulled: allKPIData.yearlyRData.pulled,
+            repYNewClients: allKPIData.yearlyRData.newClients,
+            repYCredit: allKPIData.yearlyRData.credit,
+            repYInt: allKPIData.yearlyRData.inuse,
+            repYTra1: allKPIData.yearlyRData.tra1,
+            repYTra2: allKPIData.yearlyRData.tra2,
+            officeWSold: allKPIData.weeklyOData.sold,
+            officeWPulled: allKPIData.weeklyOData.pulled,
+            officeWNewClients: allKPIData.weeklyOData.newClients,
+            officeWCredit: allKPIData.weeklyOData.credit,
+            officeWInt: allKPIData.weeklyOData.inuse,
+            officeWTra1: allKPIData.weeklyOData.tra1,
+            officeWTra2: allKPIData.weeklyOData.tra2,
+            officeMSold: allKPIData.monthlyOData.sold,
+            officeMPulled: allKPIData.monthlyOData.pulled,
+            officeMNewClients: allKPIData.monthlyOData.newClients,
+            officeMCredit: allKPIData.monthlyOData.credit,
+            officeMInt: allKPIData.monthlyOData.inuse,
+            officeMTra1: allKPIData.monthlyOData.tra1,
+            officeMTra2: allKPIData.monthlyOData.tra2,
+            officeYSold: allKPIData.yearlyOData.sold,
+            officeYPulled: allKPIData.yearlyOData.pulled,
+            officeYNewClients: allKPIData.yearlyOData.newClients,
+            officeYCredit: allKPIData.yearlyOData.credit,
+            officeYInt: allKPIData.yearlyOData.inuse,
+            officeYTra1: allKPIData.yearlyOData.tra1,
+            officeYTra2: allKPIData.yearlyOData.tra2
+          };
+
           res.status(201).json({
             message: 'KPI data fetched successfully',
-            data: {
-              repWSold: allKPIData.weeklyRData.sold,
-              repWPulled: allKPIData.weeklyRData.pulled,
-              repWNewClients: allKPIData.weeklyRData.newClients,
-              repWCredit: allKPIData.weeklyRData.credit,
-              repWInt: allKPIData.weeklyRData.inuse,
-              repWTra1: allKPIData.weeklyRData.tra1,
-              repWTra2: allKPIData.weeklyRData.tra2,
-              repMSold: allKPIData.monthlyRData.sold,
-              repMPulled: allKPIData.monthlyRData.pulled,
-              repMNewClients: allKPIData.monthlyRData.newClients,
-              repMCredit: allKPIData.monthlyRData.credit,
-              repMInt: allKPIData.monthlyRData.inuse,
-              repMTra1: allKPIData.monthlyRData.tra1,
-              repMTra2: allKPIData.monthlyRData.tra2,
-              repYSold: allKPIData.yearlyRData.sold,
-              repYPulled: allKPIData.yearlyRData.pulled,
-              repYNewClients: allKPIData.yearlyRData.newClients,
-              repYCredit: allKPIData.yearlyRData.credit,
-              repYInt: allKPIData.yearlyRData.inuse,
-              repYTra1: allKPIData.yearlyRData.tra1,
-              repYTra2: allKPIData.yearlyRData.tra2,
-              officeWSold: allKPIData.weeklyOData.sold,
-              officeWPulled: allKPIData.weeklyOData.pulled,
-              officeWNewClients: allKPIData.weeklyOData.newClients,
-              officeWCredit: allKPIData.weeklyOData.credit,
-              officeWInt: allKPIData.weeklyOData.inuse,
-              officeWTra1: allKPIData.weeklyOData.tra1,
-              officeWTra2: allKPIData.weeklyOData.tra2,
-              officeMSold: allKPIData.monthlyOData.sold,
-              officeMPulled: allKPIData.monthlyOData.pulled,
-              officeMNewClients: allKPIData.monthlyOData.newClients,
-              officeMCredit: allKPIData.monthlyOData.credit,
-              officeMInt: allKPIData.monthlyOData.inuse,
-              officeMTra1: allKPIData.monthlyOData.tra1,
-              officeMTra2: allKPIData.monthlyOData.tra2,
-              officeYSold: allKPIData.yearlyOData.sold,
-              officeYPulled: allKPIData.yearlyOData.pulled,
-              officeYNewClients: allKPIData.yearlyOData.newClients,
-              officeYCredit: allKPIData.yearlyOData.credit,
-              officeYInt: allKPIData.yearlyOData.inuse,
-              officeYTra1: allKPIData.yearlyOData.tra1,
-              officeYTra2: allKPIData.yearlyOData.tra2
-            }
+            data: responseData
           });
         })
         .catch(err => {
@@ -1099,7 +1097,7 @@ router.post('/api/getReps',(req, res, next) => {
       ON r.vehicle_id = v.id`;
 
   if(officeId) {
-    RepDataQuery = RepDataQuery + ` WHERE r.office_id = '${officeId}'`;
+    RepDataQuery = RepDataQuery + ` WHERE o.id = '${officeId}'`;
   }
 
   database.query(RepDataQuery)

@@ -91,7 +91,6 @@
               <mat-label>Vehicle</mat-label>
               <mat-select class="form-control" formControlName="repVehicle">
                 <mat-option value="">Select</mat-option>
-                <mat-option value="own">Own</mat-option>
                 <mat-option *ngFor="let vehicle of vehicles" [value]="vehicle.id">{{vehicle.name}}</mat-option>
               </mat-select>
             </div>
