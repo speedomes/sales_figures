@@ -123,10 +123,10 @@ export class OfficeComponent implements OnInit {
     this.selectedIndex = undefined;
   }
 
-  displaySnackbar(message: string, className: string = 'primary') {
+  displaySnackbar(msg: string, className: string = 'primary') {
     this.snackBar.openFromComponent(SnackBarComponent, {
-      duration: 5000,
-      data: { message: message },
+      duration: environment.snackBarTimeOut,
+      data: { message: msg },
       panelClass: className
     });
   }

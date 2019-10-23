@@ -144,7 +144,7 @@ export class DailyDataComponent implements OnInit {
 
   displaySnackbar(msg: string, className: string = 'primary') {
     this.snackBar.openFromComponent(SnackBarComponent, {
-      duration: 5000,
+      duration: environment.snackBarTimeOut,
       data: { message: msg },
       panelClass: className
     });

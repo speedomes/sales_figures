@@ -6,6 +6,7 @@ import { SnackBarComponent } from 'src/app/shared/snack-bar/snack-bar.component'
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import * as moment from 'moment';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-dashboard',
@@ -229,7 +230,7 @@ export class DashboardComponent implements OnInit {
 
   displaySnackbar(msg: string, className: string = 'primary') {
     this.snackBar.openFromComponent(SnackBarComponent, {
-      duration: 5000,
+      duration: environment.snackBarTimeOut,
       data: { message: msg },
       panelClass: className
     });

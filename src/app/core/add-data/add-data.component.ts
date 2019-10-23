@@ -143,6 +143,30 @@ export class AddDataComponent implements OnInit {
   }
 
   fetchRepsByOffice(id) {
+    this.dataEntryForm.patchValue({
+      repVehicle: '',
+      repSold: '',
+      repPulled: '',
+      repNC: '',
+      repCredit: '',
+      repInt: '',
+      repDay1: '',
+      repDay2: '',
+      repBalance: '',
+      repBalanceB: '',
+      officeSold: '',
+      officePulled: '',
+      officeNewClients: '',
+      officeCredit: '',
+      officeInt: '',
+      officeDay1: '',
+      officeDay2: '',
+      cash: '',
+      cards: '',
+      totalPayment: '',
+      viu: ''
+    });
+
     if (id!== '' && id!== 'all') {
       this.dataEntryForm.patchValue({ rep: ''});
       this.dataService.getReps({officeId: id}).subscribe((response) => {
@@ -160,6 +184,12 @@ export class AddDataComponent implements OnInit {
       this.dataEntryForm.patchValue({
         rep: ''
       });
+    }
+  }
+
+  repChanged() {
+    if (this.dataEntryForm.get('date').value && this.dataEntryForm.get('date').value !== '') {
+      this.checkRecord();
     }
   }
 
@@ -189,7 +219,19 @@ export class AddDataComponent implements OnInit {
         };
         this.dataEntryForm.patchValue(repData);
       } else {
-        this.displaySnackbar('No data found');
+        this.dataEntryForm.patchValue({
+          repVehicle: '',
+          repSold: '',
+          repPulled: '',
+          repNC: '',
+          repCredit: '',
+          repInt: '',
+          repDay1: '',
+          repDay2: '',
+          repBalance: '',
+          repBalanceB: ''
+        });
+        this.displaySnackbar('No Rep data found');
       }
 
       if (response.officeRecords.length > 0) {
@@ -204,6 +246,21 @@ export class AddDataComponent implements OnInit {
           officeDay2: officeRecord.day2
         };
         this.dataEntryForm.patchValue(officeData);
+      } else {
+        this.dataEntryForm.patchValue({
+          officeSold: '',
+          officePulled: '',
+          officeNewClients: '',
+          officeCredit: '',
+          officeInt: '',
+          officeDay1: '',
+          officeDay2: '',
+          cash: '',
+          cards: '',
+          totalPayment: '',
+          viu: ''
+        });
+        this.displaySnackbar('No Office data found');
       }
 
       if (response.splitRecords.length > 0) {
@@ -286,9 +343,9 @@ export class AddDataComponent implements OnInit {
 
   saveSplit() {
     const splitRecord = {
-      cash: this.dataEntryForm.get('cash').value,
-      cards: this.dataEntryForm.get('cards').value,
-      viu: this.dataEntryForm.get('viu').value,
+      cash: this.dataEntryForm.get('cash').value || 0,
+      cards: this.dataEntryForm.get('cards').value || 0,
+      viu: this.dataEntryForm.get('viu').value || 0,
       officeId: this.dataEntryForm.get('office').value,
       date: this.dataEntryForm.get('date').value,
       id: this.splitDataId || -1
@@ -305,7 +362,7 @@ export class AddDataComponent implements OnInit {
     } else {
       this.dataService.saveSplit(splitRecord).subscribe((response: any) => {
         this.displaySnackbar('Split data has been saved successfully');
-        
+        this.resetForm();
       },
       (error) => {
         this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
@@ -378,7 +435,6 @@ export class AddDataComponent implements OnInit {
   resetForm() {
     this.dataEntryForm.patchValue({
       rep: '',
-      office: '',
       repVehicle: '',
       repSold: '',
       repPulled: '',
@@ -452,7 +508,7 @@ export class AddDataComponent implements OnInit {
 
   displaySnackbar(msg: string, className: string = 'primary') {
     this.snackBar.openFromComponent(SnackBarComponent, {
-      duration: 5000,
+      duration: environment.snackBarTimeOut,
       data: { message: msg },
       panelClass: className
     });

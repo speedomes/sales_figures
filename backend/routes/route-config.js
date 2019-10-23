@@ -758,7 +758,8 @@ router.post('/api/updateRecord',(req, res) => {
 });
 
 router.post('/api/saveSplit',(req, res) => {
-  const saveSplitQuery = `Insert split(date, office_id, cash, cards, viu ) VALUES (${req.body.date}, ${req.body.officeId}, ${req.body.cash}, 
+  const dateToFilter = moment(req.body.date).format(dateFormat);
+  const saveSplitQuery = `Insert split(date, office_id, cash, cards, viu ) VALUES ('${dateToFilter}', ${req.body.officeId}, ${req.body.cash}, 
     ${req.body.cards}, ${req.body.viu})`;
 
   database.query(saveSplitQuery)

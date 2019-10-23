@@ -10,6 +10,7 @@ import { DataService } from 'src/app/data.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { SnackBarComponent } from 'src/app/shared/snack-bar/snack-bar.component';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-report',
@@ -125,7 +126,7 @@ export class ReportComponent implements OnInit {
 
   displaySnackbar(msg: string, className: string = 'primary') {
     this.snackBar.openFromComponent(SnackBarComponent, {
-      duration: 5000,
+      duration: environment.snackBarTimeOut,
       data: { message: msg },
       panelClass: className
     });

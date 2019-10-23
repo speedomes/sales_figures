@@ -17,7 +17,7 @@
           </div>
           <div class="col-sm-2">
             <mat-label class="subHeader">Rep</mat-label>
-            <mat-select class="form-control" formControlName="rep">
+            <mat-select class="form-control" formControlName="rep" (selectionChange)="repChanged()">
               <mat-option value="">Select</mat-option>
               <mat-option *ngFor="let rep of doFilter.reps" [value]="rep.id">{{rep.repName}}</mat-option>
             </mat-select>
