@@ -5,11 +5,24 @@ import { DataService } from 'src/app/data.service';
 import { SnackBarComponent } from 'src/app/shared/snack-bar/snack-bar.component';
 import { environment } from 'src/environments/environment';
 import * as moment from 'moment';
+import { MAT_DATE_FORMATS, DateAdapter } from '@angular/material/core';
+import { MomentDateAdapter } from '@angular/material-moment-adapter';
 
 @Component({
   selector: 'app-add-data',
   templateUrl: './add-data.component.html',
-  styleUrls: ['./add-data.component.scss']
+  styleUrls: ['./add-data.component.scss'],
+  providers: [
+    { provide: DateAdapter, useClass: MomentDateAdapter },
+    { provide: MAT_DATE_FORMATS, useValue: {
+      parse: {
+        dateInput: 'MM/DD/YYYY',
+      },
+      display: {
+        dateInput: 'DD/MM/YYYY'
+      },
+    }}
+  ]
 })
 export class AddDataComponent implements OnInit {
 
