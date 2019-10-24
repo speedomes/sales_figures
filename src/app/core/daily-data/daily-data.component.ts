@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, ElementRef } from '@angular/core';
 
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
@@ -32,9 +32,8 @@ export class DailyDataComponent implements OnInit {
   displayedColumns: string[] = ['date', 'office', 'repId', 'vehicle', 'sold',
     'pulled', 'clients', 'credit', 'balance', 'unused', 'in', 'day1', 'day2', 'st', 'name'];
 
-  @ViewChild(MatPaginator, {static: false}) set paginator(paginator: MatPaginator) {
-    this.dailyDataSource.paginator = paginator;
-  }
+  @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
+  @ViewChild('tableTop', {static: true}) tableTop: ElementRef;
 
   constructor(private dataService: DataService,  private snackBar: MatSnackBar,
     private changeDetectorRefs: ChangeDetectorRef) { }
@@ -62,11 +61,11 @@ export class DailyDataComponent implements OnInit {
       this.dataLoaded = true;
       if (response.dailyData.length > 0) {
         this.dailyDataSource.data = this.dailyDataSource.data.concat(response.dailyData);
+        this.dailyDataSource.paginator = this.paginator;
         this.dataLoaded = true;
         if (this.dailyDataSource.paginator) {
           const subscription = !this.isDataComplete && this.dailyDataSource.paginator.page.subscribe((data) => {
             const isDataFetchRequired = (data.pageIndex > data.previousPageIndex);
-
             if (isDataFetchRequired) {
               this.dataLoaded = false;
               if (this.isFilteredData) {
@@ -76,6 +75,7 @@ export class DailyDataComponent implements OnInit {
                 this.fetchData(this.dailyDataSource.data.length + 1, 200);
               }
               this.dataLoaded = true;
+              this.tableTop.nativeElement.scrollIntoView();
               subscription.unsubscribe();
             }
           });
@@ -122,6 +122,7 @@ export class DailyDataComponent implements OnInit {
                 this.fetchData(this.dailyDataSource.data.length + 1, 200);
               }
               this.dataLoaded = true;
+              this.tableTop.nativeElement.scrollIntoView();
               subscription.unsubscribe();
             }
           });
@@ -129,7 +130,6 @@ export class DailyDataComponent implements OnInit {
       } else {
         this.isDataComplete = true;
         this.noDataFound = true;
-        console.log('data complete');
       }
     },
     (error) => {

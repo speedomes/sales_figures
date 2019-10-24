@@ -158,7 +158,7 @@
 
         <div class="row justify-center button-container">
           <button mat-raised-button (click)="saveSplit()" [disabled]="!dataEntryForm.get('rep').valid || !dataEntryForm.get('office').valid || !dataEntryForm.get('date').valid">Save Split</button>
-          <button mat-raised-button (click)="getKPIData()">Update</button>
+          <button mat-raised-button (click)="getKPIData()" [disabled]="!dataEntryForm.get('rep').valid || !dataEntryForm.get('office').valid || !dataEntryForm.get('date').valid">Update</button>
         </div>
 
         <div class="row justify-center">

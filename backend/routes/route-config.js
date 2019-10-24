@@ -528,6 +528,8 @@ router.post('/api/getDailyDataByFilter',(req, res, next) => {
 
       dailyDataQuery += ` WHERE d.date<='${yearEnd}' AND d.date>='${yearStart}' ORDER BY d.date LIMIT ${startLimit},${endLimit}`;
 
+      console.log(dailyDataQuery);
+
       database.query(dailyDataQuery)
       .then (rows => {
         res.status(201).json({

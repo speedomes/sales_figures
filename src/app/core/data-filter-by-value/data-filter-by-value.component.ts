@@ -17,8 +17,8 @@ import { environment } from 'src/environments/environment';
 export class DataFilterByValueComponent implements OnInit {
 
   dataForm: FormGroup;
-  isSearchStarted: boolean = false;
-  isDataLoaded: boolean = false;
+  isSearchStarted = false;
+  isDataLoaded = false;
   placeHolder: string = environment.placeHolderText;
   dataSource =  new MatTableDataSource();
   totalPulled: number;
@@ -35,9 +35,10 @@ export class DataFilterByValueComponent implements OnInit {
     1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12
   ];
   weeks: number[] = [];
-  isDataComplete: boolean = false;
-  isDataSearched: boolean = false;
-  isPaginationClicked: boolean = false;
+  isDataComplete = false;
+  isDataSearched = false;
+  isPaginationClicked = false;
+  isFilterCleared = false;
 
   displayedColumns: string[] = ['date', 'officeName', 'repId', 'repName', 'vehicle', 'sold',
     'pulled', 'newClients', 'credit', 'balance', 'inuse', 'day1', 'day2'];
@@ -71,7 +72,9 @@ export class DataFilterByValueComponent implements OnInit {
     });
 
     this.dataService.getYears().subscribe((response: any) => {
-      this.years = response.yearData;
+      this.years = response.yearData.filter((data) => {
+        return data.year != null;
+      });
     },
     (error) => {
       this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
@@ -89,6 +92,7 @@ export class DataFilterByValueComponent implements OnInit {
   }
 
   filterData(sOffset = 1, eOffset = 300) {
+    this.isFilterCleared = false;
     this.isSearchStarted = true;
     this.dataService.getScopeData(this.formatReqObject(this.dataForm, sOffset, eOffset)).subscribe(response => {
       this.isDataSearched = true;
@@ -157,6 +161,9 @@ export class DataFilterByValueComponent implements OnInit {
       office: '',
       rep: ''
     });
+    this.isFilterCleared = true;
+    this.isDataLoaded = false;
+    this.dataSource =  new MatTableDataSource();
   }
 
   displaySnackbar(msg: string, className: string = 'primary') {

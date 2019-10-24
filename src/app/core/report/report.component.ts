@@ -52,8 +52,10 @@ export class ReportComponent implements OnInit {
     this.newClientsDataSource.paginator = this.cPaginator;
     this.newClientsDataSource.sort = this.cSort;
 
-    this.dataService.getYears().subscribe((response) => {
-      this.years = response['yearData'];
+    this.dataService.getYears().subscribe((response: any) => {
+      this.years = response.yearData.filter((data) => {
+        return data.year != null;
+      });
     });
 
     for (let count = 1; count <= 52; count++) {

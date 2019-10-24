@@ -127,11 +127,11 @@
       </table>
       <mat-paginator [pageSize]="200" showFirstLastButtons></mat-paginator>
     </div>
-    <ng-container *ngIf="!isDataLoaded">
+    <ng-container *ngIf="!isDataLoaded && !isFilterCleared">
       <p *ngIf="isSearchStarted" class="placeholderText">{{placeHolder}}</p>
     </ng-container>
     <mat-progress-spinner
-      *ngIf="isSearchStarted && !isDataLoaded"
+      *ngIf="isSearchStarted && !isDataLoaded && !isFilterCleared"
       class="app-spinner"
       mode="indeterminate">
     </mat-progress-spinner>

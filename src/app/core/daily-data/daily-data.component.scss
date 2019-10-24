@@ -16,8 +16,13 @@
 
   .data-container {
     overflow: auto;
-    min-height: 30vh;
+    height: 70vh;
     position: relative;
+    display: none;
+
+    &.showTableWrapper {
+      display: block;
+    }
 
     table {
       width: 100%;
