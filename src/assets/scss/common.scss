@@ -19,6 +19,8 @@ html, body {
 
   .mat-input-element {
     border: 1px solid $border-grey;
+    background-color: $white;
+    padding: 0 0.5rem;
   }
 
   .mat-paginator-page-size-select {
