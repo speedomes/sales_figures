@@ -16,7 +16,7 @@ export class SplitComponent implements OnInit {
 
   selectedIndex: number;
   splitDataSource =  new MatTableDataSource();
-  dataLoaded: boolean = false;
+  dataLoaded = false;
   placeHolderText: string = environment.placeHolderText;
   displayedColumns: string[] = ['date', 'name', 'cash', 'cards', 'viu', 'total'];
 
@@ -32,6 +32,7 @@ export class SplitComponent implements OnInit {
 
   ngOnInit() {
     this.dataService.getSplitData().subscribe((response) => {
+      console.log(response);
       this.dataLoaded = true;
       if (response && response.splitData.length > 0) {
         this.splitDataSource.data = response.splitData;
