@@ -291,7 +291,6 @@ export class AddDataComponent implements OnInit {
     } else {
       this.addRecord();
     }
-    this.resetForm();
   }
 
   addRecord() {
@@ -439,7 +438,6 @@ export class AddDataComponent implements OnInit {
   resetForm() {
     this.dataEntryForm.patchValue({
       rep: '',
-      repVehicle: '',
       repSold: '',
       repPulled: '',
       repNC: '',
@@ -447,8 +445,6 @@ export class AddDataComponent implements OnInit {
       repInt: '',
       repDay1: '',
       repDay2: '',
-      repBalance: '',
-      repBalanceB: '',
       officeSold: '',
       officePulled: '',
       officeNewClients: '',
