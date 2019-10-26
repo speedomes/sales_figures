@@ -241,13 +241,13 @@ export class AddDataComponent implements OnInit {
       if (response.officeRecords.length > 0) {
         const officeRecord = response.officeRecords[0];
         const officeData = {
-          officeSold: officeRecord.sold,
-          officePulled: officeRecord.pulled,
-          officeNewClients: officeRecord.newClients,
-          officeCredit: officeRecord.credit,
-          officeInt: officeRecord.inuse,
-          officeDay1: officeRecord.day1,
-          officeDay2: officeRecord.day2
+          officeSold: officeRecord.sold || '',
+          officePulled: officeRecord.pulled || '',
+          officeNewClients: officeRecord.newClients || '',
+          officeCredit: officeRecord.credit || '',
+          officeInt: officeRecord.inuse || '',
+          officeDay1: officeRecord.day1 || '',
+          officeDay2: officeRecord.day2 || ''
         };
         this.dataEntryForm.patchValue(officeData);
       } else {
@@ -272,10 +272,18 @@ export class AddDataComponent implements OnInit {
         const splitRecord = response.splitRecords[0];
         this.splitDataId = splitRecord.id;
         const splitData = {
-          cash: splitRecord.cash,
-          cards: splitRecord.cards,
+          cash: splitRecord.cash || '',
+          cards: splitRecord.cards || '',
           totalPayment: (splitRecord.cash + splitRecord.cards).toFixed(2),
-          viu: splitRecord.viu
+          viu: splitRecord.viu || ''
+        };
+        this.dataEntryForm.patchValue(splitData);
+      } else {
+        const splitData = {
+          cash: '',
+          cards: '',
+          totalPayment: '',
+          viu: ''
         };
         this.dataEntryForm.patchValue(splitData);
       }
@@ -346,9 +354,9 @@ export class AddDataComponent implements OnInit {
 
   saveSplit() {
     const splitRecord = {
-      cash: this.dataEntryForm.get('cash').value || 0,
-      cards: this.dataEntryForm.get('cards').value || 0,
-      viu: this.dataEntryForm.get('viu').value || 0,
+      cash: this.dataEntryForm.get('cash').value || '',
+      cards: this.dataEntryForm.get('cards').value || '',
+      viu: this.dataEntryForm.get('viu').value || '',
       officeId: this.dataEntryForm.get('office').value,
       date: this.dataEntryForm.get('date').value,
       id: this.splitDataId || -1
