@@ -32,7 +32,6 @@ export class SplitComponent implements OnInit {
 
   ngOnInit() {
     this.dataService.getSplitData().subscribe((response) => {
-      console.log(response);
       this.dataLoaded = true;
       if (response && response.splitData.length > 0) {
         this.splitDataSource.data = response.splitData;

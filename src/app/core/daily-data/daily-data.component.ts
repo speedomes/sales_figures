@@ -82,7 +82,6 @@ export class DailyDataComponent implements OnInit {
         }
       } else {
         this.isDataComplete = true;
-        console.log('data complete');
       }
     },
     (error) => {
