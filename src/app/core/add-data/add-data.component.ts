@@ -224,7 +224,6 @@ export class AddDataComponent implements OnInit {
         this.dataEntryForm.patchValue(repData);
       } else {
         this.dataEntryForm.patchValue({
-          repVehicle: '',
           repSold: '',
           repPulled: '',
           repNC: '',
@@ -232,8 +231,6 @@ export class AddDataComponent implements OnInit {
           repInt: '',
           repDay1: '',
           repDay2: '',
-          repBalance: '',
-          repBalanceB: ''
         });
         this.displaySnackbar('No Rep data found');
       }
