@@ -672,30 +672,76 @@ router.post('/api/checkRecord',(req, res, next) => {
 
   database.query(recordQuery)
   .then (rows => {
-    const repRecords = rows;
-    let officeRecords = [];
-    let splitRecords = [];
-    
-    database.query(officeRecordQuery)
-    .then(rows => {
-      officeRecords = rows;
-      database.query(splitQuery)
-      .then (rows => {
-        splitRecords = rows;
-        res.status(201).json({
-          message: 'Records fetched successfully',
-          records: repRecords,
-          officeRecords: officeRecords,
-          splitRecords: splitRecords
+    let repRecords = [];
+    repRecords = rows;
+
+    const repPromiseArray = [];
+
+    if (repRecords.length > 0) {
+      if(!repRecords[0].balance) {
+        const balanceQuery = `Select balance from daily WHERE rep_id='${req.body.repId}' ORDER BY date DESC`;
+        repPromiseArray.push(database.query(balanceQuery)
+          .then(rows => {
+            repRecords[0].balance = rows[0].balance;
+            return repRecords[0];
+          })
+        );
+      }
+  
+      if(!repRecords[0].balanceb) {
+        const balanceBQuery = `Select balanceb from daily WHERE rep_id='${req.body.repId}' ORDER BY date DESC`;
+        repPromiseArray.push(database.query(balanceBQuery)
+          .then(rows => {
+            repRecords[0].balanceb = rows[0].balanceb;
+            return repRecords[0];
+          })
+        );
+      }
+
+      if(!repRecords[0].vehicle_id) {
+        const vehicleQuery = `Select vehicle_id from daily WHERE rep_id='${req.body.repId}' ORDER BY date DESC`;
+        repPromiseArray.push(database.query(vehicleQuery)
+          .then(rows => {
+            repRecords[0].vehicle_id = rows[0].vehicle_id;
+            return repRecords[0];
+          })
+        );
+      }
+    } else {
+      const balanceQuery = `Select balance, balanceb, vehicle_id from daily WHERE rep_id='${req.body.repId}' ORDER BY date DESC`;
+      repPromiseArray.push(database.query(balanceQuery)
+        .then(rows => {
+          repRecords = rows[0];
+          return repRecords;
+        })
+      );
+    }
+
+    Promise.all(repPromiseArray).then(dataCollection => {
+      let officeRecords = [];
+      let splitRecords = [];
+      
+      database.query(officeRecordQuery)
+      .then(rows => {
+        officeRecords = rows;
+        database.query(splitQuery)
+        .then (rows => {
+          splitRecords = rows;
+          res.status(201).json({
+            message: 'Records fetched successfully',
+            records: dataCollection,
+            officeRecords: officeRecords,
+            splitRecords: splitRecords
+          });
+        })
+        .catch(err => {
+          next(err); 
         });
       })
       .catch(err => {
         next(err); 
       });
     })
-    .catch(err => {
-      next(err); 
-    });
   })
   .catch(err => {
     next(err); 
@@ -1193,10 +1239,10 @@ router.get('/api/getTotalData',(req, res, next) => {
       })
       );
       Promise.all(promiseArray).then((data) => {
-      res.status(201).json({
-          message: 'Total data fetched successfully',
-          totalData: data
-      });
+        res.status(201).json({
+            message: 'Total data fetched successfully',
+            totalData: data
+        });
       });
   },err => {
       return database.close().then(() => { throw err; })

@@ -208,7 +208,7 @@ export class AddDataComponent implements OnInit {
     this.dataService.checkRecord(data).subscribe((response: any) => {
       if (response.records.length > 0) {
         const record = response.records[0];
-        this.existingOrderId = record.id;
+        this.existingOrderId = record && record.id;
         const repData = {
           repSold: record.sold,
           repPulled: record.pulled,
@@ -223,31 +223,15 @@ export class AddDataComponent implements OnInit {
         };
         this.dataEntryForm.patchValue(repData);
       } else {
-        if (isRepChanged) {
-          this.dataEntryForm.patchValue({
-            repVehicle: '',
-            repSold: '',
-            repPulled: '',
-            repNC: '',
-            repCredit: '',
-            repInt: '',
-            repDay1: '',
-            repDay2: '',
-            repBalance: '',
-            repBalanceB: ''
-          });
-        } else {
-          this.dataEntryForm.patchValue({
-            repSold: '',
-            repPulled: '',
-            repNC: '',
-            repCredit: '',
-            repInt: '',
-            repDay1: '',
-            repDay2: '',
-          });
-        }
-        
+        this.dataEntryForm.patchValue({
+          repSold: '',
+          repPulled: '',
+          repNC: '',
+          repCredit: '',
+          repInt: '',
+          repDay1: '',
+          repDay2: ''
+        });
         this.displaySnackbar('No Rep data found');
       }
 
