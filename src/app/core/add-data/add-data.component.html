@@ -148,7 +148,7 @@
           </div>
           <div class="col-2">
             <mat-label>Total</mat-label>
-            <input matInput type="number" class="form-control" formControlName="totalPayment" readonly>
+            <input matInput type="number" class="form-control" formControlName="totalPayment" readonly [value]="dataEntryForm.get('cash').value + dataEntryForm.get('cards').value">
           </div>
           <div class="col-2">
             <mat-label>Vehicles in use</mat-label>

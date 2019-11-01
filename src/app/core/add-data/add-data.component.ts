@@ -351,9 +351,9 @@ export class AddDataComponent implements OnInit {
 
   saveSplit() {
     const splitRecord = {
-      cash: this.dataEntryForm.get('cash').value || '',
-      cards: this.dataEntryForm.get('cards').value || '',
-      viu: this.dataEntryForm.get('viu').value || '',
+      cash: this.dataEntryForm.get('cash').value || 0,
+      cards: this.dataEntryForm.get('cards').value || 0,
+      viu: this.dataEntryForm.get('viu').value || 0,
       officeId: this.dataEntryForm.get('office').value,
       date: this.dataEntryForm.get('date').value,
       id: this.splitDataId || -1
