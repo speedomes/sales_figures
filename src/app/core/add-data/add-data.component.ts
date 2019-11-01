@@ -191,11 +191,11 @@ export class AddDataComponent implements OnInit {
   repChanged() {
     this.dataEntryForm.get('date').enable();
     if (this.dataEntryForm.get('date').value && this.dataEntryForm.get('date').value !== '') {
-      this.checkRecord();
+      this.checkRecord(true);
     }
   }
 
-  checkRecord() {
+  checkRecord(isRepChanged = false) {
     this.resetKPIData();
     const dateToFilter = moment(this.dataEntryForm.get('date').value).format('YYYY.MM.DD');
 
@@ -223,15 +223,31 @@ export class AddDataComponent implements OnInit {
         };
         this.dataEntryForm.patchValue(repData);
       } else {
-        this.dataEntryForm.patchValue({
-          repSold: '',
-          repPulled: '',
-          repNC: '',
-          repCredit: '',
-          repInt: '',
-          repDay1: '',
-          repDay2: '',
-        });
+        if (isRepChanged) {
+          this.dataEntryForm.patchValue({
+            repVehicle: '',
+            repSold: '',
+            repPulled: '',
+            repNC: '',
+            repCredit: '',
+            repInt: '',
+            repDay1: '',
+            repDay2: '',
+            repBalance: '',
+            repBalanceB: ''
+          });
+        } else {
+          this.dataEntryForm.patchValue({
+            repSold: '',
+            repPulled: '',
+            repNC: '',
+            repCredit: '',
+            repInt: '',
+            repDay1: '',
+            repDay2: '',
+          });
+        }
+        
         this.displaySnackbar('No Rep data found');
       }
 
