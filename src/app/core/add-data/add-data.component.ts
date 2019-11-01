@@ -206,6 +206,7 @@ export class AddDataComponent implements OnInit {
     };
 
     this.dataService.checkRecord(data).subscribe((response: any) => {
+      console.log(response);
       if (response.records.length > 0) {
         const record = response.records[0];
         this.existingOrderId = record && record.id;
@@ -362,6 +363,7 @@ export class AddDataComponent implements OnInit {
     if (this.hasSplitData) {
       this.dataService.updateSplit(splitRecord).subscribe((response: any) => {
         this.displaySnackbar('Split data has been updated successfully');
+        this.hasSplitData = false;
         this.resetForm();
       },
       (error) => {
@@ -370,6 +372,7 @@ export class AddDataComponent implements OnInit {
     } else {
       this.dataService.saveSplit(splitRecord).subscribe((response: any) => {
         this.displaySnackbar('Split data has been saved successfully');
+        this.hasSplitData = false;
         this.resetForm();
       },
       (error) => {
