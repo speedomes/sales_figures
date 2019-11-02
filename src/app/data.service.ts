@@ -116,4 +116,8 @@ export class DataService {
   getKPIData(data: {}): Observable<any> {
     return this.httpClient.post(this.API_URL + 'getKPIData', data);
   }
+
+  getExistingRepData(data: {}): Observable<any> {
+    return this.httpClient.post(this.API_URL + 'getExistingRepData', data);
+  }
 }

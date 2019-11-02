@@ -196,9 +196,32 @@ export class AddDataComponent implements OnInit {
 
   repChanged() {
     this.dataEntryForm.get('date').enable();
-    if (this.dataEntryForm.get('rep').value !== '' && this.dataEntryForm.get('date').value !== '') {
-      this.checkRecord(true);
+    if (this.dataEntryForm.get('rep').value !== '') {
+      if (this.dataEntryForm.get('date').value !== '') {
+        this.checkRecord();
+      } else {
+        this.fetchExistingRepData();
+      }
     }
+  }
+
+  fetchExistingRepData() {
+    const data = {
+      repId: this.dataEntryForm.get('rep').value,
+      officeId: this.dataEntryForm.get('office').value
+    };
+
+    this.dataService.getExistingRepData(data).subscribe((response: any) => {
+      if (response.reps && response.reps.length > 0) {
+        const record = response.reps[0];
+        const repData = {
+          repBalance: record.balance,
+          repBalanceB: record.balanceb,
+          repVehicle: record.vehicle_id
+        };
+        this.dataEntryForm.patchValue(repData);
+      }
+    });
   }
 
   checkRecord(isRepChanged = false) {

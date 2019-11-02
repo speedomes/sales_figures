@@ -1159,6 +1159,21 @@ router.post('/api/deleteVehicle',(req, res) => {
   });
 });
 
+router.post('/api/getExistingRepData',(req, res, next) => {
+  let repDataQuery = `SELECT vehicle_id, balance, balanceb from reps WHERE id='${req.body.repId}' AND office_id='${req.body.officeId}'`;
+
+  database.query(repDataQuery)
+  .then (rows => {
+    res.status(201).json({
+      message: 'Rep existing data fetched successfully',
+      reps: rows
+    });
+  })
+  .catch(err => {
+      next(err); 
+  });
+});
+
 router.post('/api/getReps',(req, res, next) => {
   const officeId = req.body.officeId;
   let repDataQuery = `SELECT r.id, r.name as repName, o.name as officeName,
