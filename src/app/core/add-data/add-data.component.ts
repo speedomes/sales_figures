@@ -182,6 +182,8 @@ export class AddDataComponent implements OnInit {
         if (office.id === id) {
           this.nextOfficeLimitReached = false;
           this.prevOfficeLimitReached = false;
+          this.nextRepLimitReached = true;
+          this.prevRepLimitReached = true;
 
           if (index === 0) {
             this.prevOfficeLimitReached = true;
