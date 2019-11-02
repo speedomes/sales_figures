@@ -188,6 +188,11 @@ export class AddDataComponent implements OnInit {
           if (index === 0) {
             this.prevOfficeLimitReached = true;
             this.nextOfficeLimitReached = false;
+
+            if (index === this.doFilter.offices.length - 1) {
+              this.nextOfficeLimitReached = true;
+              this.prevOfficeLimitReached = true;
+            }
           }
 
           if (index === this.doFilter.offices.length - 1) {
@@ -230,6 +235,11 @@ export class AddDataComponent implements OnInit {
           if (index === 0) {
             this.prevRepLimitReached = true;
             this.nextRepLimitReached = false;
+
+            if (index === this.doFilter.reps.length - 1) {
+              this.prevRepLimitReached = true;
+              this.nextRepLimitReached = true;
+            }
           }
 
           if (index === this.doFilter.reps.length - 1) {
