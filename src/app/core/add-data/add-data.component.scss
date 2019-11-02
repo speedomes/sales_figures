@@ -6,7 +6,6 @@
   }
   
   .filter-type-container {
-
     .row {
       margin: 0 0 1rem 0;
     }
@@ -23,6 +22,29 @@
     
     .filter-by-dateOffice-content {
       .data-entry-container {
+        .nav-arrows-wrapper {
+          margin: 0;
+
+          .col-sm-2 {
+            display: flex;
+            justify-content: space-between;
+
+            .material-icons {
+              border: 1px solid $white;
+              border-radius: 100%;
+              background: $primary-color;
+              color: $white;
+              padding: 0.3rem;
+              cursor: pointer;
+
+              &.disableArrow {
+                pointer-events: none;
+                background: $light-grey;
+              }
+            }
+          }
+        }
+
         .date-wrapper {
           input {
             padding: 0 0.5rem;

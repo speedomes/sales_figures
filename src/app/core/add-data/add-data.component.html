@@ -17,7 +17,7 @@
           </div>
           <div class="col-sm-2">
             <mat-label class="subHeader">Rep</mat-label>
-            <mat-select class="form-control" formControlName="rep" (selectionChange)="repChanged()">
+            <mat-select class="form-control" formControlName="rep" (selectionChange)="repChanged($event.value)">
               <mat-option value="">Select</mat-option>
               <mat-option *ngFor="let rep of doFilter.reps" [value]="rep.id">{{rep.repName}}</mat-option>
             </mat-select>
@@ -42,6 +42,22 @@
               Search
               </button>
             </div>
+          </div>
+        </div>
+        <div class="row justify-center nav-arrows-wrapper">
+          <div class="col-sm-2">
+            <i class="material-icons" (click)="prevOffice()" [ngClass]="{'disableArrow': prevOfficeLimitReached}">navigate_before</i>
+            <i class="material-icons" (click)="nextOffice()" [ngClass]="{'disableArrow': nextOfficeLimitReached}">navigate_next</i>
+          </div>
+          <div class="col-sm-2">
+            <i class="material-icons" (click)="prevRep()" [ngClass]="{'disableArrow': prevRepLimitReached}">navigate_before</i>
+            <i class="material-icons" (click)="nextRep()" [ngClass]="{'disableArrow': nextRepLimitReached}">navigate_next</i>
+          </div>
+          <div class="col-sm-2 date-wrapper">
+            
+          </div>
+          <div class="col-sm-2">
+            
           </div>
         </div>
 

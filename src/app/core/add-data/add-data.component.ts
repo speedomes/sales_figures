@@ -33,6 +33,10 @@ export class AddDataComponent implements OnInit {
   hasSplitData = false;
   splitDataId: number;
   maxDate = moment().toISOString();
+  prevOfficeLimitReached = true;
+  nextOfficeLimitReached = true;
+  prevRepLimitReached = true;
+  nextRepLimitReached = true;
 
   doFilter = {
     offices: [],
@@ -174,10 +178,30 @@ export class AddDataComponent implements OnInit {
     });
 
     if (id!== '' && id!== 'all') {
+      this.doFilter.offices.forEach((office, index) => {
+        if (office.id === id) {
+          this.nextOfficeLimitReached = false;
+          this.prevOfficeLimitReached = false;
+
+          if (index === 0) {
+            this.prevOfficeLimitReached = true;
+            this.nextOfficeLimitReached = false;
+          }
+
+          if (index === this.doFilter.offices.length - 1) {
+            this.nextOfficeLimitReached = true;
+            this.prevOfficeLimitReached = false;
+          }
+        }
+      });
+
       this.dataEntryForm.patchValue({ rep: ''});
       this.dataService.getReps({officeId: id}).subscribe((response) => {
         if (response) {
           this.doFilter.reps = response.reps;
+          if (this.doFilter.reps.length > 0) {
+            this.nextOfficeLimitReached = false;
+          }
         } else {
           this.displaySnackbar('No data found', 'warning');
         }
@@ -194,9 +218,26 @@ export class AddDataComponent implements OnInit {
     }
   }
 
-  repChanged() {
+  repChanged(id) {
     this.dataEntryForm.get('date').enable();
     if (this.dataEntryForm.get('rep').value !== '') {
+      this.doFilter.reps.forEach((rep, index) => {
+        if (rep.id === id) {
+          this.nextRepLimitReached = false;
+          this.prevRepLimitReached = false;
+
+          if (index === 0) {
+            this.prevRepLimitReached = true;
+            this.nextRepLimitReached = false;
+          }
+
+          if (index === this.doFilter.reps.length - 1) {
+            this.nextRepLimitReached = true;
+            this.prevRepLimitReached = false;
+          }
+        }
+      });
+
       if (this.dataEntryForm.get('date').value !== '') {
         this.checkRecord();
       } else {
@@ -222,6 +263,102 @@ export class AddDataComponent implements OnInit {
         this.dataEntryForm.patchValue(repData);
       }
     });
+  }
+
+  prevOffice() {
+    let officeIndex = -1;
+    this.doFilter.offices.forEach((office, index) => {
+      if (office.id === this.dataEntryForm.get('office').value) {
+        officeIndex = index ;
+        if (officeIndex === 1) {
+          this.prevOfficeLimitReached = true;
+        }
+
+        if (officeIndex === this.doFilter.offices.length - 1) {
+          this.nextOfficeLimitReached = false;
+        }
+      }
+    });
+
+    this.dataEntryForm.patchValue({
+      office: this.doFilter.offices[officeIndex - 1].id
+    });
+
+    this.fetchRepsByOffice(this.dataEntryForm.get('office').value);
+  }
+
+  nextOffice() {
+    let officeIndex = -1;
+    this.doFilter.offices.forEach((office, index) => {
+      if (office.id === this.dataEntryForm.get('office').value) {
+        officeIndex = index ;
+        if (officeIndex + 2 === this.doFilter.offices.length) {
+          this.nextOfficeLimitReached = true;
+        }
+
+        if (officeIndex === 0 && this.doFilter.offices.length > 1) {
+          this.prevOfficeLimitReached = false;
+        }
+      }
+    });
+
+    this.dataEntryForm.patchValue({
+      office: this.doFilter.offices[officeIndex + 1].id
+    });
+
+    this.fetchRepsByOffice(this.dataEntryForm.get('office').value);
+  }
+
+  prevRep() {
+    let repIndex = -1;
+    this.doFilter.reps.forEach((rep, index) => {
+      if (rep.id === this.dataEntryForm.get('rep').value) {
+        repIndex = index ;
+        if (repIndex === 1) {
+          this.prevRepLimitReached = true;
+        }
+
+        if (repIndex === this.doFilter.reps.length - 1) {
+          this.nextRepLimitReached = false;
+        }
+      }
+    });
+
+    this.dataEntryForm.patchValue({
+      rep: this.doFilter.reps[repIndex - 1].id
+    });
+
+    if (this.dataEntryForm.get('date').value !== '') {
+      this.checkRecord();
+    } else {
+      this.fetchExistingRepData();
+    }
+  }
+
+  nextRep() {
+    let repIndex = -1;
+    this.doFilter.reps.forEach((rep, index) => {
+      if (rep.id === this.dataEntryForm.get('rep').value) {
+        repIndex = index ;
+        if (repIndex + 2 === this.doFilter.reps.length) {
+          this.nextRepLimitReached = true;
+        }
+
+        if (repIndex === 0 && this.doFilter.reps.length > 1) {
+          this.prevRepLimitReached = false;
+        }
+      }
+    });
+
+    this.dataEntryForm.patchValue({
+      rep: this.doFilter.reps[repIndex + 1].id
+    });
+
+    if (this.dataEntryForm.get('date').value !== '') {
+      this.checkRecord();
+    } else {
+      this.fetchExistingRepData();
+    }
   }
 
   checkRecord(isRepChanged = false) {
