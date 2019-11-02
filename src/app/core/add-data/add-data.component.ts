@@ -199,9 +199,6 @@ export class AddDataComponent implements OnInit {
       this.dataService.getReps({officeId: id}).subscribe((response) => {
         if (response) {
           this.doFilter.reps = response.reps;
-          if (this.doFilter.reps.length > 0) {
-            this.nextOfficeLimitReached = false;
-          }
         } else {
           this.displaySnackbar('No data found', 'warning');
         }
@@ -210,6 +207,8 @@ export class AddDataComponent implements OnInit {
         this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
       });
     } else {
+      this.nextOfficeLimitReached = true;
+      this.prevOfficeLimitReached = true;
       this.dataEntryForm.get('date').disable();
       this.doFilter.reps = [];
       this.dataEntryForm.patchValue({
@@ -243,6 +242,15 @@ export class AddDataComponent implements OnInit {
       } else {
         this.fetchExistingRepData();
       }
+    } else {
+      this.nextRepLimitReached = true;
+      this.prevRepLimitReached = true;
+
+      this.dataEntryForm.patchValue({
+        repBalance: '',
+        repBalanceB: '',
+        repVehicle: ''
+      });
     }
   }
 
