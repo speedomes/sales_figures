@@ -140,15 +140,15 @@
         <div class="row justify-center">
           <div class="col-2">
             <mat-label>Cash/Cheque</mat-label>
-            <input matInput type="number" class="form-control" formControlName="cash">
+            <input matInput type="number" class="form-control" formControlName="cash" (keyup)="updateTotal()">
           </div>
           <div class="col-2">
             <mat-label>Card Machine</mat-label>
-            <input matInput type="number" class="form-control"  formControlName="cards">
+            <input matInput type="number" class="form-control"  formControlName="cards" (keyup)="updateTotal()">
           </div>
           <div class="col-2">
             <mat-label>Total</mat-label>
-            <input matInput type="number" class="form-control" formControlName="totalPayment" readonly [value]="dataEntryForm.get('cash').value + dataEntryForm.get('cards').value">
+            <input matInput type="number" class="form-control" formControlName="totalPayment" readonly>
           </div>
           <div class="col-2">
             <mat-label>Vehicles in use</mat-label>

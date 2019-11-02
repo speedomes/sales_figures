@@ -710,14 +710,13 @@ router.post('/api/checkRecord',(req, res, next) => {
       const balanceQuery = `Select balance, balanceb, vehicle_id from daily WHERE rep_id='${req.body.repId}' ORDER BY last_modified DESC`;
       repPromiseArray.push(database.query(balanceQuery)
         .then(rows => {
-          repRecords = rows[0];
+          repRecords = rows[0] ? rows[0] : null;
           return repRecords;
         })
       );
     }
 
-    Promise.all(repPromiseArray).then(dataCollection => {
-      dataCollection = dataCollection.length > 0 ? dataCollection : repRecords;
+    if(repPromiseArray.length < 1) {
       let officeRecords = [];
       let splitRecords = [];
       
@@ -729,9 +728,9 @@ router.post('/api/checkRecord',(req, res, next) => {
           splitRecords = rows;
           res.status(201).json({
             message: 'Records fetched successfully',
-            records: dataCollection,
-            officeRecords: officeRecords,
-            splitRecords: splitRecords
+            records: repRecords,
+            officeRecords: officeRecords || [],
+            splitRecords: splitRecords || []
           });
         })
         .catch(err => {
@@ -741,7 +740,34 @@ router.post('/api/checkRecord',(req, res, next) => {
       .catch(err => {
         next(err); 
       });
-    })
+    } else {
+      Promise.all(repPromiseArray).then(dataCollection => {
+        dataCollection = !dataCollection[0] ? [] : dataCollection;
+        let officeRecords = [];
+        let splitRecords = [];
+        
+        database.query(officeRecordQuery)
+        .then(rows => {
+          officeRecords = rows;
+          database.query(splitQuery)
+          .then (rows => {
+            splitRecords = rows;
+            res.status(201).json({
+              message: 'Records fetched successfully',
+              records: dataCollection,
+              officeRecords: officeRecords || [],
+              splitRecords: splitRecords || []
+            });
+          })
+          .catch(err => {
+            next(err); 
+          });
+        })
+        .catch(err => {
+          next(err); 
+        });
+      });
+    }
   })
   .catch(err => {
     next(err); 
@@ -1135,16 +1161,16 @@ router.post('/api/deleteVehicle',(req, res) => {
 
 router.post('/api/getReps',(req, res, next) => {
   const officeId = req.body.officeId;
-  let RepDataQuery = `SELECT r.id, r.name as repName, o.name as officeName,
+  let repDataQuery = `SELECT r.id, r.name as repName, o.name as officeName,
       v.name as vehicleName, r.balance, r.office_id,
       r.vehicle_id FROM reps AS r JOIN office AS o ON r.office_id = o.id JOIN vehicle AS v 
       ON r.vehicle_id = v.id`;
 
   if(officeId) {
-    RepDataQuery = RepDataQuery + ` WHERE o.id = '${officeId}'`;
+    repDataQuery = repDataQuery + ` WHERE o.id = '${officeId}'`;
   }
 
-  database.query(RepDataQuery)
+  database.query(repDataQuery)
   .then (rows => {
       res.status(201).json({
       message: 'Rep data fetched successfully',

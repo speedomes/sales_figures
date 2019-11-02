@@ -142,6 +142,12 @@ export class AddDataComponent implements OnInit {
     });
   }
 
+  updateTotal() {
+    this.dataEntryForm.patchValue({
+      totalPayment: parseFloat(this.dataEntryForm.get('cash').value + this.dataEntryForm.get('cards').value).toFixed(2)
+    });
+  }
+
   fetchRepsByOffice(id) {
     this.dataEntryForm.patchValue({
       repVehicle: '',
@@ -190,7 +196,7 @@ export class AddDataComponent implements OnInit {
 
   repChanged() {
     this.dataEntryForm.get('date').enable();
-    if (this.dataEntryForm.get('date').value && this.dataEntryForm.get('date').value !== '') {
+    if (this.dataEntryForm.get('rep').value !== '' && this.dataEntryForm.get('date').value !== '') {
       this.checkRecord(true);
     }
   }
@@ -206,10 +212,9 @@ export class AddDataComponent implements OnInit {
     };
 
     this.dataService.checkRecord(data).subscribe((response: any) => {
-      console.log(response);
-      if (response.records.length > 0) {
+      if (response.records && response.records.length > 0) {
         const record = response.records[0];
-        this.existingOrderId = record && record.id;
+        this.existingOrderId = record.id;
         const repData = {
           repSold: record.sold,
           repPulled: record.pulled,
@@ -270,8 +275,8 @@ export class AddDataComponent implements OnInit {
         const splitRecord = response.splitRecords[0];
         this.splitDataId = splitRecord.id;
         const splitData = {
-          cash: splitRecord.cash || '',
-          cards: splitRecord.cards || '',
+          cash: splitRecord.cash.toFixed(2) || '',
+          cards: splitRecord.cards.toFixed(2) || '',
           totalPayment: (splitRecord.cash + splitRecord.cards).toFixed(2),
           viu: splitRecord.viu || ''
         };
@@ -394,42 +399,42 @@ export class AddDataComponent implements OnInit {
           repWSold: response.data.repWSold,
           repWPulled: response.data.repWPulled,
           repWNewClients: response.data.repWNewClients,
-          repWCredit: response.data.repWCredit.toFixed(2),
+          repWCredit: response.data.repWCredit && response.data.repWCredit.toFixed(2),
           repWInt: response.data.repWInt,
           repWTra1: response.data.repWTra1,
           repWTra2: response.data.repWTra2,
           repMSold: response.data.repMSold,
           repMPulled: response.data.repMPulled,
           repMNewClients: response.data.repMNewClients,
-          repMCredit: response.data.repMCredit.toFixed(2),
+          repMCredit: response.data.repMCredit && response.data.repMCredit.toFixed(2),
           repMInt: response.data.repMInt,
           repMTra1: response.data.repMTra1,
           repMTra2: response.data.repMTra2,
           repYSold: response.data.repYSold,
           repYPulled: response.data.repYPulled,
           repYNewClients: response.data.repYNewClients,
-          repYCredit: response.data.repYCredit.toFixed(2),
+          repYCredit: response.data.repYCredit && response.data.repYCredit.toFixed(2),
           repYInt: response.data.repYInt,
           repYTra1: response.data.repYTra1,
           repYTra2: response.data.repYTra2,
           officeWSold: response.data.officeWSold,
           officeWPulled: response.data.officeWPulled,
           officeWNewClients: response.data.officeWNewClients,
-          officeWCredit: response.data.officeWCredit.toFixed(2),
+          officeWCredit: response.data.officeWCredit && response.data.officeWCredit.toFixed(2),
           officeWInt: response.data.officeWInt,
           officeWTra1: response.data.officeWTra1,
           officeWTra2: response.data.officeWTra2,
           officeMSold: response.data.officeMSold,
           officeMPulled: response.data.officeMPulled,
           officeMNewClients: response.data.officeMNewClients,
-          officeMCredit: response.data.officeMCredit.toFixed(2),
+          officeMCredit: response.data.officeMCredit && response.data.officeMCredit.toFixed(2),
           officeMInt: response.data.officeMInt,
           officeMTra1: response.data.officeMTra1,
           officeMTra2: response.data.officeMTra2,
           officeYSold: response.data.officeYSold,
           officeYPulled: response.data.officeYPulled,
           officeYNewClients: response.data.officeYNewClients,
-          officeYCredit: response.data.officeYCredit.toFixed(2),
+          officeYCredit: response.data.officeYCredit && response.data.officeYCredit.toFixed(2),
           officeYInt: response.data.officeYInt,
           officeYTra1: response.data.officeYTra1,
           officeYTra2: response.data.officeYTra2
