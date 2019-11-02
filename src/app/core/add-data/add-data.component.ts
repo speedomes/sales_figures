@@ -185,6 +185,11 @@ export class AddDataComponent implements OnInit {
           this.nextRepLimitReached = true;
           this.prevRepLimitReached = true;
 
+          if (index === this.doFilter.offices.length - 1) {
+            this.nextOfficeLimitReached = true;
+            this.prevOfficeLimitReached = false;
+          }
+
           if (index === 0) {
             this.prevOfficeLimitReached = true;
             this.nextOfficeLimitReached = false;
@@ -193,11 +198,6 @@ export class AddDataComponent implements OnInit {
               this.nextOfficeLimitReached = true;
               this.prevOfficeLimitReached = true;
             }
-          }
-
-          if (index === this.doFilter.offices.length - 1) {
-            this.nextOfficeLimitReached = true;
-            this.prevOfficeLimitReached = false;
           }
         }
       });
@@ -232,6 +232,11 @@ export class AddDataComponent implements OnInit {
           this.nextRepLimitReached = false;
           this.prevRepLimitReached = false;
 
+          if (index === this.doFilter.reps.length - 1) {
+            this.nextRepLimitReached = true;
+            this.prevRepLimitReached = false;
+          }
+
           if (index === 0) {
             this.prevRepLimitReached = true;
             this.nextRepLimitReached = false;
@@ -240,11 +245,6 @@ export class AddDataComponent implements OnInit {
               this.prevRepLimitReached = true;
               this.nextRepLimitReached = true;
             }
-          }
-
-          if (index === this.doFilter.reps.length - 1) {
-            this.nextRepLimitReached = true;
-            this.prevRepLimitReached = false;
           }
         }
       });
