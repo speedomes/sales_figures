@@ -476,15 +476,15 @@ export class AddDataComponent implements OnInit {
     });
   }
 
-  chooseRecordAction() {
+  chooseRecordAction(isSaveAll = false) {
     if (this.existingOrderId) {
-      this.updateRecord();
+      this.updateRecord(isSaveAll);
     } else {
-      this.addRecord();
+      this.addRecord(isSaveAll);
     }
   }
 
-  addRecord() {
+  addRecord(isSaveAll = false) {
     const recordDetails = {
       date: this.dataEntryForm.get('date').value,
       vehicleId: this.dataEntryForm.get('repVehicle').value,
@@ -501,7 +501,12 @@ export class AddDataComponent implements OnInit {
     };
 
     this.dataService.addRecord(recordDetails).subscribe((response: any) => {
-      this.displaySnackbar('Record has been saved successfully');
+      if (isSaveAll) {
+        this.saveSplit(isSaveAll);
+      } else {
+        this.displaySnackbar('Record has been saved successfully');
+      }
+
       this.resetForm();
     },
     (error) => {
@@ -509,7 +514,7 @@ export class AddDataComponent implements OnInit {
     });
   }
 
-  updateRecord() {
+  updateRecord(isSaveAll = false) {
     const recordDetails = {
       date: this.dataEntryForm.get('date').value,
       vehicleId: this.dataEntryForm.get('repVehicle').value,
@@ -527,7 +532,12 @@ export class AddDataComponent implements OnInit {
     };
 
     this.dataService.updateRecord(recordDetails).subscribe((response: any) => {
-      this.displaySnackbar('Record data has been updated successfully');
+      if (isSaveAll) {
+        this.saveSplit(isSaveAll);
+      } else {
+        this.displaySnackbar('Record data has been updated successfully');
+      }
+
       this.resetForm();
     },
     (error) => {
@@ -535,7 +545,7 @@ export class AddDataComponent implements OnInit {
     });
   }
 
-  saveSplit() {
+  saveSplit(isSaveAll = false) {
     const splitRecord = {
       cash: this.dataEntryForm.get('cash').value || 0,
       cards: this.dataEntryForm.get('cards').value || 0,
@@ -547,7 +557,12 @@ export class AddDataComponent implements OnInit {
 
     if (this.hasSplitData) {
       this.dataService.updateSplit(splitRecord).subscribe((response: any) => {
-        this.displaySnackbar('Split data has been updated successfully');
+        if (isSaveAll) {
+          this.displaySnackbar('Data has been saved successfully');
+        } else {
+          this.displaySnackbar('Split data has been updated successfully');
+        }
+
         this.hasSplitData = false;
         this.resetForm();
       },
@@ -556,7 +571,12 @@ export class AddDataComponent implements OnInit {
       });
     } else {
       this.dataService.saveSplit(splitRecord).subscribe((response: any) => {
-        this.displaySnackbar('Split data has been saved successfully');
+        if (isSaveAll) {
+          this.displaySnackbar('Data has been saved successfully');
+        } else {
+          this.displaySnackbar('Split data has been saved successfully');
+        }
+
         this.hasSplitData = false;
         this.resetForm();
       },
@@ -700,8 +720,7 @@ export class AddDataComponent implements OnInit {
   }
 
   saveAll() {
-    this.chooseRecordAction();
-    this.saveSplit();
+    this.chooseRecordAction(true);
   }
 
   displaySnackbar(msg: string, className: string = 'primary') {
