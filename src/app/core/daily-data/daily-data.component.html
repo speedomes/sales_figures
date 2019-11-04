@@ -30,7 +30,7 @@
       </form>
     </div>
   </div>
-  <div class="data-container mat-elevation-z8" [ngClass]="{'showTableWrapper': dataLoaded}">
+  <div class="data-container mat-elevation-z8" [ngClass]="{'showTableWrapper': dataLoaded && !noDataFound}">
     <div #tableTop></div>
     <table mat-table [dataSource]="dailyDataSource">
       <ng-container matColumnDef="date">
@@ -121,7 +121,7 @@
     </div>
   </div>
   <mat-progress-spinner
-    *ngIf="!dataLoaded"
+    *ngIf="!dataLoaded && !noDataFound"
     class="app-spinner"
     mode="indeterminate">
   </mat-progress-spinner>
@@ -135,6 +135,9 @@
   </div>
   <ng-template #placeholderText>
     <p class="placeholderText">{{placeHolderText}}</p>
+  </ng-template>
+  <ng-template [ngIf]="noDataFound">
+    <p class="noDataFoundText">No Data Found</p>
   </ng-template>
 </div>
 

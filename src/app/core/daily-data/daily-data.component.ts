@@ -127,6 +127,7 @@ export class DailyDataComponent implements OnInit {
           });
         }
       } else {
+        this.dataLoaded = true;
         this.isDataComplete = true;
         this.noDataFound = true;
       }

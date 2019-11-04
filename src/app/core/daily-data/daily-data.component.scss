@@ -67,4 +67,10 @@
       justify-content: center;
     }
   }
+
+  .noDataFoundText {
+    text-align: center;
+    margin-top: 3%;
+    color: $border-grey
+  }
 }
