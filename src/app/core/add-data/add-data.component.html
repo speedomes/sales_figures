@@ -177,6 +177,13 @@
           <button mat-raised-button (click)="getKPIData()" [disabled]="!dataEntryForm.get('rep').valid || !dataEntryForm.get('office').valid || !dataEntryForm.get('date').valid">Update</button>
         </div>
 
+        <div class="row justify-center button-container">
+          <button mat-raised-button (click)="saveAll()"
+            [disabled]="!dataEntryForm.get('rep').valid || !dataEntryForm.get('office').valid || !dataEntryForm.get('date').valid"
+            >Save All
+          </button>
+        </div>
+
         <div class="row justify-center">
           <h5 class="subHeader">KPI</h5>
         </div>

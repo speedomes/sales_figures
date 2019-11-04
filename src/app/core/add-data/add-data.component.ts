@@ -699,6 +699,11 @@ export class AddDataComponent implements OnInit {
     });
   }
 
+  saveAll() {
+    this.chooseRecordAction();
+    this.saveSplit();
+  }
+
   displaySnackbar(msg: string, className: string = 'primary') {
     this.snackBar.openFromComponent(SnackBarComponent, {
       duration: environment.snackBarTimeOut,

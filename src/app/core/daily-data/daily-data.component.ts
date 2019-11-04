@@ -130,6 +130,7 @@ export class DailyDataComponent implements OnInit {
         this.dataLoaded = true;
         this.isDataComplete = true;
         this.noDataFound = true;
+        this.displaySnackbar('No Data Found');
       }
     },
     (error) => {
