@@ -396,16 +396,16 @@ export class AddDataComponent implements OnInit {
         const record = response.records[0];
         this.existingOrderId = record.id;
         const repData = {
-          repSold: record.sold,
-          repPulled: record.pulled,
-          repNC: record.newclients,
-          repCredit: record.credit,
-          repInt: record.inuse,
-          repDay1: record.t1,
-          repDay2: record.t2,
-          repBalance: record.balance,
-          repBalanceB: record.balanceb,
-          repVehicle: record.vehicle_id
+          repSold: record.sold || '',
+          repPulled: record.pulled || '',
+          repNC: record.newclients || '',
+          repCredit: record.credit.toFixed(2) || '',
+          repInt: record.inuse || '',
+          repDay1: record.t1 || '',
+          repDay2: record.t2 || '',
+          repBalance: record.balance || '',
+          repBalanceB: record.balanceb || '',
+          repVehicle: record.vehicle_id || ''
         };
         this.dataEntryForm.patchValue(repData);
       } else {
@@ -427,7 +427,7 @@ export class AddDataComponent implements OnInit {
           officeSold: officeRecord.sold || '',
           officePulled: officeRecord.pulled || '',
           officeNewClients: officeRecord.newClients || '',
-          officeCredit: officeRecord.credit || '',
+          officeCredit: officeRecord.credit.toFixed(2) || '',
           officeInt: officeRecord.inuse || '',
           officeDay1: officeRecord.day1 || '',
           officeDay2: officeRecord.day2 || ''
