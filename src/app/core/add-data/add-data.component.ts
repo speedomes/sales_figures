@@ -260,6 +260,13 @@ export class AddDataComponent implements OnInit {
       this.prevRepLimitReached = true;
 
       this.dataEntryForm.patchValue({
+        repSold: '',
+        repPulled: '',
+        repNC: '',
+        repCredit: '',
+        repInt: '',
+        repDay1: '',
+        repDay2: '',
         repBalance: '',
         repBalanceB: '',
         repVehicle: ''
