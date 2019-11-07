@@ -225,8 +225,8 @@ export class AddDataComponent implements OnInit {
   }
 
   repChanged(id) {
-    this.dataEntryForm.get('date').enable();
     if (this.dataEntryForm.get('rep').value !== '') {
+      this.dataEntryForm.get('date').enable();
       this.doFilter.reps.forEach((rep, index) => {
         if (rep.id === id) {
           this.nextRepLimitReached = false;
@@ -255,6 +255,7 @@ export class AddDataComponent implements OnInit {
         this.fetchExistingRepData();
       }
     } else {
+      this.dataEntryForm.get('date').disable();
       this.nextRepLimitReached = true;
       this.prevRepLimitReached = true;
 
@@ -399,7 +400,7 @@ export class AddDataComponent implements OnInit {
           repSold: record.sold || '',
           repPulled: record.pulled || '',
           repNC: record.newclients || '',
-          repCredit: record.credit.toFixed(2) || '',
+          repCredit: record.credit && record.credit.toFixed(2) || '',
           repInt: record.inuse || '',
           repDay1: record.t1 || '',
           repDay2: record.t2 || '',
@@ -427,7 +428,7 @@ export class AddDataComponent implements OnInit {
           officeSold: officeRecord.sold || '',
           officePulled: officeRecord.pulled || '',
           officeNewClients: officeRecord.newClients || '',
-          officeCredit: officeRecord.credit.toFixed(2) || '',
+          officeCredit: officeRecord.credit && officeRecord.credit.toFixed(2) || '',
           officeInt: officeRecord.inuse || '',
           officeDay1: officeRecord.day1 || '',
           officeDay2: officeRecord.day2 || ''
@@ -649,6 +650,7 @@ export class AddDataComponent implements OnInit {
   }
 
   resetForm() {
+    this.dataEntryForm.get('date').disable();
     this.dataEntryForm.patchValue({
       rep: '',
       repSold: '',
