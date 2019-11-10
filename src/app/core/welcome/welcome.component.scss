@@ -1,7 +1,7 @@
 @import "../../../assets/scss/variables.scss";
 
 .welcome-container {
-  height: 78vh;
+  height: 73vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -12,6 +12,19 @@
       margin-top: 2rem;
       background-color: $primary-color;
       color: $white;
+    }
+
+    .login-container {
+      .loginForm {
+        .login-data {
+          margin: 2rem 0 0 0;
+          justify-content: center;
+        }
+      }
+    }
+
+    .button-wrapper {
+      justify-content: center;
     }
   }
 }

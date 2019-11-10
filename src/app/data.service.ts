@@ -120,4 +120,8 @@ export class DataService {
   getExistingRepData(data: {}): Observable<any> {
     return this.httpClient.post(this.API_URL + 'getExistingRepData', data);
   }
+
+  auth(data: {}): Observable<any> {
+    return this.httpClient.post(this.API_URL + 'auth', data);
+  }
 }

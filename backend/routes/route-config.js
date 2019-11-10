@@ -3,6 +3,7 @@ const router = express.Router();
 const moment = require('moment');
 const Promise = require('promise');
 const mysql = require('mysql');
+const fs = require('fs');
 const dateFormat = 'YYYY.MM.DD';
 
 class Database {
@@ -40,6 +41,31 @@ const database = new Database({
   password : process.env.MYSQL_PWD,
   database : process.env.MYSQL_DB_NAME,
   debug: true
+});
+
+router.post('/api/auth', (req, res, next) => {
+  fs.readFile('../backend/user-config.json', 'utf8', (err, data) => {
+    if (!err) {
+      userConfig = JSON.parse(data.replace(/ /g,''));
+      const userName = userConfig['username'];
+      const password = userConfig['password'];
+
+      if(userName === req.body.userName && password === req.body.password) {
+        res.status(201).json({
+          message: 'User is valid',
+          isUserValid: true
+        });
+      } else {
+        res.status(201).json({
+          message: 'User is invalid',
+          isUserValid: false
+        });
+      }
+     
+    } else {
+      throw err;
+    }
+  });
 });
 
 router.post('/api/getDashboardData',(req, res, next) => {
@@ -359,8 +385,8 @@ router.get('/api/getYears',(req, res) => {
   database.query('SELECT YEAR(date) AS year FROM daily GROUP BY YEAR(date)')
   .then (data => {
     res.status(201).json({
-    message: 'Years fetched successfully',
-    yearData: data
+      message: 'Years fetched successfully',
+      yearData: data
     });
   })
   .catch(err => {

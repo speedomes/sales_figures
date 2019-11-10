@@ -1,6 +1,30 @@
 <div class="welcome-container">
   <div class="welcome-content">
     <h1>Welcome to the Sales Figures</h1>
-    <button mat-raised-button routerLink="/home">Enter the site</button>
+    <div class="row">
+    <div class="login-container col-sm-12">
+      <h5 class="page-title">Login</h5>
+      <form [formGroup]="loginForm" (ngSubmit)="login()" class="loginForm">
+        <div class="row login-data">
+          <div class="col-sm-5">
+            <input matInput placeholder="UserName" formControlName="userName" class="form-control">
+            <mat-error *ngIf="!loginForm.get('userName').valid">
+              Username is <strong>required</strong>
+            </mat-error>
+          </div>
+        </div>
+        <div class="row login-data">
+          <div class="col-sm-5">
+            <input matInput placeholder="Password" formControlName="password" type="password" class="form-control">
+            <mat-error *ngIf="!loginForm.get('password').valid">
+              Password is <strong>required</strong>
+            </mat-error>
+          </div>
+        </div>
+        <div class="row button-wrapper">
+          <button mat-raised-button [disabled]="!loginForm.valid" type="submit">Login</button>
+        </div>
+      </form>
+    </div>
   </div>
 </div>

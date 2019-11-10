@@ -35,7 +35,7 @@ export class DailyDataComponent implements OnInit {
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;
   @ViewChild('tableTop', {static: true}) tableTop: ElementRef;
 
-  constructor(private dataService: DataService,  private snackBar: MatSnackBar,
+  constructor(private dataService: DataService, private snackBar: MatSnackBar,
     private changeDetectorRefs: ChangeDetectorRef) { }
 
   ngOnInit() {

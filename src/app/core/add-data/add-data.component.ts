@@ -657,9 +657,7 @@ export class AddDataComponent implements OnInit {
   }
 
   resetForm() {
-    this.dataEntryForm.get('date').disable();
     this.dataEntryForm.patchValue({
-      rep: '',
       repSold: '',
       repPulled: '',
       repNC: '',
