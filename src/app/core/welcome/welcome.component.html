@@ -8,7 +8,7 @@
         <div class="row login-data">
           <div class="col-sm-5">
             <input matInput placeholder="UserName" formControlName="userName" class="form-control">
-            <mat-error *ngIf="!loginForm.get('userName').valid">
+            <mat-error *ngIf="loginForm.get('userName').touched && !loginForm.get('userName').valid">
               Username is <strong>required</strong>
             </mat-error>
           </div>
@@ -16,7 +16,7 @@
         <div class="row login-data">
           <div class="col-sm-5">
             <input matInput placeholder="Password" formControlName="password" type="password" class="form-control">
-            <mat-error *ngIf="!loginForm.get('password').valid">
+            <mat-error *ngIf="loginForm.get('password').touched && !loginForm.get('password').valid">
               Password is <strong>required</strong>
             </mat-error>
           </div>
