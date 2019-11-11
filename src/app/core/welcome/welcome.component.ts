@@ -32,11 +32,14 @@ export class WelcomeComponent implements OnInit {
     }).subscribe((response) => {
       if (response) {
         if (response.isUserValid) {
+          localStorage.setItem('isUserLoggedIn', 'true');
           this.router.navigate(['home']);
         } else {
+          localStorage.removeItem('isUserLoggedIn');
           this.displaySnackbar('Authentication failed!', 'warning');
         }
       } else {
+        localStorage.removeItem('isUserLoggedIn');
         this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
       }
     });
