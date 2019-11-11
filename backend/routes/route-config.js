@@ -63,11 +63,7 @@ router.post('/api/auth', (req, res, next) => {
       }
      
     } else {
-      res.status(500).json({
-        message: 'Error in authentication',
-        isUserValid: false,
-        error: err
-      });
+      next(err);
     }
   });
 });
