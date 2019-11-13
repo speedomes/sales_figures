@@ -44,7 +44,7 @@ const database = new Database({
 });
 
 router.post('/api/auth', (req, res, next) => {
-  fs.readFile('../backend/user-config.json', 'utf8', (err, data) => {
+  fs.readFile(__dirname + '/../user-config.json', 'utf8', (err, data) => {
     if (!err) {
       userConfig = JSON.parse(data.replace(/ /g,''));
       const userName = userConfig['username'];
@@ -63,7 +63,7 @@ router.post('/api/auth', (req, res, next) => {
       }
      
     } else {
-      throw err;
+      next(err);
     }
   });
 });
