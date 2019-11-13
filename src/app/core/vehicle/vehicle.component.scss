@@ -20,6 +20,15 @@
 
   .action-container {
     .add-data-wrapper {
+      margin-bottom: 2rem;
+      
+      mat-label {
+        display: block;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        color: $primary-color;
+      }
+
       input {
         width: 100%;
         padding: 0.3rem;

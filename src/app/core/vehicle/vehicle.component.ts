@@ -17,12 +17,12 @@ export class VehicleComponent implements OnInit {
 
   vehicleForm: FormGroup;
   selectedVehicle: any;
-  showError: boolean = false;
+  showError = false;
   selectedIndex: number;
-  dataLoaded: boolean = false;
+  dataLoaded = false;
   placeHolderText: string = environment.placeHolderText;
   vehicleDataSource =  new MatTableDataSource();
-  displayedColumns: string[] = ['name'];
+  displayedColumns: string[] = ['name', 'hire_company'];
 
   @ViewChild(MatPaginator, {static: false}) set paginator(paginator: MatPaginator) {
     this.vehicleDataSource.paginator = paginator;
@@ -37,14 +37,18 @@ export class VehicleComponent implements OnInit {
   ngOnInit() {
     this.getVehicles();
     this.vehicleForm = new FormGroup({
-      vehicleName: new FormControl('', [Validators.required])
+      vehicleName: new FormControl('', [Validators.required]),
+      hire_company: new FormControl('', [Validators.required])
     });
   }
 
   populateData(rowData: any, index) {
     this.selectedIndex = index;
     this.selectedVehicle = rowData;
-    this.vehicleForm.setValue({ vehicleName: rowData.name });
+    this.vehicleForm.setValue({
+      vehicleName: rowData.name,
+      hire_company: (rowData.hire_company && rowData.hire_company.toLowerCase()) || ''
+    });
   }
 
   getVehicles() {
@@ -62,43 +66,34 @@ export class VehicleComponent implements OnInit {
   }
 
   addVehicle() {
-    if (this.selectedVehicle &&
-      (this.vehicleForm.get('vehicleName').value === this.selectedVehicle.name)) {
-      this.displaySnackbar('Vehicle name already exists!', 'warning');
-      return;
-    } else {
-      this.dataService.addVehicle({
-        name: this.vehicleForm.get('vehicleName').value
-      }).subscribe((response) => {
-        this.displaySnackbar((response && response.message) || 'Vehicle name has been added successfully!');
-        this.clearSelection();
-        this.getVehicles();
-      },
-      (error) => {
-        this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
-      });
-    }
+    this.dataService.addVehicle({
+      name: this.vehicleForm.get('vehicleName').value,
+      hire_company: this.vehicleForm.get('hire_company').value
+    }).subscribe((response) => {
+      this.displaySnackbar((response && response.message) || 'Vehicle name has been added successfully!');
+      this.clearSelection();
+      this.getVehicles();
+    },
+    (error) => {
+      this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
+    });
   }
 
   updateVehicle() {
-    if (this.vehicleForm.get('vehicleName').value === this.selectedVehicle.name) {
-      this.displaySnackbar('No update required!');
-      return;
-    } else {
-      this.dataService.updateVehicle({
-        id: this.selectedVehicle.id, 
-        name: this.vehicleForm.get('vehicleName').value
-      }).subscribe((response) => {
-        this.displaySnackbar((response && response.message) || 'Vehicle name has been updated successfully!');
-        this.clearSelection();
-        this.getVehicles();
-      });
-    }
+    this.dataService.updateVehicle({
+      id: this.selectedVehicle.id,
+      name: this.vehicleForm.get('vehicleName').value,
+      hire_company: this.vehicleForm.get('hire_company').value
+    }).subscribe((response) => {
+      this.displaySnackbar((response && response.message) || 'Vehicle name has been updated successfully!');
+      this.clearSelection();
+      this.getVehicles();
+    });
   }
 
   deleteVehicle() {
     if (this.vehicleForm.get('vehicleName').value !== this.selectedVehicle.name) {
-      this.displaySnackbar('Please select an vehicle', 'warning');
+      this.displaySnackbar('Please select a vehicle', 'warning');
       return;
     } else {
       this.dataService.deleteVehicle({
@@ -112,7 +107,10 @@ export class VehicleComponent implements OnInit {
   }
 
   clearSelection() {
-    this.vehicleForm.reset();
+    this.vehicleForm.patchValue({
+      vehicleName: '',
+      hire_company: ''
+    });
     this.selectedVehicle = undefined;
     this.selectedIndex = undefined;
   }

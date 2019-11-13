@@ -1129,45 +1129,47 @@ router.post('/api/deleteOffice',(req, res) => {
 });
 
 router.get('/api/getVehicles',(req, res, next) => {
-  const VehicleDataQuery = `select * from vehicle ORDER BY vehicle.id DESC`;
+  const vehicleDataQuery = `select * from vehicle ORDER BY vehicle.id DESC`;
 
-  database.query(VehicleDataQuery)
+  database.query(vehicleDataQuery)
   .then (rows => {
-      res.status(201).json({
+    res.status(201).json({
       message: 'Vehicle data fetched successfully',
       vehicles: rows
-      });
+    });
   })
   .catch(err => {
-      next(err); 
+    next(err); 
   });
 });
 
 router.post('/api/addVehicle',(req, res) => {
-  const addVehicleQuery = `insert INTO vehicle(name) VALUES ('${req.body.name}')`;
+  const addVehicleQuery = `insert INTO vehicle(name, hire_company) VALUES 
+    ('${req.body.name}', '${req.body.hire_company}')`;
 
   database.query(addVehicleQuery)
   .then (rows => {
       res.status(201).json({
-      message: 'Vehicle added successfully',
-      });
+      message: 'Vehicle has been added successfully',
+    });
   })
   .catch(err => {
-      next(err); 
+    next(err); 
   });
 });
 
 router.post('/api/updateVehicle',(req, res) => {
-  const updateVehicleQuery = `update vehicle SET name='${req.body.name}' WHERE id='${req.body.id}'`;
+  const updateVehicleQuery = `update vehicle SET name='${req.body.name}',
+    hire_company='${req.body.hire_company}' WHERE id='${req.body.id}'`;
 
   database.query(updateVehicleQuery)
   .then (rows => {
       res.status(201).json({
       message: 'Vehicle has been updated successfully'
-      });
+    });
   })
   .catch(err => {
-      next(err); 
+    next(err); 
   });
 });
 
@@ -1177,11 +1179,11 @@ router.post('/api/deleteVehicle',(req, res) => {
   database.query(deleteVehicleQuery)
   .then (rows => {
       res.status(201).json({
-      message: 'Vehicle deleted successfully'
-      });
+      message: 'Vehicle has been deleted successfully'
+    });
   })
   .catch(err => {
-      next(err); 
+    next(err); 
   });
 });
 

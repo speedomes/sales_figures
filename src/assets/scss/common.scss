@@ -171,6 +171,12 @@ html, body {
     .mat-sort-header-container {
       justify-content: center;
     }
+
+    td {
+      &.mat-cell {
+        text-align: center;
+      }
+    }
   }
   
   .placeholderText {
