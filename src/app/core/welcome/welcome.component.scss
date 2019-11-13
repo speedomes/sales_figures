@@ -8,6 +8,10 @@
 
   .welcome-content {
     text-align: center;
+    h1 {
+      color: $primary-color;      
+    }
+
     button {
       margin-top: 2rem;
     }
