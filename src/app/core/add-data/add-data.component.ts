@@ -67,6 +67,7 @@ export class AddDataComponent implements OnInit {
       repBalance: new FormControl(''),
       repBalanceB: new FormControl(''),
       repVehicle: new FormControl(''),
+      hire_company: new FormControl(''),
       date: new FormControl({ value: '', disabled: true}, [Validators.required]),
       officeSold: new FormControl(''),
       officePulled: new FormControl(''),
@@ -415,7 +416,8 @@ export class AddDataComponent implements OnInit {
           repDay2: record.t2 || '',
           repBalance: record.balance || '',
           repBalanceB: record.balanceb || '',
-          repVehicle: record.vehicle_id || ''
+          repVehicle: record.vehicle_id || '',
+          hire_company: record.hire_company || ''
         };
         this.dataEntryForm.patchValue(repData);
       } else {
@@ -498,6 +500,7 @@ export class AddDataComponent implements OnInit {
     const recordDetails = {
       date: this.dataEntryForm.get('date').value,
       vehicleId: this.dataEntryForm.get('repVehicle').value,
+      hire_company: this.dataEntryForm.get('hire_company').value,
       sold: this.dataEntryForm.get('repSold').value,
       pulled: this.dataEntryForm.get('repPulled').value,
       newClients: this.dataEntryForm.get('repNC').value,
@@ -526,6 +529,7 @@ export class AddDataComponent implements OnInit {
     const recordDetails = {
       date: this.dataEntryForm.get('date').value,
       vehicleId: this.dataEntryForm.get('repVehicle').value,
+      hire_company: this.dataEntryForm.get('hire_company').value,
       sold: this.dataEntryForm.get('repSold').value,
       pulled: this.dataEntryForm.get('repPulled').value,
       newClients: this.dataEntryForm.get('repNC').value,
@@ -726,6 +730,16 @@ export class AddDataComponent implements OnInit {
 
   saveAll() {
     this.chooseRecordAction(true);
+  }
+
+  updateHireCompany(event) {
+    const vehicleObj: any = this.vehicles.filter((vehicle: any) => {
+      return vehicle.id === event.value;
+    })[0];
+
+    this.dataEntryForm.patchValue({
+      hire_company: !vehicleObj.hire_company ? '' : vehicleObj.hire_company
+    });
   }
 
   displaySnackbar(msg: string, className: string = 'primary') {
