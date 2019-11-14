@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://dsdvans.co.uk/api/',
+  apiUrl: 'http://localhost:3000/api/',
   snackBarTimeOut: 3000,
   placeHolderText: 'Data will appear here soon'
 };

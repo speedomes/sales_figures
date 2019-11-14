@@ -30,7 +30,6 @@ export class WelcomeComponent implements OnInit {
       userName: this.loginForm.get('userName').value,
       password: this.loginForm.get('password').value
     }).subscribe((response) => {
-      console.log(response);
       if (response) {
         if (response.isUserValid) {
           localStorage.setItem('isUserLoggedIn', 'true');
