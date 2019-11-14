@@ -352,6 +352,7 @@ export class AddDataComponent implements OnInit {
       }
     });
 
+    this.resetForm();
     this.dataEntryForm.patchValue({
       rep: this.doFilter.reps[repIndex - 1].id
     });
@@ -378,6 +379,7 @@ export class AddDataComponent implements OnInit {
       }
     });
 
+    this.resetForm();
     this.dataEntryForm.patchValue({
       rep: this.doFilter.reps[repIndex + 1].id
     });
@@ -514,8 +516,6 @@ export class AddDataComponent implements OnInit {
       } else {
         this.displaySnackbar('Record has been saved successfully');
       }
-
-      this.resetForm();
     },
     (error) => {
       this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
@@ -545,8 +545,6 @@ export class AddDataComponent implements OnInit {
       } else {
         this.displaySnackbar('Record data has been updated successfully');
       }
-
-      this.resetForm();
     },
     (error) => {
       this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
