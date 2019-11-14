@@ -29,7 +29,7 @@ export class DailyDataComponent implements OnInit {
   isResetData = true;
   isDataComplete = false;
 
-  displayedColumns: string[] = ['date', 'office', 'repId', 'vehicle', 'sold',
+  displayedColumns: string[] = ['date', 'office', 'repId', 'vehicle', 'hire_company', 'sold',
     'pulled', 'clients', 'credit', 'balance', 'unused', 'in', 'day1', 'day2', 'st', 'name'];
 
   @ViewChild(MatPaginator, {static: false}) paginator: MatPaginator;

@@ -493,7 +493,7 @@ router.post('/api/getDailyData',(req, res, next) => {
   const endLimit = parseInt(req.body.endLimit);
   const dailyDataQuery = `SELECT d.date, o.name as officeName, d.rep_id as repId, v.name as vehicleName, 
   d.sold, d.pulled, d.newclients as newClients, d.credit, d.balance, d.unused, d.inuse, d.t1, d.t2, d.st, 
-  r.name as repName FROM daily as d join reps as r on d.rep_id = r.id 
+  r.name as repName, v.hire_company FROM daily as d join reps as r on d.rep_id = r.id 
   join office as o on r.office_id = o.id join vehicle as v on d.vehicle_id = v.id LIMIT ${startLimit},${endLimit}`;
 
   database.query(dailyDataQuery)
@@ -514,7 +514,7 @@ router.post('/api/getDailyDataByFilter',(req, res, next) => {
   
   let dailyDataQuery = `SELECT d.date, o.name as officeName, d.rep_id as repId, v.name as vehicleName, 
   d.sold, d.pulled, d.newclients as newClients, d.credit, d.balance, d.unused, d.inuse, d.t1, d.t2, d.st, 
-  r.name as repName FROM daily as d join reps as r on d.rep_id = r.id 
+  r.name as repName, v.hire_company FROM daily as d join reps as r on d.rep_id = r.id 
   join office as o on r.office_id = o.id join vehicle as v on d.vehicle_id = v.id`;
 
   if(req.body.year !== '') {

@@ -49,8 +49,13 @@
       </ng-container>
 
       <ng-container matColumnDef="vehicle">
-        <th mat-header-cell *matHeaderCellDef> Vehicles </th>
+        <th mat-header-cell *matHeaderCellDef> Vehicle </th>
         <td mat-cell *matCellDef="let element"> {{element.vehicleName}} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="hire_company">
+        <th mat-header-cell *matHeaderCellDef> Hire Co </th>
+        <td mat-cell *matCellDef="let element"> {{element.hire_company | titlecase}} </td>
       </ng-container>
 
       <ng-container matColumnDef="sold">
@@ -89,12 +94,12 @@
       </ng-container>
 
       <ng-container matColumnDef="day1">
-        <th mat-header-cell *matHeaderCellDef> Day 1 </th>
+        <th mat-header-cell *matHeaderCellDef> D1 </th>
         <td mat-cell *matCellDef="let element"> {{element.t1}} </td>
       </ng-container>
 
       <ng-container matColumnDef="day2">
-        <th mat-header-cell *matHeaderCellDef> Day 2 </th>
+        <th mat-header-cell *matHeaderCellDef> D2 </th>
         <td mat-cell *matCellDef="let element"> {{element.t2}} </td>
       </ng-container>
 
