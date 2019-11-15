@@ -1,6 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DataService } from 'src/app/data.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+
+import * as moment from 'moment';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatSort } from '@angular/material/sort';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-total',
@@ -10,6 +16,21 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 export class TotalComponent implements OnInit {
 
   totalDataForm: FormGroup;
+  maxDate = moment().toISOString();
+  isDataLoaded = false;
+  showSpinner = false;
+  placeHolderText: string = environment.placeHolderText;
+  dataSource =  new MatTableDataSource();
+  displayedColumns: string[] = ['hire_company', 'total'];
+
+  @ViewChild(MatPaginator, {static: false}) set paginator(paginator: MatPaginator) {
+    this.dataSource.paginator = paginator;
+  }
+
+  @ViewChild(MatSort, {static: false}) set sort(sort: MatSort) {
+    this.dataSource.sort = sort;
+  }
+
   constructor(private dataService: DataService) { }
 
   ngOnInit() {
@@ -20,11 +41,14 @@ export class TotalComponent implements OnInit {
   }
 
   fetchTotalData() {
+    this.showSpinner = true;
     this.dataService.getTotalData({
       fromDate: this.totalDataForm.get('fromDate').value,
       toDate: this.totalDataForm.get('toDate').value
     }).subscribe((response) => {
-      console.log(response);
+      this.dataSource.data = response.totalData;
+      this.isDataLoaded = true;
+      this.showSpinner = false;
     });
   }
 }

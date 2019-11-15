@@ -1,7 +1,7 @@
 <div class="total-container">
   <h4 class="page-title">Total</h4>
   <form [formGroup]="totalDataForm">
-    <div class="row">
+    <div class="row justify-center">
       <div class="col-sm-2 date-wrapper">
         <mat-label class="subHeader">From</mat-label>
         <input matInput
@@ -26,14 +26,41 @@
         <mat-datepicker-toggle matSuffix [for]="tDate"></mat-datepicker-toggle>
         <mat-datepicker #tDate></mat-datepicker>
       </div>
-      <div class="col-sm-2">
-        <div class="search-wrapper">
-          <button mat-raised-button (click)="fetchTotalData()" 
-            [disabled]="!totalDataForm.get('fromDate').valid || !totalDataForm.get('toDate').valid">
-            Search
-          </button>
-        </div>
+    </div>
+
+    <div class="row justify-center">
+      <div class="col-sm-2 search-wrapper">
+        <button mat-raised-button (click)="fetchTotalData()" 
+          [disabled]="!totalDataForm.get('fromDate').valid || !totalDataForm.get('toDate').valid">
+          Search
+        </button>
       </div>
     </div>
   </form>
+
+  <div class="row justify-center total-table-wrapper">
+    <div class="mat-elevation-z8" *ngIf="isDataLoaded">
+      <table mat-table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="hire_company">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Hire Company </th>
+          <td mat-cell *matCellDef="let element"> {{element.hire_company | titlecase}} </td>
+        </ng-container>
+        <ng-container matColumnDef="total">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> No. Of Vehicles </th>
+          <td mat-cell *matCellDef="let element"> {{element.total}} </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+      <mat-paginator [pageSizeOptions]="[10, 20, 30, 50, 100]" [pageSize]="10" showFirstLastButtons></mat-paginator>
+    </div>
+    <ng-container *ngIf="showSpinner">
+      <p class="placeholderText">{{placeHolderText}}</p>
+    </ng-container>
+    <mat-progress-spinner
+      *ngIf="showSpinner"
+      class="app-spinner"
+      mode="indeterminate">
+    </mat-progress-spinner>
+  </div>
 </div>

@@ -2,27 +2,48 @@
 
 .total-container {
   .row {
-    margin-bottom: 3rem;
-    justify-content: space-between;
+    margin-bottom: 2rem;
 
     mat-label {
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
       color: $primary-color;
+      font-weight: 600;
     }
 
-    .col-3 {
-      mat-label {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 1rem;
-      }
+    .search-wrapper {
+      display: flex;
+      justify-content: center;
+    }
 
-      input {
-        padding-left: 0.5rem;
-      }
-
-      * {
+    &.total-table-wrapper {
+      table {
         width: 100%;
       }
+      
+      .placeholderText {
+        position: relative;
+        top: 0;
+        left: 0;
+      }
+    }
+  }
+
+  .date-wrapper {
+    input {
+      padding: 0 0.5rem;
+    }
+
+    .mat-datepicker-toggle {
+      position: absolute;
+      right: 1rem;
+      bottom: 0%;
+    }
+
+    .mat-datepicker-toggle-active {
+      color: $primary-color;
     }
   }
 }

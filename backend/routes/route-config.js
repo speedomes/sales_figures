@@ -1271,45 +1271,22 @@ router.post('/api/deleteRep',(req, res) => {
   });
 });
 
-router.get('/api/getTotalData',(req, res, next) => {
-  const transFlexQuery = `select count(vehicle_id) as count from daily as d`;
+router.post('/api/getTotalData',(req, res, next) => {
+  const fromDate = moment(req.body.fromDate).format(dateFormat);
+  const toDate = moment(req.body.toDate).format(dateFormat);
 
-  let promiseArray = [];
-  let totalData = {
-      startDate: yearStartDate,
-      endDate: today
-  };
+  const totalDataQuery = `select hire_company, count(*) as total from vehicle as v join daily as d
+    WHERE v.id=d.vehicle_id AND d.date>='${fromDate}' AND d.date<='${toDate}' group by v.hire_company`;
 
-  database.query(transFlexQuery)
+  database.query(totalDataQuery)
   .then (rows => {
-      totalData.transFlexHireCount = rows[0].count;
-      promiseArray.push (
-      database.query(`select count(vehicle_id) as count from daily as d 
-      join vehicle as v on d.vehicle_id=v.id Where d.date>='${yearStartDate}' 
-      AND d.date<'${today}' AND v.name like '%reflex%'`)
-      .then (rows => {
-          totalData.reflexHireCount = rows[0].count;
-          return database.query(`select count(vehicle_id) as count from daily as d 
-          join vehicle as v on d.vehicle_id=v.id Where d.date>='${yearStartDate}' 
-          AND d.date<'${today}' AND v.name like '%north%'`);
-      }, err => {
-          return database.close().then(() => { throw err; })
-      })
-      .then (rows => {
-          totalData.northgateHireCount = rows[0].count;
-          return totalData;
-      }, err => {
-          return database.close().then(() => { throw err; })
-      })
-      );
-      Promise.all(promiseArray).then((data) => {
-        res.status(201).json({
-            message: 'Total data fetched successfully',
-            totalData: data
-        });
-      });
+    console.log(totalDataQuery);
+    res.status(201).json({
+      message: 'Total data has been fetched successfully.',
+      totalData: rows
+    });
   },err => {
-      return database.close().then(() => { throw err; })
+    return database.close().then(() => { throw err; })
   })
   .catch(err => {
       next(err); 
@@ -1323,7 +1300,7 @@ router.get('/api/getSplitData',(req, res, next) => {
 
   database.query(splitDataQuery)
   .then (rows => {
-      res.status(201).json({
+    res.status(201).json({
       message: 'Split data fetched successfully.',
       splitData: rows
     });
