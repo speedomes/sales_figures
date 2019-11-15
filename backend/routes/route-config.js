@@ -752,28 +752,12 @@ router.post('/api/checkRecord',(req, res, next) => {
         database.query(splitQuery)
         .then (rows => {
           splitRecords = rows;
-
-          if(repRecords[0].vehicle_id > 0) {
-            const vehicleDetailsQuery = `Select hire_company from vehicle
-              WHERE id='${repRecords[0].vehicle_id}'`;
-
-            database.query(vehicleDetailsQuery).then(rows => {
-              repRecords[0].hire_company = rows[0].hire_company;
-              res.status(201).json({
-                message: 'Records fetched successfully',
-                records: repRecords,
-                officeRecords: officeRecords || [],
-                splitRecords: splitRecords || []
-              });
-            });
-          } else {
-            res.status(201).json({
-              message: 'Records fetched successfully',
-              records: repRecords,
-              officeRecords: officeRecords || [],
-              splitRecords: splitRecords || []
-            });
-          }
+          res.status(201).json({
+            message: 'Records fetched successfully',
+            records: repRecords,
+            officeRecords: officeRecords || [],
+            splitRecords: splitRecords || []
+          });
         })
         .catch(err => {
           next(err); 
@@ -825,25 +809,15 @@ router.post('/api/addRecord',(req, res) => {
   const updateRepTableQuery = `Update reps SET balance='${req.body.balance}', balanceb='${req.body.balanceB}', vehicle_id='${req.body.vehicleId}'
     WHERE id= '${req.body.repId}'`;
 
-  const updateVehicleTableQuery = `Update vehicle SET hire_company='${req.body.hire_company}' WHERE id='${req.body.vehicleId}'`;
-
   database.query(addRecordQuery)
   .then (() => {
     database.query(updateRepTableQuery)
-    .then(() => {
-      database.query(updateVehicleTableQuery)
-      .then(() => {
-        console.log(updateVehicleTableQuery);
-        res.status(201).json({
-          message: 'Record added successfully',
-        });
-      })
-      .catch(err => {
-        next(err); 
-      });  
-    })
     .catch(err => {
       next(err); 
+    });
+
+    res.status(201).json({
+      message: 'Record added successfully',
     });
   })
   .catch(err => {
@@ -856,28 +830,18 @@ router.post('/api/updateRecord',(req, res) => {
     newclients='${req.body.newClients}', credit='${req.body.credit}', balance='${req.body.balance}', inuse='${req.body.inuse}', 
     t1='${req.body.day1}', t2='${req.body.day2}', balanceb='${req.body.balanceB}', rep_id='${req.body.repId}', last_modified=NOW() WHERE id='${req.body.orderId}'`;
 
-  const updateRepTableQuery = `Update reps SET balance='${req.body.balance}', balanceb='${req.body.balanceB}', vehicle_id='${req.body.vehicleId}'
+  const updateRepTableQuery = `Update reps  SET balance='${req.body.balance}', balanceb='${req.body.balanceB}', vehicle_id='${req.body.vehicleId}'
     WHERE id='${req.body.repId}'`;
-
-  const updateVehicleTableQuery = `Update vehicle SET hire_company='${req.body.hire_company}' WHERE id='${req.body.vehicleId}'`;
 
   database.query(updateRecordQuery)
   .then (() => {
     database.query(updateRepTableQuery)
-    .then(() => {
-      database.query(updateVehicleTableQuery)
-      .then(() => {
-        console.log(updateVehicleTableQuery);
-        res.status(201).json({
-          message: 'Record updated successfully',
-        });
-      })
-      .catch(err => {
-        next(err); 
-      });  
-    })
     .catch(err => {
       next(err); 
+    });
+
+    res.status(201).json({
+      message: 'Record updated successfully',
     });
   })
   .catch(err => {

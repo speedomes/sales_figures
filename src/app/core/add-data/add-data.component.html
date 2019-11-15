@@ -2,6 +2,10 @@
   <h4 class="page-title">Add Data</h4>
   <div class="filter-type-container">
     <div class="filter-by-dateOffice-content">
+      <div class="row justify-center">
+        <h5 class="subHeader">Entering Daily Data</h5>
+      </div>
+
       <form [formGroup]="dataEntryForm" class="data-entry-container">
         <div class="row justify-center">
           <div class="col-sm-2">
@@ -49,8 +53,12 @@
             <i class="material-icons" (click)="prevRep()" [ngClass]="{'disableArrow': prevRepLimitReached}">navigate_before</i>
             <i class="material-icons" (click)="nextRep()" [ngClass]="{'disableArrow': nextRepLimitReached}">navigate_next</i>
           </div>
-          <div class="col-sm-2"></div>
-          <div class="col-sm-2"></div>
+          <div class="col-sm-2 date-wrapper">
+            
+          </div>
+          <div class="col-sm-2">
+            
+          </div>
         </div>
 
         <div class="row justify-center rep-data-wrapper">
@@ -58,62 +66,47 @@
             <mat-label class="subHeader">Rep Data</mat-label>
           </div>
           <div class="row justify-center">
-            <div class="col-sm-1">
+            <div class="col-1">
               <mat-label>Sold</mat-label>
               <input matInput type="number" class="form-control" formControlName="repSold">
             </div>
-            <div class="col-sm-1">
+            <div class="col-1">
               <mat-label>Pulled</mat-label>
               <input matInput type="number" class="form-control" formControlName="repPulled">
             </div>
-            <div class="col-sm-1">
+            <div class="col-1">
               <mat-label>N/C</mat-label>
               <input matInput type="number" class="form-control" formControlName="repNC">
             </div>
-            <div class="col-sm-1">
+            <div class="col-1">
               <mat-label>Credit</mat-label>
               <input matInput type="number" class="form-control" formControlName="repCredit">
             </div>
-            <div class="col-sm-1">
+            <div class="col-1">
               <mat-label>Int</mat-label>
               <input matInput type="number" class="form-control" formControlName="repInt">
             </div>
-            <div class="col-sm-1">
+            <div class="col-1">
               <mat-label>Day 1</mat-label>
               <input matInput type="number" class="form-control" formControlName="repDay1">
             </div>
-            <div class="col-sm-1">
+            <div class="col-1">
               <mat-label>Day 2</mat-label>
               <input matInput type="number" class="form-control" formControlName="repDay2">
             </div>
-            <div class="col-sm-1">
+            <div class="col-1">
               <mat-label>Balance</mat-label>
               <input matInput type="number" class="form-control" formControlName="repBalance">
             </div>
-            <div class="col-sm-1">
+            <div class="col-1">
               <mat-label>Balance B</mat-label>
               <input matInput type="number" class="form-control" formControlName="repBalanceB">
             </div>
-          </div>
-
-          <div class="row justify-center vehicle-details">
             <div class="col-sm-2">
               <mat-label>Vehicle</mat-label>
-              <mat-select class="form-control"
-                formControlName="repVehicle"
-                (selectionChange)="updateHireCompany($event)">
+              <mat-select class="form-control" formControlName="repVehicle">
                 <mat-option value="">Select</mat-option>
                 <mat-option *ngFor="let vehicle of vehicles" [value]="vehicle.id">{{vehicle.name}}</mat-option>
-              </mat-select>
-            </div>
-            <div class="col-sm-2">
-              <mat-label>Hire Company</mat-label>
-              <mat-select formControlName="hire_company" class="custom-border form-control">
-                <mat-option value="">Select</mat-option>
-                <mat-option value="own">Own</mat-option>
-                <mat-option value="trans">Trans</mat-option>
-                <mat-option value="reflex">Reflex</mat-option>
-                <mat-option value="north">North</mat-option>
               </mat-select>
             </div>
           </div>
@@ -129,31 +122,31 @@
             <mat-label class="subHeader">Office Data</mat-label>
           </div>
           <div class="row justify-center">
-            <div class="col-sm-1">
+            <div class="col-1">
               <mat-label>Sold</mat-label>
               <input matInput type="number" class="form-control" readonly formControlName="officeSold">
             </div>
-            <div class="col-sm-1">
+            <div class="col-1">
               <mat-label>Pulled</mat-label>
               <input matInput type="number" class="form-control" readonly formControlName="officePulled">
             </div>
-            <div class="col-sm-1">
+            <div class="col-1">
               <mat-label>N/C</mat-label>
               <input matInput type="number" class="form-control" readonly formControlName="officeNewClients">
             </div>
-            <div class="col-sm-2">
+            <div class="col-2">
               <mat-label>Credit</mat-label>
               <input matInput type="number" class="form-control" readonly formControlName="officeCredit">
             </div>
-            <div class="col-sm-1">
+            <div class="col-1">
               <mat-label>Int</mat-label>
               <input matInput type="number" class="form-control" readonly formControlName="officeInt">
             </div>
-            <div class="col-sm-1">
+            <div class="col-1">
               <mat-label>Day 1</mat-label>
               <input matInput type="number" class="form-control" readonly formControlName="officeDay1">
             </div>
-            <div class="col-sm-1">
+            <div class="col-1">
               <mat-label>Day 2</mat-label>
               <input matInput type="number" class="form-control" readonly formControlName="officeDay2">
             </div>
@@ -161,19 +154,19 @@
         </div>
 
         <div class="row justify-center">
-          <div class="col-sm-2">
+          <div class="col-2">
             <mat-label>Cash/Cheque</mat-label>
             <input matInput type="number" class="form-control" formControlName="cash" (keyup)="updateTotal()">
           </div>
-          <div class="col-sm-2">
+          <div class="col-2">
             <mat-label>Card Machine</mat-label>
             <input matInput type="number" class="form-control"  formControlName="cards" (keyup)="updateTotal()">
           </div>
-          <div class="col-sm-2">
+          <div class="col-2">
             <mat-label>Total</mat-label>
             <input matInput type="number" class="form-control" formControlName="totalPayment" readonly>
           </div>
-          <div class="col-sm-2">
+          <div class="col-2">
             <mat-label>Vehicles in use</mat-label>
             <input matInput type="number" class="form-control" formControlName="viu">
           </div>
@@ -191,7 +184,7 @@
           </button>
         </div>
 
-        <div class="row justify-center kpi-title">
+        <div class="row justify-center">
           <h5 class="subHeader">KPI</h5>
         </div>
 
