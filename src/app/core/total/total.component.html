@@ -1,47 +1,39 @@
 <div class="total-container">
   <h4 class="page-title">Total</h4>
-  <div class="row">
-    <div class="col-3">
-      <mat-label>TransFlex Hire Starts</mat-label>
-      <input matInput [value]="startDate" class="form-control" readonly>
+  <form [formGroup]="totalDataForm">
+    <div class="row">
+      <div class="col-sm-2 date-wrapper">
+        <mat-label class="subHeader">From</mat-label>
+        <input matInput
+          [matDatepicker]="fDate"
+          placeholder="Pick a Date"
+          class="form-control"
+          formControlName="fromDate"
+          [max]="maxDate"
+          (click)="fDate.open()">
+        <mat-datepicker-toggle matSuffix [for]="fDate"></mat-datepicker-toggle>
+        <mat-datepicker #fDate></mat-datepicker>
+      </div>
+      <div class="col-sm-2 date-wrapper">
+        <mat-label class="subHeader">To</mat-label>
+        <input matInput
+          [matDatepicker]="tDate"
+          placeholder="Pick a Date"
+          class="form-control"
+          formControlName="toDate"
+          [max]="maxDate"
+          (click)="tDate.open()">
+        <mat-datepicker-toggle matSuffix [for]="tDate"></mat-datepicker-toggle>
+        <mat-datepicker #tDate></mat-datepicker>
+      </div>
+      <div class="col-sm-2">
+        <div class="search-wrapper">
+          <button mat-raised-button (click)="fetchTotalData()" 
+            [disabled]="!totalDataForm.get('fromDate').valid || !totalDataForm.get('toDate').valid">
+            Search
+          </button>
+        </div>
+      </div>
     </div>
-    <div class="col-3">
-      <mat-label>Reflex Hire Starts</mat-label>
-      <input matInput [value]="startDate" class="form-control" readonly>
-    </div>
-    <div class="col-3">
-      <mat-label>Northgate Hire Starts</mat-label>
-      <input matInput [value]="startDate" class="form-control" readonly>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-3">
-      <mat-label>TransFlex Ends</mat-label>
-      <input matInput [value]="endDate" class="form-control" readonly>
-    </div>
-    <div class="col-3">
-      <mat-label>Reflex Ends</mat-label>
-      <input matInput [value]="endDate" class="form-control" readonly>
-    </div>
-    <div class="col-3">
-      <mat-label>Northgate Ends</mat-label>
-      <input matInput [value]="endDate" class="form-control" readonly>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-3">
-      <mat-label>TransFlex Hire Count</mat-label>
-      <input matInput [value]="transFlexHireCount" class="form-control" readonly>
-    </div>
-    <div class="col-3">
-      <mat-label>Reflex Hire Count</mat-label>
-      <input matInput [value]="reflexHireCount" class="form-control" readonly>
-    </div>
-    <div class="col-3">
-      <mat-label>Northgate Hire Count</mat-label>
-      <input matInput [value]="northgateHireCount" class="form-control" readonly>
-    </div>
-  </div>
+  </form>
 </div>

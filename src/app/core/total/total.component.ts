@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { DataService } from 'src/app/data.service';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-total',
@@ -8,21 +9,22 @@ import { DataService } from 'src/app/data.service';
 })
 export class TotalComponent implements OnInit {
 
-  startDate: string;
-  endDate: string;
-  transFlexHireCount: number;
-  reflexHireCount: number;
-  northgateHireCount: number;
+  totalDataForm: FormGroup;
   constructor(private dataService: DataService) { }
 
   ngOnInit() {
-    this.dataService.getTotalData().subscribe((response) => {
-      this.startDate = response.totalData[0].startDate;
-      this.endDate = response.totalData[0].endDate;
-      this.transFlexHireCount = response.totalData[0].transFlexHireCount;
-      this.reflexHireCount = response.totalData[0].reflexHireCount;
-      this.northgateHireCount = response.totalData[0].northgateHireCount;
+    this.totalDataForm = new FormGroup({
+      fromDate: new FormControl('', [Validators.required]),
+      toDate: new FormControl('', [Validators.required])
     });
   }
 
+  fetchTotalData() {
+    this.dataService.getTotalData({
+      fromDate: this.totalDataForm.get('fromDate').value,
+      toDate: this.totalDataForm.get('toDate').value
+    }).subscribe((response) => {
+      console.log(response);
+    });
+  }
 }

@@ -1272,12 +1272,7 @@ router.post('/api/deleteRep',(req, res) => {
 });
 
 router.get('/api/getTotalData',(req, res, next) => {
-  const yearStartDate = moment().startOf('year').format(dateFormat);
-  const today = moment().format(dateFormat);
-
-  const transFlexQuery = `select count(vehicle_id) as count from daily as d 
-  join vehicle as v on d.vehicle_id=v.id Where d.date>='${yearStartDate}' 
-  AND d.date<'${today}' AND v.name like '%trans%'`;
+  const transFlexQuery = `select count(vehicle_id) as count from daily as d`;
 
   let promiseArray = [];
   let totalData = {

@@ -25,8 +25,8 @@ export class DataService {
     return this.httpClient.post(this.API_URL + 'getReport', reportConfig);
   }
 
-  getTotalData(): Observable<any> {
-    return this.httpClient.get(this.API_URL + 'getTotalData');
+  getTotalData(data: {}): Observable<any> {
+    return this.httpClient.post(this.API_URL + 'getTotalData', data);
   }
 
   getDailyData(data: {}): Observable<any> {
