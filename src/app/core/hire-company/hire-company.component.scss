@@ -1,0 +1,48 @@
+@import "../../../assets/scss/variables.scss";
+
+.hire-company-container {
+  .page-title {
+    margin: 1rem 0 3rem 0;
+    text-align: center;
+    color: $primary-color;
+    font-weight: 700;
+  }
+
+  >.row {
+    width: 100%;
+  }
+
+  .hire-company-data-container {
+    table {
+      width: 100%;
+    }
+  }
+
+  .action-container {
+    .add-data-wrapper {
+      input {
+        width: 100%;
+        padding: 0.5rem;
+
+        &.hireCompanyName {
+          text-transform: capitalize;
+        }
+      }
+
+      .error-message {
+        text-align: center;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+      }
+    }
+
+    .button-wrapper {
+      margin: 2rem 0 0 0;
+
+      > div {
+        display: flex;
+        justify-content: space-evenly;
+      }
+    }
+  }
+}

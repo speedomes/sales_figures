@@ -12,6 +12,7 @@ import { RepComponent } from './rep/rep.component';
 import { SplitComponent } from './split/split.component';
 import { AddDataComponent } from './add-data/add-data.component';
 import { DataFilterByValueComponent } from './data-filter-by-value/data-filter-by-value.component';
+import { HireCompanyComponent } from './hire-company/hire-company.component';
 
 const routes: Routes = [
   { path: '', component: HomeComponent,
@@ -26,6 +27,7 @@ const routes: Routes = [
       { path: 'vehicle', component: VehicleComponent },
       { path: 'rep', component: RepComponent },
       { path: 'split', component: SplitComponent },
+      { path: 'hire-company', component: HireCompanyComponent },
       { path: '', redirectTo: 'add-data', pathMatch: 'full' }
     ]
   }

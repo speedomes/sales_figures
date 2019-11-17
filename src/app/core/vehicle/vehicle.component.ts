@@ -21,6 +21,7 @@ export class VehicleComponent implements OnInit {
   selectedIndex: number;
   dataLoaded = false;
   placeHolderText: string = environment.placeHolderText;
+  hireCompanies;
   vehicleDataSource =  new MatTableDataSource();
   displayedColumns: string[] = ['name', 'hire_company'];
 
@@ -36,6 +37,7 @@ export class VehicleComponent implements OnInit {
 
   ngOnInit() {
     this.getVehicles();
+    this.getHireCompanies();
     this.vehicleForm = new FormGroup({
       vehicleName: new FormControl('', [Validators.required]),
       hire_company: new FormControl('', [Validators.required])
@@ -47,7 +49,7 @@ export class VehicleComponent implements OnInit {
     this.selectedVehicle = rowData;
     this.vehicleForm.setValue({
       vehicleName: rowData.name,
-      hire_company: (rowData.hire_company && rowData.hire_company.toLowerCase()) || ''
+      hire_company: rowData.hire_company_id || ''
     });
   }
 
@@ -57,7 +59,20 @@ export class VehicleComponent implements OnInit {
         this.vehicleDataSource.data = response.vehicles;
         this.dataLoaded = true;
       } else {
-        this.displaySnackbar('No data found');
+        this.displaySnackbar('No Vehicle found');
+      }
+    },
+    (error) => {
+      this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
+    });
+  }
+
+  getHireCompanies() {
+    this.dataService.getHireCompanies().subscribe((response) => {
+      if (response.hireCompanies && response.hireCompanies.length > 0) {
+        this.hireCompanies = response.hireCompanies;
+      } else {
+        this.displaySnackbar('No Hire Company found');
       }
     },
     (error) => {

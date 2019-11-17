@@ -53,6 +53,22 @@ export class DataService {
     return this.httpClient.post(this.API_URL + 'deleteOffice', data);
   }
 
+  getHireCompanies(): Observable<any> {
+    return this.httpClient.get(this.API_URL + 'getHireCompanies');
+  }
+
+  addHireCompany(data: {}): Observable<any> {
+    return this.httpClient.post(this.API_URL + 'addHireCompany', data);
+  }
+
+  updateHireCompany(data: {}): Observable<any> {
+    return this.httpClient.post(this.API_URL + 'updateHireCompany', data);
+  }
+
+  deleteHireCompany(data: {}): Observable<any> {
+    return this.httpClient.post(this.API_URL + 'deleteHireCompany', data);
+  }
+
   getVehicles(): Observable<any> {
     return this.httpClient.get(this.API_URL + 'getVehicles');
   }

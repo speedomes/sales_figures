@@ -42,10 +42,7 @@
               <mat-label>Hire Company</mat-label>
               <mat-select formControlName="hire_company" class="custom-border form-control">
                 <mat-option value="">Select</mat-option>
-                <mat-option value="own">Own</mat-option>
-                <mat-option value="trans">Trans</mat-option>
-                <mat-option value="reflex">Reflex</mat-option>
-                <mat-option value="north">North</mat-option>
+                <mat-option [value]="hc.id" *ngFor="let hc of hireCompanies">{{hc.name | titlecase}}</mat-option>
               </mat-select>
             </div>
           </div>

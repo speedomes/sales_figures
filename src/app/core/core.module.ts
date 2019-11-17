@@ -18,6 +18,7 @@ import { CoreRoutingModule } from './core-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AddDataComponent } from './add-data/add-data.component';
 import { DataFilterByValueComponent } from './data-filter-by-value/data-filter-by-value.component';
+import { HireCompanyComponent } from './hire-company/hire-company.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { DataFilterByValueComponent } from './data-filter-by-value/data-filter-b
     FooterComponent,
     WelcomeComponent,
     AddDataComponent,
-    DataFilterByValueComponent
+    DataFilterByValueComponent,
+    HireCompanyComponent
   ],
   imports: [
     CommonModule,

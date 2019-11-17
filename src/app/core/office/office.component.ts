@@ -26,8 +26,13 @@ export class OfficeComponent implements OnInit {
   officeDataSource =  new MatTableDataSource();
   displayedColumns: string[] = ['name'];
 
-  @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
-  @ViewChild(MatSort, {static: true}) sort: MatSort;
+  @ViewChild(MatPaginator, {static: false}) set paginator(paginator: MatPaginator) {
+    this.officeDataSource.paginator = paginator;
+  }
+
+  @ViewChild(MatSort, {static: false}) set sort(sort: MatSort) {
+    this.officeDataSource.sort = sort;
+  }
 
   constructor(private dataService: DataService, private snackBar: MatSnackBar, private changeDetectorRefs: ChangeDetectorRef) { }
 

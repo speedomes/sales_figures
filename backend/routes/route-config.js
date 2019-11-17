@@ -481,10 +481,10 @@ router.post('/api/getReport',(req, res, next) => {
       });
       });
   },err => {
-      return database.close().then(() => { throw err; })
+    return database.close().then(() => { throw err; })
   })
   .catch(err => {
-      next(err); 
+    next(err); 
   });
 });
 
@@ -493,15 +493,17 @@ router.post('/api/getDailyData',(req, res, next) => {
   const endLimit = parseInt(req.body.endLimit);
   const dailyDataQuery = `SELECT d.date, o.name as officeName, d.rep_id as repId, v.name as vehicleName, 
   d.sold, d.pulled, d.newclients as newClients, d.credit, d.balance, d.unused, d.inuse, d.t1, d.t2, d.st, 
-  r.name as repName, v.hire_company FROM daily as d join reps as r on d.rep_id = r.id 
-  join office as o on r.office_id = o.id join vehicle as v on d.vehicle_id = v.id LIMIT ${startLimit},${endLimit}`;
+  r.name as repName, h.name as hire_company FROM daily as d join reps as r on d.rep_id = r.id 
+  join office as o on r.office_id = o.id join vehicle as v on d.vehicle_id = v.id
+  join hirecompany as h on v.hire_company_id=h.id LIMIT ${startLimit},${endLimit}`;
 
   database.query(dailyDataQuery)
   .then (rows => {
-      res.status(201).json({
+    console.log(dailyDataQuery);
+    res.status(201).json({
       message: 'Daily data fetched successfully',
       dailyData: rows
-      });
+    });
   })
   .catch(err => {
       next(err); 
@@ -514,8 +516,9 @@ router.post('/api/getDailyDataByFilter',(req, res, next) => {
   
   let dailyDataQuery = `SELECT d.date, o.name as officeName, d.rep_id as repId, v.name as vehicleName, 
   d.sold, d.pulled, d.newclients as newClients, d.credit, d.balance, d.unused, d.inuse, d.t1, d.t2, d.st, 
-  r.name as repName, v.hire_company FROM daily as d join reps as r on d.rep_id = r.id 
-  join office as o on r.office_id = o.id join vehicle as v on d.vehicle_id = v.id`;
+  r.name as repName, h.name as hire_company FROM daily as d join reps as r on d.rep_id = r.id 
+  join office as o on r.office_id = o.id join vehicle as v on d.vehicle_id = v.id
+  join hirecompany as h on v.hire_company_id=h.id`;
 
   if(req.body.year !== '') {
     const dateObj = moment().isoWeekYear(parseInt(req.body.year)).toDate();
@@ -1144,7 +1147,7 @@ router.get('/api/getVehicles',(req, res, next) => {
 });
 
 router.post('/api/addVehicle',(req, res) => {
-  const addVehicleQuery = `insert INTO vehicle(name, hire_company) VALUES 
+  const addVehicleQuery = `insert INTO vehicle(name, hire_company_id) VALUES 
     ('${req.body.name}', '${req.body.hire_company}')`;
 
   database.query(addVehicleQuery)
@@ -1160,7 +1163,7 @@ router.post('/api/addVehicle',(req, res) => {
 
 router.post('/api/updateVehicle',(req, res) => {
   const updateVehicleQuery = `update vehicle SET name='${req.body.name}',
-    hire_company='${req.body.hire_company}' WHERE id='${req.body.id}'`;
+    hire_company_id='${req.body.hire_company}' WHERE id='${req.body.id}'`;
 
   database.query(updateVehicleQuery)
   .then (rows => {
@@ -1198,7 +1201,7 @@ router.post('/api/getExistingRepData',(req, res, next) => {
     });
   })
   .catch(err => {
-      next(err); 
+    next(err); 
   });
 });
 
@@ -1280,7 +1283,6 @@ router.post('/api/getTotalData',(req, res, next) => {
 
   database.query(totalDataQuery)
   .then (rows => {
-    console.log(totalDataQuery);
     res.status(201).json({
       message: 'Total data has been fetched successfully.',
       totalData: rows
@@ -1307,6 +1309,63 @@ router.get('/api/getSplitData',(req, res, next) => {
   })
   .catch(err => {
       next(err); 
+  });
+});
+
+router.get('/api/getHireCompanies',(req, res, next) => {
+  const hireCompanyDataQuery = `SELECT * from hirecompany WHERE id <> 0 ORDER BY id`;
+
+  database.query(hireCompanyDataQuery)
+  .then (rows => {
+    res.status(201).json({
+      message: 'Hire Comapny data fetched successfully',
+      hireCompanies: rows
+    });
+  })
+  .catch(err => {
+    next(err); 
+  });
+});
+
+router.post('/api/addHireCompany',(req, res) => {
+  const addHireCompanyQuery = `INSERT INTO hirecompany(name) VALUES ('${req.body.name}')`;
+
+  database.query(addHireCompanyQuery)
+  .then (rows => {
+    res.status(201).json({
+      message: 'Hire Comapny added successfully',
+    });
+  })
+  .catch(err => {
+    next(err); 
+  });
+});
+  
+router.post('/api/updateHireCompany',(req, res) => {
+  const updateHireCompanyQuery = `UPDATE hirecompany SET name='${req.body.name}' WHERE id='${req.body.id}'`;
+
+  database.query(updateHireCompanyQuery)
+  .then (rows => {
+    res.status(201).json({
+      message: 'Hire Company has been updated successfully'
+    });
+  })
+  .catch(err => {
+    next(err); 
+  });
+});
+
+router.post('/api/deleteHireCompany',(req, res) => {
+  const deleteHireCompanyQuery = `DELETE FROM hirecompany WHERE id='${req.body.id}'`;
+
+  database.query(deleteHireCompanyQuery)
+  .then (rows => {
+    res.status(201).json({
+      message: 'Hire Company deleted successfully'
+    });
+  })
+  .catch(err => {
+    next(err); 
   });
 });
 

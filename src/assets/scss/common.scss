@@ -195,6 +195,18 @@ html, body {
     }
   }
   
+  .hire-company-container {
+    .mat-sort-header-container {
+      justify-content: center;
+    }
+
+    td {
+      &.mat-cell {
+        text-align: center;
+      }
+    }
+  }
+  
   .placeholderText {
     position: absolute;
     top: 49%;
