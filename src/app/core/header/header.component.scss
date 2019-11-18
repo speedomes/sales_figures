@@ -12,6 +12,7 @@
       display: flex;
       justify-content: flex-start;
       align-items: center;
+      width: auto;
 
       .material-icons {
         font-size: 4rem;
@@ -27,6 +28,7 @@
     .header-content {
       display: flex;
       align-items: center;
+      width: auto;
 
       .title {
         font-size: 2rem;

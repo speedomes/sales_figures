@@ -499,7 +499,6 @@ router.post('/api/getDailyData',(req, res, next) => {
 
   database.query(dailyDataQuery)
   .then (rows => {
-    console.log(dailyDataQuery);
     res.status(201).json({
       message: 'Daily data fetched successfully',
       dailyData: rows

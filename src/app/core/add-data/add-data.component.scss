@@ -20,40 +20,40 @@
       .data-entry-container {
         .nav-arrows-wrapper {
           margin: 0;
+          justify-content: space-between;
 
-          .col-sm-2 {
-            display: flex;
-            justify-content: space-between;
+          .material-icons {
+            border: 1px solid $white;
+            border-radius: 100%;
+            background: $primary-color;
+            color: $white;
+            padding: 0.3rem;
+            cursor: pointer;
 
-            .material-icons {
-              border: 1px solid $white;
-              border-radius: 100%;
-              background: $primary-color;
-              color: $white;
-              padding: 0.3rem;
-              cursor: pointer;
-
-              &.disableArrow {
-                pointer-events: none;
-                background: $light-grey;
-              }
+            &.disableArrow {
+              pointer-events: none;
+              background: $light-grey;
             }
           }
         }
 
         .date-wrapper {
-          input {
-            padding: 0 0.5rem;
-          }
+          .datepicker-wrapper {
+            position: relative;
 
-          .mat-datepicker-toggle {
-            position: absolute;
-            right: 1rem;
-            bottom: 0%;
-          }
-
-          .mat-datepicker-toggle-active {
-            color: $primary-color;
+            input {
+              padding: 0 0.5rem;
+            }
+  
+            .mat-datepicker-toggle {
+              position: absolute;
+              right: 0;
+              top: 0;
+            }
+  
+            .mat-datepicker-toggle-active {
+              color: $primary-color;
+            }
           }
         }
 
@@ -75,6 +75,16 @@
         .office-data-wrapper {
           margin: 1rem 0;
         }
+
+        .search-button-container {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .row {
+            margin: 0;
+          }
+        }
       }
 
       .button-container {
@@ -93,7 +103,9 @@
       .subHeader {
         font-weight: bold;
         color: $primary-color;
-        margin-top: 2rem;
+        margin-top: 1rem;
+        width: 100%;
+        text-align: center;
       }
 
       .officeDataForm {

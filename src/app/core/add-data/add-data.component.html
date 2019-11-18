@@ -9,22 +9,35 @@
       <form [formGroup]="dataEntryForm" class="data-entry-container">
         <div class="row justify-center">
           <div class="col-sm-2">
-            <mat-label class="subHeader">Office</mat-label>
-            <mat-select class="form-control" formControlName="office" (selectionChange)="fetchRepsByOffice($event.value)">
-              <mat-option value="">Select</mat-option>
-              <mat-option *ngFor="let office of doFilter.offices" [value]="office.id">{{office.name}}</mat-option>
-            </mat-select>
+            <div class="row">
+              <mat-label class="subHeader">Office</mat-label>
+              <mat-select class="form-control" formControlName="office" (selectionChange)="fetchRepsByOffice($event.value)">
+                <mat-option value="">Select</mat-option>
+                <mat-option *ngFor="let office of doFilter.offices" [value]="office.id">{{office.name}}</mat-option>
+              </mat-select>
+            </div>
+            <div class="row nav-arrows-wrapper">
+              <i class="material-icons" (click)="prevOffice()" [ngClass]="{'disableArrow': prevOfficeLimitReached}">navigate_before</i>
+              <i class="material-icons" (click)="nextOffice()" [ngClass]="{'disableArrow': nextOfficeLimitReached}">navigate_next</i>
+            </div>
           </div>
           <div class="col-sm-2">
-            <mat-label class="subHeader">Rep</mat-label>
-            <mat-select class="form-control" formControlName="rep" (selectionChange)="repChanged($event.value)">
-              <mat-option value="">Select</mat-option>
-              <mat-option *ngFor="let rep of doFilter.reps" [value]="rep.id">{{rep.repName}}</mat-option>
-            </mat-select>
+            <div class="row">
+              <mat-label class="subHeader">Rep</mat-label>
+              <mat-select class="form-control" formControlName="rep" (selectionChange)="repChanged($event.value)">
+                <mat-option value="">Select</mat-option>
+                <mat-option *ngFor="let rep of doFilter.reps" [value]="rep.id">{{rep.repName}}</mat-option>
+              </mat-select>
+            </div>
+            <div class="row nav-arrows-wrapper">
+              <i class="material-icons" (click)="prevRep()" [ngClass]="{'disableArrow': prevRepLimitReached}">navigate_before</i>
+              <i class="material-icons" (click)="nextRep()" [ngClass]="{'disableArrow': nextRepLimitReached}">navigate_next</i>
+            </div>
           </div>
           <div class="col-sm-2 date-wrapper">
             <mat-label class="subHeader">Date</mat-label>
-            <input matInput
+            <div class="datepicker-wrapper">
+              <input matInput
               [matDatepicker]="dp"
               placeholder="Pick a Date"
               class="form-control"
@@ -32,32 +45,19 @@
               [max]="maxDate"
               (dateChange)="checkRecord()"
               (click)="dp.open()">
-            <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
-            <mat-datepicker #dp></mat-datepicker>
-          </div>
-          <div class="col-sm-2">
-            <div class="check-wrapper">
-              <button mat-raised-button (click)="checkRecord()" 
-                [disabled]="!dataEntryForm.get('rep').valid || !dataEntryForm.get('office').valid || !dataEntryForm.get('date').valid">
-              Search
-              </button>
+              <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+              <mat-datepicker #dp></mat-datepicker>
             </div>
           </div>
-        </div>
-        <div class="row justify-center nav-arrows-wrapper">
-          <div class="col-sm-2">
-            <i class="material-icons" (click)="prevOffice()" [ngClass]="{'disableArrow': prevOfficeLimitReached}">navigate_before</i>
-            <i class="material-icons" (click)="nextOffice()" [ngClass]="{'disableArrow': nextOfficeLimitReached}">navigate_next</i>
-          </div>
-          <div class="col-sm-2">
-            <i class="material-icons" (click)="prevRep()" [ngClass]="{'disableArrow': prevRepLimitReached}">navigate_before</i>
-            <i class="material-icons" (click)="nextRep()" [ngClass]="{'disableArrow': nextRepLimitReached}">navigate_next</i>
-          </div>
-          <div class="col-sm-2 date-wrapper">
-            
-          </div>
-          <div class="col-sm-2">
-            
+          <div class="col-sm-1 search-button-container">
+            <div class="row">
+              <div class="check-wrapper">
+                <button mat-raised-button (click)="checkRecord()" 
+                  [disabled]="!dataEntryForm.get('rep').valid || !dataEntryForm.get('office').valid || !dataEntryForm.get('date').valid">
+                Search
+                </button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -66,39 +66,39 @@
             <mat-label class="subHeader">Rep Data</mat-label>
           </div>
           <div class="row justify-center">
-            <div class="col-1">
+            <div class="col-sm-1">
               <mat-label>Sold</mat-label>
               <input matInput type="number" class="form-control" formControlName="repSold">
             </div>
-            <div class="col-1">
+            <div class="col-sm-1">
               <mat-label>Pulled</mat-label>
               <input matInput type="number" class="form-control" formControlName="repPulled">
             </div>
-            <div class="col-1">
+            <div class="col-sm-1">
               <mat-label>N/C</mat-label>
               <input matInput type="number" class="form-control" formControlName="repNC">
             </div>
-            <div class="col-1">
+            <div class="col-sm-1">
               <mat-label>Credit</mat-label>
               <input matInput type="number" class="form-control" formControlName="repCredit">
             </div>
-            <div class="col-1">
+            <div class="col-sm-1">
               <mat-label>Int</mat-label>
               <input matInput type="number" class="form-control" formControlName="repInt">
             </div>
-            <div class="col-1">
+            <div class="col-sm-1">
               <mat-label>Day 1</mat-label>
               <input matInput type="number" class="form-control" formControlName="repDay1">
             </div>
-            <div class="col-1">
+            <div class="col-sm-1">
               <mat-label>Day 2</mat-label>
               <input matInput type="number" class="form-control" formControlName="repDay2">
             </div>
-            <div class="col-1">
+            <div class="col-sm-1">
               <mat-label>Balance</mat-label>
               <input matInput type="number" class="form-control" formControlName="repBalance">
             </div>
-            <div class="col-1">
+            <div class="col-sm-1">
               <mat-label>Balance B</mat-label>
               <input matInput type="number" class="form-control" formControlName="repBalanceB">
             </div>
@@ -122,31 +122,31 @@
             <mat-label class="subHeader">Office Data</mat-label>
           </div>
           <div class="row justify-center">
-            <div class="col-1">
+            <div class="col-sm-1">
               <mat-label>Sold</mat-label>
               <input matInput type="number" class="form-control" readonly formControlName="officeSold">
             </div>
-            <div class="col-1">
+            <div class="col-sm-1">
               <mat-label>Pulled</mat-label>
               <input matInput type="number" class="form-control" readonly formControlName="officePulled">
             </div>
-            <div class="col-1">
+            <div class="col-sm-1">
               <mat-label>N/C</mat-label>
               <input matInput type="number" class="form-control" readonly formControlName="officeNewClients">
             </div>
-            <div class="col-2">
+            <div class="col-sm-2">
               <mat-label>Credit</mat-label>
               <input matInput type="number" class="form-control" readonly formControlName="officeCredit">
             </div>
-            <div class="col-1">
+            <div class="col-sm-1">
               <mat-label>Int</mat-label>
               <input matInput type="number" class="form-control" readonly formControlName="officeInt">
             </div>
-            <div class="col-1">
+            <div class="col-sm-1">
               <mat-label>Day 1</mat-label>
               <input matInput type="number" class="form-control" readonly formControlName="officeDay1">
             </div>
-            <div class="col-1">
+            <div class="col-sm-1">
               <mat-label>Day 2</mat-label>
               <input matInput type="number" class="form-control" readonly formControlName="officeDay2">
             </div>
@@ -154,19 +154,19 @@
         </div>
 
         <div class="row justify-center">
-          <div class="col-2">
+          <div class="col-sm-2">
             <mat-label>Cash/Cheque</mat-label>
             <input matInput type="number" class="form-control" formControlName="cash" (keyup)="updateTotal()">
           </div>
-          <div class="col-2">
+          <div class="col-sm-2">
             <mat-label>Card Machine</mat-label>
             <input matInput type="number" class="form-control"  formControlName="cards" (keyup)="updateTotal()">
           </div>
-          <div class="col-2">
+          <div class="col-sm-2">
             <mat-label>Total</mat-label>
             <input matInput type="number" class="form-control" formControlName="totalPayment" readonly>
           </div>
-          <div class="col-2">
+          <div class="col-sm-2">
             <mat-label>Vehicles in use</mat-label>
             <input matInput type="number" class="form-control" formControlName="viu">
           </div>
