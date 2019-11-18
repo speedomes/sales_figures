@@ -1277,8 +1277,10 @@ router.post('/api/getTotalData',(req, res, next) => {
   const fromDate = moment(req.body.fromDate).format(dateFormat);
   const toDate = moment(req.body.toDate).format(dateFormat);
 
-  const totalDataQuery = `select hire_company, count(*) as total from vehicle as v join daily as d
-    WHERE v.id=d.vehicle_id AND d.date>='${fromDate}' AND d.date<='${toDate}' group by v.hire_company`;
+  const totalDataQuery = `select h.name as hire_company, count(*) as total from vehicle as v join hirecompany as h
+    on v.hire_company_id=h.id join daily as d
+    WHERE v.id=d.vehicle_id
+    AND d.date>='${fromDate}' AND d.date<='${toDate}' group by h.name`;
 
   database.query(totalDataQuery)
   .then (rows => {
