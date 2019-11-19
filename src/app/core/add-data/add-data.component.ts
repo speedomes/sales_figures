@@ -78,7 +78,6 @@ export class AddDataComponent implements OnInit {
       cash: new FormControl(''),
       cards: new FormControl(''),
       totalPayment: new FormControl(''),
-      viu: new FormControl(''),
       repWSold: new FormControl(''),
       repWPulled: new FormControl(''),
       repWNewClients: new FormControl(''),
@@ -173,8 +172,7 @@ export class AddDataComponent implements OnInit {
       officeDay2: '',
       cash: '',
       cards: '',
-      totalPayment: '',
-      viu: ''
+      totalPayment: ''
     });
 
     if (id!== '' && id!== 'all') {
@@ -454,8 +452,7 @@ export class AddDataComponent implements OnInit {
           officeDay2: '',
           cash: '',
           cards: '',
-          totalPayment: '',
-          viu: ''
+          totalPayment: ''
         });
         this.displaySnackbar('No Office data found');
       }
@@ -467,16 +464,14 @@ export class AddDataComponent implements OnInit {
         const splitData = {
           cash: splitRecord.cash.toFixed(2) || '',
           cards: splitRecord.cards.toFixed(2) || '',
-          totalPayment: (splitRecord.cash + splitRecord.cards).toFixed(2),
-          viu: splitRecord.viu || ''
+          totalPayment: (splitRecord.cash + splitRecord.cards).toFixed(2)
         };
         this.dataEntryForm.patchValue(splitData);
       } else {
         const splitData = {
           cash: '',
           cards: '',
-          totalPayment: '',
-          viu: ''
+          totalPayment: ''
         };
         this.dataEntryForm.patchValue(splitData);
       }
@@ -555,7 +550,6 @@ export class AddDataComponent implements OnInit {
     const splitRecord = {
       cash: this.dataEntryForm.get('cash').value || 0,
       cards: this.dataEntryForm.get('cards').value || 0,
-      viu: this.dataEntryForm.get('viu').value || 0,
       officeId: this.dataEntryForm.get('office').value,
       date: this.dataEntryForm.get('date').value,
       id: this.splitDataId || -1
@@ -672,8 +666,7 @@ export class AddDataComponent implements OnInit {
       officeDay2: '',
       cash: '',
       cards: '',
-      totalPayment: '',
-      viu: ''
+      totalPayment: ''
     });
   }
 
