@@ -82,6 +82,7 @@ export class DailyDataComponent implements OnInit {
         }
       } else {
         this.isDataComplete = true;
+        this.isResetData = false;
       }
     },
     (error) => {
@@ -106,7 +107,9 @@ export class DailyDataComponent implements OnInit {
 
     this.dataService.getDailyDataByFilter(filterConfig).subscribe((response) => {
       if (response.dailyData.length > 0) {
+        this.noDataFound = false;
         this.dailyDataSource.data = this.dailyDataSource.data.concat(response.dailyData);
+        this.changeDetectorRefs.detectChanges();
         this.dataLoaded = true;
         if (this.dailyDataSource.paginator) {
           const subscription = this.dailyDataSource.paginator.page.subscribe((data) => {
@@ -130,6 +133,7 @@ export class DailyDataComponent implements OnInit {
         this.dataLoaded = true;
         this.isDataComplete = true;
         this.noDataFound = true;
+        this.isResetData = false;
         this.displaySnackbar('No Data Found');
       }
     },
