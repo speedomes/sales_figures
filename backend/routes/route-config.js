@@ -696,7 +696,7 @@ router.post('/api/checkRecord',(req, res, next) => {
     sum(d.credit) as credit, sum(d.inuse) as inuse, sum(d.t1) as day1, sum(d.t2) as day2
     from daily AS d JOIN reps AS r ON d.rep_id = r.id JOIN office AS o ON r.office_id = o.id WHERE 
     o.id='${req.body.officeId}' AND d.date='${req.body.date}'`;
-  const splitQuery = `SELECT id, cash, cards, ticket_number FROM split WHERE office_id='${req.body.officeId}' AND date='${req.body.date}'`;
+  const splitQuery = `SELECT id, cash, cards, stub_no FROM split WHERE office_id='${req.body.officeId}' AND date='${req.body.date}'`;
 
   database.query(recordQuery)
   .then (rows => {
@@ -853,8 +853,8 @@ router.post('/api/updateRecord',(req, res) => {
 
 router.post('/api/saveSplit',(req, res) => {
   const dateToFilter = moment(req.body.date).format(dateFormat);
-  const saveSplitQuery = `Insert split(date, office_id, cash, cards, ticket_number) VALUES ('${dateToFilter}', ${req.body.officeId}, ${req.body.cash}, 
-    ${req.body.cards}, ${req.body.ticketNumber})`;
+  const saveSplitQuery = `Insert split(date, office_id, cash, cards, stub_no) VALUES ('${dateToFilter}', ${req.body.officeId}, ${req.body.cash}, 
+    ${req.body.cards}, ${req.body.stubNo})`;
 
   database.query(saveSplitQuery)
   .then (() => {
@@ -868,7 +868,7 @@ router.post('/api/saveSplit',(req, res) => {
 });
 
 router.post('/api/updateSplit',(req, res) => {
-  const updateSplitQuery = `Update split SET cash=${req.body.cash}, cards=${req.body.cards}, ticket_number=${req.body.ticketNumber} WHERE id=${req.body.id}`;
+  const updateSplitQuery = `Update split SET cash=${req.body.cash}, cards=${req.body.cards}, stub_no=${req.body.stubNo} WHERE id=${req.body.id}`;
 
   database.query(updateSplitQuery)
   .then (() => {
@@ -1298,7 +1298,7 @@ router.post('/api/getTotalData',(req, res, next) => {
 
 router.get('/api/getSplitData',(req, res, next) => {
   const splitDataQuery = `SELECT s.date, o.name, s.cash, s.cards,
-      FORMAT((s.cash + s.cards), 2) as total, s.ticket_number
+      FORMAT((s.cash + s.cards), 2) as total, s.stub_no
       FROM split as s join office as o on s.office_id=o.id ORDER BY s.date DESC`;
 
   database.query(splitDataQuery)

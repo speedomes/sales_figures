@@ -18,7 +18,7 @@ export class SplitComponent implements OnInit {
   splitDataSource =  new MatTableDataSource();
   dataLoaded = false;
   placeHolderText: string = environment.placeHolderText;
-  displayedColumns: string[] = ['date', 'name', 'cash', 'cards', 'total', 'ticket_number'];
+  displayedColumns: string[] = ['date', 'name', 'cash', 'cards', 'total', 'stub_no'];
 
   @ViewChild(MatPaginator, {static: false}) set paginator(paginator: MatPaginator) {
     this.splitDataSource.paginator = paginator;
