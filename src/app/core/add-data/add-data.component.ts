@@ -78,6 +78,7 @@ export class AddDataComponent implements OnInit {
       cash: new FormControl(''),
       cards: new FormControl(''),
       totalPayment: new FormControl(''),
+      ticketNumber: new FormControl(''),
       repWSold: new FormControl(''),
       repWPulled: new FormControl(''),
       repWNewClients: new FormControl(''),
@@ -172,7 +173,8 @@ export class AddDataComponent implements OnInit {
       officeDay2: '',
       cash: '',
       cards: '',
-      totalPayment: ''
+      totalPayment: '',
+      ticketNumber: ''
     });
 
     if (id!== '' && id!== 'all') {
@@ -452,7 +454,8 @@ export class AddDataComponent implements OnInit {
           officeDay2: '',
           cash: '',
           cards: '',
-          totalPayment: ''
+          totalPayment: '',
+          ticketNumber: ''
         });
         this.displaySnackbar('No Office data found');
       }
@@ -464,14 +467,16 @@ export class AddDataComponent implements OnInit {
         const splitData = {
           cash: splitRecord.cash.toFixed(2) || '',
           cards: splitRecord.cards.toFixed(2) || '',
-          totalPayment: (splitRecord.cash + splitRecord.cards).toFixed(2)
+          totalPayment: (splitRecord.cash + splitRecord.cards).toFixed(2),
+          ticketNumber: splitRecord.ticket_number
         };
         this.dataEntryForm.patchValue(splitData);
       } else {
         const splitData = {
           cash: '',
           cards: '',
-          totalPayment: ''
+          totalPayment: '',
+          ticketNumber: ''
         };
         this.dataEntryForm.patchValue(splitData);
       }
@@ -550,6 +555,7 @@ export class AddDataComponent implements OnInit {
     const splitRecord = {
       cash: this.dataEntryForm.get('cash').value || 0,
       cards: this.dataEntryForm.get('cards').value || 0,
+      ticketNumber: this.dataEntryForm.get('ticketNumber').value,
       officeId: this.dataEntryForm.get('office').value,
       date: this.dataEntryForm.get('date').value,
       id: this.splitDataId || -1
@@ -666,7 +672,8 @@ export class AddDataComponent implements OnInit {
       officeDay2: '',
       cash: '',
       cards: '',
-      totalPayment: ''
+      totalPayment: '',
+      ticketNumber: ''
     });
   }
 

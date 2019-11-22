@@ -15,7 +15,7 @@
         <div class="row login-data">
           <div class="col-sm-5">
             <input matInput placeholder="Password" formControlName="password" type="password" class="form-control">
-            <mat-error *ngIf="loginForm.get('password').touched && !loginForm.get('password').valid">
+            <mat-error *ngIf="loginForm.get('password').invalid && (loginForm.get('password').touched || loginForm.get('password').dirty)">
               Password is <strong>required</strong>
             </mat-error>
           </div>
