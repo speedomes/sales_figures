@@ -40,7 +40,7 @@ const database = new Database({
   user     : process.env.MYSQL_USER,
   password : process.env.MYSQL_PWD,
   database : process.env.MYSQL_DB_NAME,
-  debug: false
+  debug: true
 });
 
 router.post('/api/auth', (req, res, next) => {

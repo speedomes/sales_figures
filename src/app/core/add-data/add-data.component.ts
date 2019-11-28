@@ -37,6 +37,8 @@ export class AddDataComponent implements OnInit {
   nextOfficeLimitReached = true;
   prevRepLimitReached = true;
   nextRepLimitReached = true;
+  enableSaveData = true;
+  enableSplitSaveData = true;
 
   doFilter = {
     offices: [],
@@ -153,6 +155,7 @@ export class AddDataComponent implements OnInit {
   }
 
   fetchRepsByOffice(id) {
+    this.enableSplitSaveData = true;
     this.dataEntryForm.patchValue({
       repVehicle: '',
       repSold: '',
@@ -225,6 +228,7 @@ export class AddDataComponent implements OnInit {
   }
 
   repChanged(id) {
+    this.enableSaveData = true;
     if (this.dataEntryForm.get('rep').value !== '') {
       this.dataEntryForm.get('date').enable();
       this.doFilter.reps.forEach((rep, index) => {
@@ -357,6 +361,7 @@ export class AddDataComponent implements OnInit {
       rep: this.doFilter.reps[repIndex - 1].id
     });
 
+    this.enableSaveData = true;
     if (this.dataEntryForm.get('date').value !== '') {
       this.checkRecord();
     } else {
@@ -384,6 +389,7 @@ export class AddDataComponent implements OnInit {
       rep: this.doFilter.reps[repIndex + 1].id
     });
 
+    this.enableSaveData = true;
     if (this.dataEntryForm.get('date').value !== '') {
       this.checkRecord();
     } else {
@@ -487,6 +493,7 @@ export class AddDataComponent implements OnInit {
   }
 
   chooseRecordAction(isSaveAll = false) {
+    this.enableSaveData = false;
     if (this.existingOrderId) {
       this.updateRecord(isSaveAll);
     } else {
@@ -555,7 +562,7 @@ export class AddDataComponent implements OnInit {
     const splitRecord = {
       cash: this.dataEntryForm.get('cash').value || 0,
       cards: this.dataEntryForm.get('cards').value || 0,
-      stubNo: this.dataEntryForm.get('stubNo').value,
+      stubNo: this.dataEntryForm.get('stubNo').value || 0,
       officeId: this.dataEntryForm.get('office').value,
       date: this.dataEntryForm.get('date').value,
       id: this.splitDataId || -1
@@ -569,6 +576,7 @@ export class AddDataComponent implements OnInit {
           this.displaySnackbar('Split data has been updated successfully');
         }
 
+        this.enableSplitSaveData = false;
         this.hasSplitData = false;
         this.resetForm();
       },
@@ -583,6 +591,7 @@ export class AddDataComponent implements OnInit {
           this.displaySnackbar('Split data has been saved successfully');
         }
 
+        this.enableSplitSaveData = false;
         this.hasSplitData = false;
         this.resetForm();
       },

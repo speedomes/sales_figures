@@ -99,7 +99,7 @@
               <input matInput type="number" class="form-control" formControlName="repBalance">
             </div>
             <div class="col-sm-1">
-              <mat-label>Balance B</mat-label>
+              <mat-label>Bal B</mat-label>
               <input matInput type="number" class="form-control" formControlName="repBalanceB">
             </div>
             <div class="col-sm-2">
@@ -114,7 +114,7 @@
 
         <div class="row justify-center button-container">
           <button mat-raised-button (click)="chooseRecordAction()" 
-          [disabled]="!dataEntryForm.get('rep').valid || !dataEntryForm.get('office').valid || !dataEntryForm.get('date').valid">Save Record</button>
+          [disabled]="!dataEntryForm.get('rep').valid || !dataEntryForm.get('office').valid || !dataEntryForm.get('date').valid || !enableSaveData">Save Record</button>
         </div>
 
         <div class="row justify-center office-data-wrapper">
@@ -173,13 +173,15 @@
         </div>
 
         <div class="row justify-center button-container">
-          <button mat-raised-button (click)="saveSplit()" [disabled]="!dataEntryForm.get('rep').valid || !dataEntryForm.get('office').valid || !dataEntryForm.get('date').valid">Save Split</button>
+          <button mat-raised-button (click)="saveSplit()"
+            [disabled]="!dataEntryForm.get('rep').valid || !dataEntryForm.get('office').valid || !dataEntryForm.get('date').valid || !enableSplitSaveData">Save Split</button>
           <button mat-raised-button (click)="getKPIData()" [disabled]="!dataEntryForm.get('rep').valid || !dataEntryForm.get('office').valid || !dataEntryForm.get('date').valid">Update</button>
         </div>
 
         <div class="row justify-center button-container">
           <button mat-raised-button (click)="saveAll()"
-            [disabled]="!dataEntryForm.get('rep').valid || !dataEntryForm.get('office').valid || !dataEntryForm.get('date').valid"
+            [disabled]="!dataEntryForm.get('rep').valid || !dataEntryForm.get('office').valid || !dataEntryForm.get('date').valid
+              || !enableSplitSaveData || !enableSaveData"
             >Save All
           </button>
         </div>
