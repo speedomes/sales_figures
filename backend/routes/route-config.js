@@ -40,7 +40,7 @@ const database = new Database({
   user     : process.env.MYSQL_USER,
   password : process.env.MYSQL_PWD,
   database : process.env.MYSQL_DB_NAME,
-  debug: true
+  debug: false
 });
 
 router.post('/api/auth', (req, res, next) => {
@@ -517,7 +517,7 @@ router.post('/api/getDailyDataByFilter',(req, res, next) => {
   d.sold, d.pulled, d.newclients as newClients, d.credit, d.balance, d.unused, d.inuse, d.t1, d.t2, d.st, 
   r.name as repName, h.name as hire_company FROM daily as d join reps as r on d.rep_id = r.id 
   join office as o on r.office_id = o.id join vehicle as v on d.vehicle_id = v.id
-  join hirecompany as h on v.hire_company_id=h.id ORDER BY d.date DESC`;
+  join hirecompany as h on v.hire_company_id=h.id`;
 
   if(req.body.year !== '') {
     const dateObj = moment().isoWeekYear(parseInt(req.body.year)).toDate();
@@ -532,7 +532,7 @@ router.post('/api/getDailyDataByFilter',(req, res, next) => {
       let monthStart = moment(dateObj).month(req.body.month-1).startOf('month').add(startDateOffset, 'days').format(dateFormat);
       let monthEnd =  moment(dateObj).month(req.body.month-1).endOf('month').add(endDateOffset, 'days').format(dateFormat);
 
-      dailyDataQuery += ` WHERE d.date<='${monthEnd}' AND d.date>='${monthStart}' ORDER BY d.date LIMIT ${startLimit},${endLimit}`;
+      dailyDataQuery += ` WHERE d.date<='${monthEnd}' AND d.date>='${monthStart}' ORDER BY d.date DESC LIMIT ${startLimit},${endLimit}`;
 
       database.query(dailyDataQuery)
       .then (rows => {
