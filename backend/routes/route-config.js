@@ -1131,7 +1131,7 @@ router.post('/api/deleteOffice',(req, res) => {
 });
 
 router.get('/api/getVehicles',(req, res, next) => {
-  const vehicleDataQuery = `select * from vehicle ORDER BY vehicle.id DESC`;
+  const vehicleDataQuery = `select * from vehicle ORDER BY vehicle.name`;
 
   database.query(vehicleDataQuery)
   .then (rows => {
