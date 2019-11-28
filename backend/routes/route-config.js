@@ -40,7 +40,7 @@ const database = new Database({
   user     : process.env.MYSQL_USER,
   password : process.env.MYSQL_PWD,
   database : process.env.MYSQL_DB_NAME,
-  debug: true
+  debug: false
 });
 
 router.post('/api/auth', (req, res, next) => {
@@ -495,7 +495,7 @@ router.post('/api/getDailyData',(req, res, next) => {
   d.sold, d.pulled, d.newclients as newClients, d.credit, d.balance, d.unused, d.inuse, d.t1, d.t2, d.st, 
   r.name as repName, h.name as hire_company FROM daily as d join reps as r on d.rep_id = r.id 
   join office as o on r.office_id = o.id join vehicle as v on d.vehicle_id = v.id
-  join hirecompany as h on v.hire_company_id=h.id LIMIT ${startLimit},${endLimit}`;
+  join hirecompany as h on v.hire_company_id=h.id ORDER BY d.date DESC LIMIT ${startLimit},${endLimit}`;
 
   database.query(dailyDataQuery)
   .then (rows => {
@@ -517,7 +517,7 @@ router.post('/api/getDailyDataByFilter',(req, res, next) => {
   d.sold, d.pulled, d.newclients as newClients, d.credit, d.balance, d.unused, d.inuse, d.t1, d.t2, d.st, 
   r.name as repName, h.name as hire_company FROM daily as d join reps as r on d.rep_id = r.id 
   join office as o on r.office_id = o.id join vehicle as v on d.vehicle_id = v.id
-  join hirecompany as h on v.hire_company_id=h.id`;
+  join hirecompany as h on v.hire_company_id=h.id ORDER BY d.date DESC`;
 
   if(req.body.year !== '') {
     const dateObj = moment().isoWeekYear(parseInt(req.body.year)).toDate();
@@ -832,7 +832,7 @@ router.post('/api/updateRecord',(req, res) => {
     newclients='${req.body.newClients}', credit='${req.body.credit}', balance='${req.body.balance}', inuse='${req.body.inuse}', 
     t1='${req.body.day1}', t2='${req.body.day2}', balanceb='${req.body.balanceB}', rep_id='${req.body.repId}', last_modified=NOW() WHERE id='${req.body.orderId}'`;
 
-  const updateRepTableQuery = `Update reps  SET balance='${req.body.balance}', balanceb='${req.body.balanceB}', vehicle_id='${req.body.vehicleId}'
+  const updateRepTableQuery = `Update reps SET balance='${req.body.balance}', balanceb='${req.body.balanceB}', vehicle_id='${req.body.vehicleId}'
     WHERE id='${req.body.repId}'`;
 
   database.query(updateRecordQuery)
