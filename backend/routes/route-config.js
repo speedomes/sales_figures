@@ -1079,12 +1079,12 @@ router.get('/api/getOffices',(req, res, next) => {
   database.query(officeDataQuery)
   .then (rows => {
     res.status(201).json({
-    message: 'Office data fetched successfully',
-    offices: rows
+      message: 'Office data fetched successfully',
+      offices: rows
     });
   })
   .catch(err => {
-      next(err); 
+    next(err); 
   });
 });
 
@@ -1095,10 +1095,10 @@ router.post('/api/addOffice',(req, res) => {
   .then (rows => {
       res.status(201).json({
       message: 'Office added successfully',
-      });
+    });
   })
   .catch(err => {
-      next(err); 
+    next(err); 
   });
 });
   
@@ -1109,10 +1109,10 @@ router.post('/api/updateOffice',(req, res) => {
   .then (rows => {
       res.status(201).json({
       message: 'Office has been updated successfully'
-      });
+    });
   })
   .catch(err => {
-      next(err); 
+    next(err); 
   });
 });
 
@@ -1123,15 +1123,16 @@ router.post('/api/deleteOffice',(req, res) => {
   .then (rows => {
       res.status(201).json({
       message: 'Office deleted successfully'
-      });
+    });
   })
   .catch(err => {
-      next(err); 
+    next(err); 
   });
 });
 
 router.get('/api/getVehicles',(req, res, next) => {
-  const vehicleDataQuery = `select * from vehicle ORDER BY vehicle.name`;
+  const vehicleDataQuery = `select v.id, v.name, h.name as hireCompanyName, h.id as hireCompanyId from vehicle as v join hirecompany h WHERE
+    v.hire_company_id = h.id ORDER BY v.id DESC`;
 
   database.query(vehicleDataQuery)
   .then (rows => {
@@ -1162,7 +1163,7 @@ router.post('/api/addVehicle',(req, res) => {
 
 router.post('/api/updateVehicle',(req, res) => {
   const updateVehicleQuery = `update vehicle SET name='${req.body.name}',
-    hire_company_id='${req.body.hire_company}' WHERE id='${req.body.id}'`;
+    hire_company_id='${req.body.hire_company_id}' WHERE id='${req.body.id}'`;
 
   database.query(updateVehicleQuery)
   .then (rows => {
@@ -1220,10 +1221,10 @@ router.post('/api/getReps',(req, res, next) => {
       res.status(201).json({
       message: 'Rep data fetched successfully',
       reps: rows
-      });
+    });
   })
   .catch(err => {
-      next(err); 
+    next(err); 
   });
 });
 

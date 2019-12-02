@@ -23,7 +23,7 @@ export class VehicleComponent implements OnInit {
   placeHolderText: string = environment.placeHolderText;
   hireCompanies;
   vehicleDataSource =  new MatTableDataSource();
-  displayedColumns: string[] = ['name', 'hire_company'];
+  displayedColumns: string[] = ['name', 'hireCompanyName'];
 
   @ViewChild(MatPaginator, {static: false}) set paginator(paginator: MatPaginator) {
     this.vehicleDataSource.paginator = paginator;
@@ -49,7 +49,7 @@ export class VehicleComponent implements OnInit {
     this.selectedVehicle = rowData;
     this.vehicleForm.setValue({
       vehicleName: rowData.name,
-      hire_company: rowData.hire_company_id || ''
+      hire_company: rowData.hireCompanyId || ''
     });
   }
 
@@ -83,7 +83,7 @@ export class VehicleComponent implements OnInit {
   addVehicle() {
     this.dataService.addVehicle({
       name: this.vehicleForm.get('vehicleName').value,
-      hire_company: this.vehicleForm.get('hire_company').value
+      hire_company_id: this.vehicleForm.get('hire_company').value
     }).subscribe((response) => {
       this.displaySnackbar((response && response.message) || 'Vehicle name has been added successfully!');
       this.clearSelection();
@@ -98,7 +98,7 @@ export class VehicleComponent implements OnInit {
     this.dataService.updateVehicle({
       id: this.selectedVehicle.id,
       name: this.vehicleForm.get('vehicleName').value,
-      hire_company: this.vehicleForm.get('hire_company').value
+      hire_company_id: this.vehicleForm.get('hire_company').value
     }).subscribe((response) => {
       this.displaySnackbar((response && response.message) || 'Vehicle name has been updated successfully!');
       this.clearSelection();
