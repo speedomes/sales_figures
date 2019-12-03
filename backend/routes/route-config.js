@@ -858,7 +858,7 @@ router.post('/api/updateRecord',(req, res) => {
       .then((rows) => {
         res.status(201).json({
           message: 'Record has been updated successfully',
-          officeCredit: rows[0].credit
+          officeCredit: rows[0].credit.toFixed(2)
         });
       })
       .catch(err => {
