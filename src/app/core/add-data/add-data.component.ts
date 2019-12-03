@@ -499,14 +499,11 @@ export class AddDataComponent implements OnInit {
     } else {
       this.addRecord(isSaveAll);
     }
-
-    this.dataEntryForm.patchValue({
-      repCredit: ''
-    });
   }
 
   addRecord(isSaveAll = false) {
     const recordDetails = {
+      officeId: this.dataEntryForm.get('office').value,
       date: this.dataEntryForm.get('date').value,
       vehicleId: this.dataEntryForm.get('repVehicle').value,
       sold: this.dataEntryForm.get('repSold').value,
@@ -527,6 +524,10 @@ export class AddDataComponent implements OnInit {
       } else {
         this.displaySnackbar('Record has been saved successfully');
       }
+
+      this.dataEntryForm.patchValue({
+        officeCredit: response.officeCredit
+      });
     },
     (error) => {
       this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
@@ -535,6 +536,7 @@ export class AddDataComponent implements OnInit {
 
   updateRecord(isSaveAll = false) {
     const recordDetails = {
+      officeId: this.dataEntryForm.get('office').value,
       date: this.dataEntryForm.get('date').value,
       vehicleId: this.dataEntryForm.get('repVehicle').value,
       sold: this.dataEntryForm.get('repSold').value,
@@ -556,6 +558,10 @@ export class AddDataComponent implements OnInit {
       } else {
         this.displaySnackbar('Record data has been updated successfully');
       }
+
+      this.dataEntryForm.patchValue({
+        officeCredit: response.officeCredit
+      });
     },
     (error) => {
       this.displaySnackbar('Internal Server Error. Please try later.', 'warning');

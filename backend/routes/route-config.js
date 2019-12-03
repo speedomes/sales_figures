@@ -811,15 +811,26 @@ router.post('/api/addRecord',(req, res) => {
   const updateRepTableQuery = `Update reps SET balance='${req.body.balance}', balanceb='${req.body.balanceB}', vehicle_id='${req.body.vehicleId}'
     WHERE id= '${req.body.repId}'`;
 
+  const officeRecordQuery = `Select sum(d.credit) as credit from daily AS d JOIN reps AS r ON d.rep_id = r.id JOIN office AS o ON r.office_id = o.id WHERE 
+    o.id='${req.body.officeId}' AND d.date='${dateToFilter}'`;
+
   database.query(addRecordQuery)
   .then (() => {
     database.query(updateRepTableQuery)
+    .then(() => {
+      database.query(officeRecordQuery)
+      .then((rows) => {
+        res.status(201).json({
+          message: 'Record added successfully',
+          officeCredit: rows[0].credit.toFixed(2)
+        });
+      })
+      .catch(err => {
+        next(err); 
+      });    
+    })
     .catch(err => {
       next(err); 
-    });
-
-    res.status(201).json({
-      message: 'Record added successfully',
     });
   })
   .catch(err => {
@@ -828,22 +839,34 @@ router.post('/api/addRecord',(req, res) => {
 });
 
 router.post('/api/updateRecord',(req, res) => {
+  const dateToFilter = moment(req.body.date).format(dateFormat);
   const updateRecordQuery = `Update daily SET vehicle_id='${req.body.vehicleId}', sold='${req.body.sold}', pulled='${req.body.pulled}',
     newclients='${req.body.newClients}', credit='${req.body.credit}', balance='${req.body.balance}', inuse='${req.body.inuse}', 
     t1='${req.body.day1}', t2='${req.body.day2}', balanceb='${req.body.balanceB}', rep_id='${req.body.repId}', last_modified=NOW() WHERE id='${req.body.orderId}'`;
 
   const updateRepTableQuery = `Update reps SET balance='${req.body.balance}', balanceb='${req.body.balanceB}', vehicle_id='${req.body.vehicleId}'
     WHERE id='${req.body.repId}'`;
+  
+  const officeRecordQuery = `Select sum(d.credit) as credit from daily AS d JOIN reps AS r ON d.rep_id = r.id JOIN office AS o ON r.office_id = o.id WHERE 
+    o.id='${req.body.officeId}' AND d.date='${dateToFilter}'`;
 
   database.query(updateRecordQuery)
   .then (() => {
     database.query(updateRepTableQuery)
+    .then(() => {
+      database.query(officeRecordQuery)
+      .then((rows) => {
+        res.status(201).json({
+          message: 'Record has been updated successfully',
+          officeCredit: rows[0].credit.toFixed(2)
+        });
+      })
+      .catch(err => {
+        next(err); 
+      });    
+    })
     .catch(err => {
       next(err); 
-    });
-
-    res.status(201).json({
-      message: 'Record updated successfully',
     });
   })
   .catch(err => {
