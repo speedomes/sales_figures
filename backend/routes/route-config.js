@@ -812,7 +812,7 @@ router.post('/api/addRecord',(req, res) => {
     WHERE id= '${req.body.repId}'`;
 
   const officeRecordQuery = `Select sum(d.credit) as credit from daily AS d JOIN reps AS r ON d.rep_id = r.id JOIN office AS o ON r.office_id = o.id WHERE 
-    o.id='${req.body.officeId}' AND d.date='${dateToFilter}'`;
+    r.office_id='${req.body.officeId}' AND d.date='${dateToFilter}'`;
 
   database.query(addRecordQuery)
   .then (() => {
@@ -848,7 +848,7 @@ router.post('/api/updateRecord',(req, res) => {
     WHERE id='${req.body.repId}'`;
   
   const officeRecordQuery = `Select sum(d.credit) as credit from daily AS d JOIN reps AS r ON d.rep_id = r.id JOIN office AS o ON r.office_id = o.id WHERE 
-    o.id='${req.body.officeId}' AND d.date='${dateToFilter}'`;
+    r.office_id='${req.body.officeId}' AND d.date='${dateToFilter}'`;
 
   database.query(updateRecordQuery)
   .then (() => {

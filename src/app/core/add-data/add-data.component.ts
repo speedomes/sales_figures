@@ -361,12 +361,13 @@ export class AddDataComponent implements OnInit {
       rep: this.doFilter.reps[repIndex - 1].id
     });
 
-    this.enableSaveData = true;
     if (this.dataEntryForm.get('date').value !== '') {
       this.checkRecord();
     } else {
       this.fetchExistingRepData();
     }
+
+    this.enableSaveData = true;
   }
 
   nextRep() {
@@ -389,12 +390,13 @@ export class AddDataComponent implements OnInit {
       rep: this.doFilter.reps[repIndex + 1].id
     });
 
-    this.enableSaveData = true;
     if (this.dataEntryForm.get('date').value !== '') {
       this.checkRecord();
     } else {
       this.fetchExistingRepData();
     }
+
+    this.enableSaveData = true;
   }
 
   checkRecord(isRepChanged = false) {
