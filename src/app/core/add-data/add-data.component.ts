@@ -499,6 +499,10 @@ export class AddDataComponent implements OnInit {
     } else {
       this.addRecord(isSaveAll);
     }
+
+    this.dataEntryForm.patchValue({
+      repCredit: ''
+    });
   }
 
   addRecord(isSaveAll = false) {
