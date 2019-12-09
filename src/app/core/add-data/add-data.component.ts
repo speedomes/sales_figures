@@ -157,7 +157,7 @@ export class AddDataComponent implements OnInit {
   fetchRepsByOffice(id) {
     this.enableSplitSaveData = true;
     this.dataEntryForm.patchValue({
-      repVehicle: '',
+      repVehicle: 0,
       repSold: '',
       repPulled: '',
       repNC: '',
@@ -273,7 +273,7 @@ export class AddDataComponent implements OnInit {
         repDay2: '',
         repBalance: '',
         repBalanceB: '',
-        repVehicle: ''
+        repVehicle: 0
       });
     }
   }
@@ -290,7 +290,7 @@ export class AddDataComponent implements OnInit {
         const repData = {
           repBalance: record.balance,
           repBalanceB: record.balanceb,
-          repVehicle: record.vehicle_id
+          repVehicle: record.vehicle_id || 0
         };
         this.dataEntryForm.patchValue(repData);
       }
@@ -423,7 +423,7 @@ export class AddDataComponent implements OnInit {
           repDay2: record.t2 || '',
           repBalance: record.balance || '',
           repBalanceB: record.balanceb || '',
-          repVehicle: record.vehicle_id || ''
+          repVehicle: record.vehicle_id || 0
         };
         this.dataEntryForm.patchValue(repData);
       } else {
