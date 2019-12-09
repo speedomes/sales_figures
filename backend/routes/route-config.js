@@ -74,11 +74,11 @@ router.post('/api/getDashboardData',(req, res, next) => {
     sum(d.inuse) as interviews, sum(d.t1) as day1, sum(d.t2) as day2,
     FORMAT((sum(d.t2)/sum(d.t1))*100, 2) as percentage
     from daily as d join reps as r on d.rep_id = r.id 
-    join office as o on r.office_id = o.id where`;
+    join office as o on r.office_id = o.id WHERE`;
 
   let holidayQuery = `SELECT count(d.sold) as holidays from daily as d
     join reps as r on d.rep_id = r.id join office as o on r.office_id = o.id
-    where sold=-1`;
+    WHERE sold=-1`;
 
   if(req.body.office !== null) {
     dashboardQuery += ` o.id='${req.body.office}' and`;
@@ -1293,7 +1293,7 @@ router.post('/api/deleteRep',(req, res) => {
       });
   })
   .catch(err => {
-      next(err); 
+    next(err); 
   });
 });
 
@@ -1321,6 +1321,7 @@ router.post('/api/getTotalData',(req, res, next) => {
 });
 
 router.get('/api/getSplitData',(req, res, next) => {
+  console.log(process.env.DEBUG);
   const splitDataQuery = `SELECT s.date, o.name, s.cash, s.cards,
       FORMAT((s.cash + s.cards), 2) as total, s.stub_no
       FROM split as s join office as o on s.office_id=o.id ORDER BY s.date DESC`;
@@ -1333,7 +1334,7 @@ router.get('/api/getSplitData',(req, res, next) => {
     });
   })
   .catch(err => {
-      next(err); 
+    next(err); 
   });
 });
 
