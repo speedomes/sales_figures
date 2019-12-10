@@ -696,6 +696,9 @@ router.post('/api/checkRecord',(req, res, next) => {
     sum(d.credit) as credit, sum(d.inuse) as inuse, sum(d.t1) as day1, sum(d.t2) as day2
     from daily AS d JOIN reps AS r ON d.rep_id = r.id JOIN office AS o ON r.office_id = o.id WHERE 
     o.id='${req.body.officeId}' AND d.date='${req.body.date}'`;
+  const soldDataQuery = `Select sum(d.sold) as sold from daily AS d JOIN reps AS r ON d.rep_id = r.id
+    JOIN office AS o ON r.office_id = o.id WHERE d.sold <> -1 AND o.id='${req.body.officeId}' 
+    AND d.date='${req.body.date}'`;
   const splitQuery = `SELECT id, cash, cards, stub_no FROM split WHERE office_id='${req.body.officeId}' AND date='${req.body.date}'`;
 
   database.query(recordQuery)
@@ -750,15 +753,22 @@ router.post('/api/checkRecord',(req, res, next) => {
       
       database.query(officeRecordQuery)
       .then(rows => {
-        officeRecords = rows;
-        database.query(splitQuery)
-        .then (rows => {
-          splitRecords = rows;
-          res.status(201).json({
-            message: 'Records fetched successfully',
-            records: repRecords,
-            officeRecords: officeRecords || [],
-            splitRecords: splitRecords || []
+        database.query(soldDataQuery)
+        .then (soldData => {
+          rows[0].sold = soldData[0].sold;
+          officeRecords = rows;
+          database.query(splitQuery)
+          .then (rows => {
+            splitRecords = rows;
+            res.status(201).json({
+              message: 'Records fetched successfully',
+              records: repRecords,
+              officeRecords: officeRecords || [],
+              splitRecords: splitRecords || []
+            });
+          })
+          .catch(err => {
+            next(err); 
           });
         })
         .catch(err => {
@@ -776,15 +786,23 @@ router.post('/api/checkRecord',(req, res, next) => {
         
         database.query(officeRecordQuery)
         .then(rows => {
-          officeRecords = rows;
-          database.query(splitQuery)
-          .then (rows => {
-            splitRecords = rows;
-            res.status(201).json({
-              message: 'Records fetched successfully',
-              records: dataCollection,
-              officeRecords: officeRecords || [],
-              splitRecords: splitRecords || []
+          database.query(soldDataQuery)
+          .then (soldData => {
+            rows[0].sold = soldData[0].sold;
+            officeRecords = rows;
+
+            database.query(splitQuery)
+            .then (rows => {
+              splitRecords = rows;
+              res.status(201).json({
+                message: 'Records fetched successfully',
+                records: dataCollection,
+                officeRecords: officeRecords || [],
+                splitRecords: splitRecords || []
+              });
+            })
+            .catch(err => {
+              next(err); 
             });
           })
           .catch(err => {
