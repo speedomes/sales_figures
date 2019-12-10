@@ -74,11 +74,11 @@ router.post('/api/getDashboardData',(req, res, next) => {
     sum(d.inuse) as interviews, sum(d.t1) as day1, sum(d.t2) as day2,
     FORMAT((sum(d.t2)/sum(d.t1))*100, 2) as percentage
     from daily as d join reps as r on d.rep_id = r.id 
-    join office as o on r.office_id = o.id where`;
+    join office as o on r.office_id = o.id WHERE`;
 
   let holidayQuery = `SELECT count(d.sold) as holidays from daily as d
     join reps as r on d.rep_id = r.id join office as o on r.office_id = o.id
-    where sold=-1`;
+    WHERE sold=-1`;
 
   if(req.body.office !== null) {
     dashboardQuery += ` o.id='${req.body.office}' and`;
@@ -876,7 +876,7 @@ router.post('/api/updateRecord',(req, res) => {
       .then((rows) => {
         res.status(201).json({
           message: 'Record has been updated successfully',
-          officeCredit: rows[0].credit
+          officeCredit: rows[0].credit.toFixed(2)
         });
       })
       .catch(err => {
@@ -1311,7 +1311,7 @@ router.post('/api/deleteRep',(req, res) => {
       });
   })
   .catch(err => {
-      next(err); 
+    next(err); 
   });
 });
 
@@ -1351,7 +1351,7 @@ router.get('/api/getSplitData',(req, res, next) => {
     });
   })
   .catch(err => {
-      next(err); 
+    next(err); 
   });
 });
 
