@@ -1,24 +1,36 @@
 const express = require('express');
 const app = express();
-const cors = require('cors');
 const bodyParser = require('body-parser');
 const helmet = require('helmet');
 const routerConfig = require('./routes/route-config');
 
-var whitelist = ['http://dsdvans.co.uk/']
-var corsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
+app.use(helmet());
+app.use(helmet.contentSecurityPolicy({
+  directives: {
+    defaultSrc: ["'self'"],
+    scriptSrc: ["'self'", "'unsafe-inline'", "'code.jquery.com'", "'cdnjs.cloudflare.com'", "'stackpath.bootstrapcdn.com'"],
+    styleSrc: ["'self'", "'fonts.googleapis.com'"],
+    reportUri: '/report-violation',
+    upgradeInsecureRequests: true
   }
-}
+}));
 
-// Then pass them to cors:
-// app.use(cors(corsOptions));
-app.use(bodyParser.json());
+app.use(helmet.noCache());
+app.use(helmet.referrerPolicy({ policy: 'strict-origin' }));
+
+app.use(bodyParser.json({
+  type: ['json', 'application/csp-report']
+}));
+
+app.post('/report-violation', (req, res) => {
+  if (req.body) {
+    console.log('CSP Violation: ', req.body)
+  } else {
+    console.log('CSP Violation: No data received!')
+  }
+
+  res.status(204).end()
+})
 
 app.use((req, res, next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');

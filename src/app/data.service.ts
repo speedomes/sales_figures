@@ -17,8 +17,8 @@ export class DataService {
     return this.httpClient.post(this.API_URL + 'getDashboardData', data);
   }
 
-  getYears() {
-    return this.httpClient.get(this.API_URL + 'getYears');
+  getYears(data: {} = {}) {
+    return this.httpClient.post(this.API_URL + 'getYears', data);
   }
 
   getReport(reportConfig: {}): Observable<any> {
@@ -37,8 +37,8 @@ export class DataService {
     return this.httpClient.post(this.API_URL + 'getDailyDataByFilter', data);
   }
 
-  getOffices(): Observable<any> {
-    return this.httpClient.get(this.API_URL + 'getOffices');
+  getOffices(data: {} = {}): Observable<any> {
+    return this.httpClient.post(this.API_URL + 'getOffices', data);
   }
 
   addOffice(data: {}): Observable<any> {
@@ -53,8 +53,8 @@ export class DataService {
     return this.httpClient.post(this.API_URL + 'deleteOffice', data);
   }
 
-  getHireCompanies(): Observable<any> {
-    return this.httpClient.get(this.API_URL + 'getHireCompanies');
+  getHireCompanies(data: {} = {}): Observable<any> {
+    return this.httpClient.post(this.API_URL + 'getHireCompanies', data);
   }
 
   addHireCompany(data: {}): Observable<any> {
@@ -69,8 +69,8 @@ export class DataService {
     return this.httpClient.post(this.API_URL + 'deleteHireCompany', data);
   }
 
-  getVehicles(): Observable<any> {
-    return this.httpClient.get(this.API_URL + 'getVehicles');
+  getVehicles(data: {} = {}): Observable<any> {
+    return this.httpClient.post(this.API_URL + 'getVehicles', data);
   }
 
   addVehicle(data: {}): Observable<any> {
@@ -101,8 +101,8 @@ export class DataService {
     return this.httpClient.post(this.API_URL + 'deleteRep', data);
   }
 
-  getSplitData(): Observable<any> {
-    return this.httpClient.get(this.API_URL + 'getSplitData');
+  getSplitData(data: {} = {}): Observable<any> {
+    return this.httpClient.post(this.API_URL + 'getSplitData', data);
   }
 
   getScopeData(data: {}): Observable<any> {

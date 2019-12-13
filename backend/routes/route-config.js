@@ -381,7 +381,7 @@ router.post('/api/getDashboardData',(req, res, next) => {
   }
 });
 
-router.get('/api/getYears',(req, res) => {
+router.post('/api/getYears',(req, res) => {
   database.query('SELECT YEAR(date) AS year FROM daily GROUP BY YEAR(date)')
   .then (data => {
     res.status(201).json({
@@ -1114,7 +1114,7 @@ router.post('/api/getKPIData',(req, res) => {
   });
 });
 
-router.get('/api/getOffices',(req, res, next) => {
+router.post('/api/getOffices',(req, res, next) => {
   const officeDataQuery = `select * from office ORDER BY office.id`;
 
   database.query(officeDataQuery)
@@ -1171,7 +1171,7 @@ router.post('/api/deleteOffice',(req, res) => {
   });
 });
 
-router.get('/api/getVehicles',(req, res, next) => {
+router.post('/api/getVehicles',(req, res, next) => {
   const vehicleDataQuery = `select v.id, v.name, h.name as hireCompanyName, h.id as hireCompanyId from vehicle as v join hirecompany h WHERE
     v.hire_company_id = h.id ORDER BY v.id DESC`;
 
@@ -1338,7 +1338,7 @@ router.post('/api/getTotalData',(req, res, next) => {
   });
 });
 
-router.get('/api/getSplitData',(req, res, next) => {
+router.post('/api/getSplitData',(req, res, next) => {
   const splitDataQuery = `SELECT s.date, o.name, s.cash, s.cards,
       FORMAT((s.cash + s.cards), 2) as total, s.stub_no
       FROM split as s join office as o on s.office_id=o.id ORDER BY s.date DESC`;
@@ -1355,7 +1355,7 @@ router.get('/api/getSplitData',(req, res, next) => {
   });
 });
 
-router.get('/api/getHireCompanies',(req, res, next) => {
+router.post('/api/getHireCompanies',(req, res, next) => {
   const hireCompanyDataQuery = `SELECT * from hirecompany WHERE id <> 0 ORDER BY id`;
 
   database.query(hireCompanyDataQuery)
