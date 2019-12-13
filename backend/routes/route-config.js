@@ -417,16 +417,16 @@ router.post('/api/getReport',(req, res, next) => {
   .then (rows => {
       rows.forEach((row) => {
       pulledPromiseArray.push(
-          database.query(`select sum(d.pulled) as mData from daily as d JOIN reps as r on d.rep_id=r.id 
+        database.query(`select sum(d.pulled) as mData from daily as d JOIN reps as r on d.rep_id=r.id 
           WHERE d.date<='${monthEndDate}' AND d.date>='${monthStartDate}'
           AND r.id = '${row.repId}'`)
           .then (rows => {
-          row.mData = rows[0].mData;
-          return database.query(`select sum(d.pulled) as yData from daily as d JOIN reps as r on d.rep_id=r.id 
-          WHERE d.date<='${yearEndDate}' AND d.date>='${yearStartDate}'
-          AND r.id = '${row.repId}'`);
-          }, err => {
-          return database.close().then(() => { throw err; })
+            row.mData = rows[0].mData;
+            return database.query(`select sum(d.pulled) as yData from daily as d JOIN reps as r on d.rep_id=r.id 
+            WHERE d.date<='${yearEndDate}' AND d.date>='${yearStartDate}'
+            AND r.id = '${row.repId}'`);
+            }, err => {
+            return database.close().then(() => { throw err; })
           })
           .then (rows => {
           row.yData = rows[0].yData;
@@ -434,7 +434,7 @@ router.post('/api/getReport',(req, res, next) => {
           }, err => {
           return database.close().then(() => { throw err; })
           })
-      );
+        );
       })
       
       Promise.all(pulledPromiseArray).then((data) => {
