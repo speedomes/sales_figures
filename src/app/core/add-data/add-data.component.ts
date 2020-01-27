@@ -150,7 +150,7 @@ export class AddDataComponent implements OnInit {
 
   updateTotal() {
     this.dataEntryForm.patchValue({
-      totalPayment: parseFloat(this.dataEntryForm.get('cash').value + this.dataEntryForm.get('cards').value).toFixed(2)
+      totalPayment: (parseFloat(this.dataEntryForm.get('cash').value) + parseFloat(this.dataEntryForm.get('cards').value)).toFixed(2)
     });
   }
 
@@ -587,10 +587,6 @@ export class AddDataComponent implements OnInit {
         } else {
           this.displaySnackbar('Split data has been updated successfully');
         }
-
-        this.enableSplitSaveData = false;
-        this.hasSplitData = false;
-        this.resetForm();
       },
       (error) => {
         this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
@@ -602,10 +598,6 @@ export class AddDataComponent implements OnInit {
         } else {
           this.displaySnackbar('Split data has been saved successfully');
         }
-
-        this.enableSplitSaveData = false;
-        this.hasSplitData = false;
-        this.resetForm();
       },
       (error) => {
         this.displaySnackbar('Internal Server Error. Please try later.', 'warning');
