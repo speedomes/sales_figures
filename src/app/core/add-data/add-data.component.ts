@@ -150,7 +150,7 @@ export class AddDataComponent implements OnInit {
 
   updateTotal() {
     this.dataEntryForm.patchValue({
-      totalPayment: (parseFloat(this.dataEntryForm.get('cash').value) + parseFloat(this.dataEntryForm.get('cards').value)).toFixed(2)
+      totalPayment: (parseFloat(this.dataEntryForm.get('cash').value || 0) + parseFloat(this.dataEntryForm.get('cards').value || 0)).toFixed(2)
     });
   }
 
