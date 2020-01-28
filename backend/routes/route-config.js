@@ -381,7 +381,7 @@ router.post('/api/getDashboardData',(req, res, next) => {
   }
 });
 
-router.get('/api/getYears',(req, res) => {
+router.post('/api/getYears',(req, res) => {
   database.query('SELECT YEAR(date) AS year FROM daily GROUP BY YEAR(date)')
   .then (data => {
     res.status(201).json({
@@ -417,16 +417,16 @@ router.post('/api/getReport',(req, res, next) => {
   .then (rows => {
       rows.forEach((row) => {
       pulledPromiseArray.push(
-          database.query(`select sum(d.pulled) as mData from daily as d JOIN reps as r on d.rep_id=r.id 
+        database.query(`select sum(d.pulled) as mData from daily as d JOIN reps as r on d.rep_id=r.id 
           WHERE d.date<='${monthEndDate}' AND d.date>='${monthStartDate}'
           AND r.id = '${row.repId}'`)
           .then (rows => {
-          row.mData = rows[0].mData;
-          return database.query(`select sum(d.pulled) as yData from daily as d JOIN reps as r on d.rep_id=r.id 
-          WHERE d.date<='${yearEndDate}' AND d.date>='${yearStartDate}'
-          AND r.id = '${row.repId}'`);
-          }, err => {
-          return database.close().then(() => { throw err; })
+            row.mData = rows[0].mData;
+            return database.query(`select sum(d.pulled) as yData from daily as d JOIN reps as r on d.rep_id=r.id 
+            WHERE d.date<='${yearEndDate}' AND d.date>='${yearStartDate}'
+            AND r.id = '${row.repId}'`);
+            }, err => {
+            return database.close().then(() => { throw err; })
           })
           .then (rows => {
           row.yData = rows[0].yData;
@@ -434,7 +434,7 @@ router.post('/api/getReport',(req, res, next) => {
           }, err => {
           return database.close().then(() => { throw err; })
           })
-      );
+        );
       })
       
       Promise.all(pulledPromiseArray).then((data) => {
@@ -696,6 +696,9 @@ router.post('/api/checkRecord',(req, res, next) => {
     sum(d.credit) as credit, sum(d.inuse) as inuse, sum(d.t1) as day1, sum(d.t2) as day2
     from daily AS d JOIN reps AS r ON d.rep_id = r.id JOIN office AS o ON r.office_id = o.id WHERE 
     o.id='${req.body.officeId}' AND d.date='${req.body.date}'`;
+  const soldDataQuery = `Select sum(d.sold) as sold from daily AS d JOIN reps AS r ON d.rep_id = r.id
+    JOIN office AS o ON r.office_id = o.id WHERE d.sold <> -1 AND o.id='${req.body.officeId}' 
+    AND d.date='${req.body.date}'`;
   const splitQuery = `SELECT id, cash, cards, stub_no FROM split WHERE office_id='${req.body.officeId}' AND date='${req.body.date}'`;
 
   database.query(recordQuery)
@@ -750,15 +753,22 @@ router.post('/api/checkRecord',(req, res, next) => {
       
       database.query(officeRecordQuery)
       .then(rows => {
-        officeRecords = rows;
-        database.query(splitQuery)
-        .then (rows => {
-          splitRecords = rows;
-          res.status(201).json({
-            message: 'Records fetched successfully',
-            records: repRecords,
-            officeRecords: officeRecords || [],
-            splitRecords: splitRecords || []
+        database.query(soldDataQuery)
+        .then (soldData => {
+          rows[0].sold = soldData[0].sold;
+          officeRecords = rows;
+          database.query(splitQuery)
+          .then (rows => {
+            splitRecords = rows;
+            res.status(201).json({
+              message: 'Records fetched successfully',
+              records: repRecords,
+              officeRecords: officeRecords || [],
+              splitRecords: splitRecords || []
+            });
+          })
+          .catch(err => {
+            next(err); 
           });
         })
         .catch(err => {
@@ -776,15 +786,23 @@ router.post('/api/checkRecord',(req, res, next) => {
         
         database.query(officeRecordQuery)
         .then(rows => {
-          officeRecords = rows;
-          database.query(splitQuery)
-          .then (rows => {
-            splitRecords = rows;
-            res.status(201).json({
-              message: 'Records fetched successfully',
-              records: dataCollection,
-              officeRecords: officeRecords || [],
-              splitRecords: splitRecords || []
+          database.query(soldDataQuery)
+          .then (soldData => {
+            rows[0].sold = soldData[0].sold;
+            officeRecords = rows;
+
+            database.query(splitQuery)
+            .then (rows => {
+              splitRecords = rows;
+              res.status(201).json({
+                message: 'Records fetched successfully',
+                records: dataCollection,
+                officeRecords: officeRecords || [],
+                splitRecords: splitRecords || []
+              });
+            })
+            .catch(err => {
+              next(err); 
             });
           })
           .catch(err => {
@@ -1096,7 +1114,7 @@ router.post('/api/getKPIData',(req, res) => {
   });
 });
 
-router.get('/api/getOffices',(req, res, next) => {
+router.post('/api/getOffices',(req, res, next) => {
   const officeDataQuery = `select * from office ORDER BY office.id`;
 
   database.query(officeDataQuery)
@@ -1153,7 +1171,7 @@ router.post('/api/deleteOffice',(req, res) => {
   });
 });
 
-router.get('/api/getVehicles',(req, res, next) => {
+router.post('/api/getVehicles',(req, res, next) => {
   const vehicleDataQuery = `select v.id, v.name, h.name as hireCompanyName, h.id as hireCompanyId from vehicle as v join hirecompany h WHERE
     v.hire_company_id = h.id ORDER BY v.id DESC`;
 
@@ -1320,7 +1338,7 @@ router.post('/api/getTotalData',(req, res, next) => {
   });
 });
 
-router.get('/api/getSplitData',(req, res, next) => {
+router.post('/api/getSplitData',(req, res, next) => {
   const splitDataQuery = `SELECT s.date, o.name, s.cash, s.cards,
       FORMAT((s.cash + s.cards), 2) as total, s.stub_no
       FROM split as s join office as o on s.office_id=o.id ORDER BY s.date DESC`;
@@ -1337,7 +1355,7 @@ router.get('/api/getSplitData',(req, res, next) => {
   });
 });
 
-router.get('/api/getHireCompanies',(req, res, next) => {
+router.post('/api/getHireCompanies',(req, res, next) => {
   const hireCompanyDataQuery = `SELECT * from hirecompany WHERE id <> 0 ORDER BY id`;
 
   database.query(hireCompanyDataQuery)

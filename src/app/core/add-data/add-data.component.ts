@@ -51,7 +51,7 @@ export class AddDataComponent implements OnInit {
   years: [] = [];
 
   displayedColumns: string[] = ['date', 'officeName', 'repId', 'repName', 'vehicle', 'sold',
-      'pulled', 'newClients', 'credit', 'balance', 'inuse', 'day1', 'day2'];
+    'pulled', 'newClients', 'credit', 'balance', 'inuse', 'day1', 'day2'];
 
   constructor(private dataService: DataService, private snackBar: MatSnackBar) { }
 

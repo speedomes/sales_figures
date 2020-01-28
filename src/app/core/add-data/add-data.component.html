@@ -8,6 +8,21 @@
 
       <form [formGroup]="dataEntryForm" class="data-entry-container">
         <div class="row justify-center">
+          <div class="col-sm-2 date-wrapper">
+            <mat-label class="subHeader">Date</mat-label>
+            <div class="datepicker-wrapper">
+              <input matInput
+              [matDatepicker]="dp"
+              placeholder="Pick a Date"
+              class="form-control"
+              formControlName="date"
+              [max]="maxDate"
+              (dateChange)="checkRecord()"
+              (click)="dp.open()">
+              <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+              <mat-datepicker #dp></mat-datepicker>
+            </div>
+          </div>
           <div class="col-sm-2">
             <div class="row">
               <mat-label class="subHeader">Office</mat-label>
@@ -32,21 +47,6 @@
             <div class="row nav-arrows-wrapper">
               <i class="material-icons" (click)="prevRep()" [ngClass]="{'disableArrow': prevRepLimitReached}">navigate_before</i>
               <i class="material-icons" (click)="nextRep()" [ngClass]="{'disableArrow': nextRepLimitReached}">navigate_next</i>
-            </div>
-          </div>
-          <div class="col-sm-2 date-wrapper">
-            <mat-label class="subHeader">Date</mat-label>
-            <div class="datepicker-wrapper">
-              <input matInput
-              [matDatepicker]="dp"
-              placeholder="Pick a Date"
-              class="form-control"
-              formControlName="date"
-              [max]="maxDate"
-              (dateChange)="checkRecord()"
-              (click)="dp.open()">
-              <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
-              <mat-datepicker #dp></mat-datepicker>
             </div>
           </div>
           <div class="col-sm-1 search-button-container">
