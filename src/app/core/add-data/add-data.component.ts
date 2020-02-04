@@ -480,6 +480,7 @@ export class AddDataComponent implements OnInit {
         };
         this.dataEntryForm.patchValue(splitData);
       } else {
+        this.hasSplitData = false;
         const splitData = {
           cash: '',
           cards: '',

@@ -179,8 +179,7 @@
 
         <div class="row justify-center button-container">
           <button mat-raised-button (click)="saveAll()"
-            [disabled]="!dataEntryForm.get('rep').valid || !dataEntryForm.get('office').valid || !dataEntryForm.get('date').valid
-              || (!enableSplitSaveData || !enableSaveData)"
+            [disabled]="!dataEntryForm.get('rep').valid || !dataEntryForm.get('office').valid || !dataEntryForm.get('date').valid"
             >Save All
           </button>
         </div>
