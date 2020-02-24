@@ -898,8 +898,9 @@ router.post('/api/saveSplit',(req, res) => {
     ${req.body.cards}, ${req.body.stubNo})`;
 
   database.query(saveSplitQuery)
-  .then (() => {
+  .then ((recordData) => {
     res.status(201).json({
+      sId: recordData.insertId,
       message: 'Split record has been added successfully',
     });
   })
@@ -912,8 +913,9 @@ router.post('/api/updateSplit',(req, res) => {
   const updateSplitQuery = `Update split SET cash=${req.body.cash}, cards=${req.body.cards}, stub_no=${req.body.stubNo} WHERE id=${req.body.id}`;
 
   database.query(updateSplitQuery)
-  .then (() => {
+  .then ((recordData) => {
     res.status(201).json({
+      sId: recordData.insertId,
       message: 'Split record has been updated successfully',
     });
   })

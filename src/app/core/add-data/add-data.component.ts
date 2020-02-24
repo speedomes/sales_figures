@@ -583,6 +583,7 @@ export class AddDataComponent implements OnInit {
 
     if (this.hasSplitData) {
       this.dataService.updateSplit(splitRecord).subscribe((response: any) => {
+        this.splitDataId = response.sId;
         if (isSaveAll) {
           this.displaySnackbar('Data has been saved successfully');
         } else {
@@ -594,6 +595,8 @@ export class AddDataComponent implements OnInit {
       });
     } else {
       this.dataService.saveSplit(splitRecord).subscribe((response: any) => {
+        this.hasSplitData = true;
+        this.splitDataId = response.sId;
         if (isSaveAll) {
           this.displaySnackbar('Data has been saved successfully');
         } else {
