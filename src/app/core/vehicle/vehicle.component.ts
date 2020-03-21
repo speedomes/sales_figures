@@ -85,7 +85,12 @@ export class VehicleComponent implements OnInit {
       name: this.vehicleForm.get('vehicleName').value,
       hire_company_id: this.vehicleForm.get('hire_company').value
     }).subscribe((response) => {
-      this.displaySnackbar((response && response.message) || 'Vehicle name has been added successfully!');
+      if(response.isDuplicate) {
+        this.displaySnackbar(response.message, 'warning');
+      } else {
+        this.displaySnackbar((response && response.message) || 'Vehicle name has been added successfully!');
+      }
+
       this.clearSelection();
       this.getVehicles();
     },
