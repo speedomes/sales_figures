@@ -1190,7 +1190,7 @@ router.post('/api/getVehicles',(req, res, next) => {
 });
 
 router.post('/api/addVehicle',(req, res) => {
-  const vehicleDataQuery = `select * from vehicle WHERE name=${req.body.name}`;
+  const vehicleDataQuery = `select * from vehicle WHERE name='${req.body.name}'`;
   
   const addVehicleQuery = `insert INTO vehicle(name, hire_company_id) VALUES 
     ('${req.body.name}', '${req.body.hire_company}')`;
