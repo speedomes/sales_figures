@@ -81,6 +81,7 @@ export class VehicleComponent implements OnInit {
   }
 
   addVehicle() {
+    console.log(this.vehicleForm.get('hire_company').value);
     this.dataService.addVehicle({
       name: this.vehicleForm.get('vehicleName').value,
       hire_company_id: this.vehicleForm.get('hire_company').value
