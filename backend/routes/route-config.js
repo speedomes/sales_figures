@@ -1193,31 +1193,31 @@ router.post('/api/addVehicle',(req, res) => {
   const vehicleDataQuery = `select * from vehicle WHERE name='${req.body.name}'`;
   
   const addVehicleQuery = `insert INTO vehicle(name, hire_company_id) VALUES 
-    ('${req.body.name}', '${req.body.hire_company}')`;
+    ('${req.body.name}', '${req.body.hire_company_id}')`;
 
-    database.query(vehicleDataQuery)
-    .then (rows => {
-      if(rows.length > 0) {
+  database.query(vehicleDataQuery)
+  .then (rows => {
+    if(rows.length > 0) {
+      res.status(201).json({
+        isDuplicate: true,
+        message: 'Vehicle already exists!',
+      });
+    } else {
+      database.query(addVehicleQuery)
+      .then (rows => {
         res.status(201).json({
-          isDuplicate: true,
-          message: 'Vehicle already exists!',
+          isDuplicate: false,
+          message: 'Vehicle has been added successfully',
         });
-      } else {
-        database.query(addVehicleQuery)
-        .then (rows => {
-          res.status(201).json({
-            isDuplicate: false,
-            message: 'Vehicle has been added successfully',
-          });
-        })
-        .catch(err => {
-          next(err); 
-        });
-      }
-    })
-    .catch(err => {
-      next(err); 
-    });
+      })
+      .catch(err => {
+        next(err); 
+      });
+    }
+  })
+  .catch(err => {
+    next(err); 
+  });
 });
 
 router.post('/api/updateVehicle',(req, res) => {
