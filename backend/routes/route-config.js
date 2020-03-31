@@ -821,16 +821,16 @@ router.post('/api/checkRecord',(req, res, next) => {
 });
 
 router.post('/api/addRecord',(req, res) => {
-  const dateToFilter = moment(req.body.date).local().format(dateFormat);
+  // const dateToFilter = moment(req.body.date).format(dateFormat);
   const addRecordQuery = `Insert daily(date, vehicle_id, sold, pulled, newclients, credit, balance, inuse, t1, t2, rep_id, balanceb, last_modified)
-    VALUES ('${dateToFilter}', '${req.body.vehicleId}', '${req.body.sold}', '${req.body.pulled}', '${req.body.newClients}', '${req.body.credit}',
+    VALUES ('${req.body.date}', '${req.body.vehicleId}', '${req.body.sold}', '${req.body.pulled}', '${req.body.newClients}', '${req.body.credit}',
     '${req.body.balance}', '${req.body.inuse}', '${req.body.day1}', '${req.body.day2}', '${req.body.repId}', '${req.body.balanceB}', NOW())`;
   
   const updateRepTableQuery = `Update reps SET balance='${req.body.balance}', balanceb='${req.body.balanceB}', vehicle_id='${req.body.vehicleId}'
     WHERE id= '${req.body.repId}'`;
 
   const officeRecordQuery = `Select sum(d.credit) as credit from daily AS d JOIN reps AS r ON d.rep_id = r.id JOIN office AS o ON r.office_id = o.id WHERE 
-    r.office_id='${req.body.officeId}' AND d.date='${dateToFilter}'`;
+    r.office_id='${req.body.officeId}' AND d.date='${req.body.date}'`;
 
   database.query(addRecordQuery)
   .then (() => {
@@ -857,7 +857,7 @@ router.post('/api/addRecord',(req, res) => {
 });
 
 router.post('/api/updateRecord',(req, res) => {
-  const dateToFilter = moment(req.body.date).local().format(dateFormat);
+  // const dateToFilter = moment(req.body.date).format(dateFormat);
   const updateRecordQuery = `Update daily SET vehicle_id='${req.body.vehicleId}', sold='${req.body.sold}', pulled='${req.body.pulled}',
     newclients='${req.body.newClients}', credit='${req.body.credit}', balance='${req.body.balance}', inuse='${req.body.inuse}', 
     t1='${req.body.day1}', t2='${req.body.day2}', balanceb='${req.body.balanceB}', rep_id='${req.body.repId}', last_modified=NOW() WHERE id='${req.body.orderId}'`;
@@ -866,7 +866,7 @@ router.post('/api/updateRecord',(req, res) => {
     WHERE id='${req.body.repId}'`;
   
   const officeRecordQuery = `Select sum(d.credit) as credit from daily AS d JOIN reps AS r ON d.rep_id = r.id JOIN office AS o ON r.office_id = o.id WHERE 
-    r.office_id='${req.body.officeId}' AND d.date='${dateToFilter}'`;
+    r.office_id='${req.body.officeId}' AND d.date='${req.body.date}'`;
 
   database.query(updateRecordQuery)
   .then (() => {

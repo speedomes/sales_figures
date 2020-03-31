@@ -507,7 +507,7 @@ export class AddDataComponent implements OnInit {
   addRecord(isSaveAll = false) {
     const recordDetails = {
       officeId: this.dataEntryForm.get('office').value,
-      date: this.dataEntryForm.get('date').value,
+      date: moment(this.dataEntryForm.get('date').value).format('YYYY.MM.DD'),
       vehicleId: this.dataEntryForm.get('repVehicle').value,
       sold: this.dataEntryForm.get('repSold').value,
       pulled: this.dataEntryForm.get('repPulled').value,
@@ -540,7 +540,7 @@ export class AddDataComponent implements OnInit {
   updateRecord(isSaveAll = false) {
     const recordDetails = {
       officeId: this.dataEntryForm.get('office').value,
-      date: this.dataEntryForm.get('date').value,
+      date: moment(this.dataEntryForm.get('date').value).format('YYYY.MM.DD'),
       vehicleId: this.dataEntryForm.get('repVehicle').value,
       sold: this.dataEntryForm.get('repSold').value,
       pulled: this.dataEntryForm.get('repPulled').value,
