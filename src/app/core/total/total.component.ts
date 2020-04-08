@@ -43,8 +43,8 @@ export class TotalComponent implements OnInit {
   fetchTotalData() {
     this.showSpinner = true;
     this.dataService.getTotalData({
-      fromDate: this.totalDataForm.get('fromDate').value,
-      toDate: this.totalDataForm.get('toDate').value
+      fromDate: moment(this.totalDataForm.get('fromDate').value).format('YYYY.MM.DD'),
+      toDate: moment(this.totalDataForm.get('toDate').value).format('YYYY.MM.DD')
     }).subscribe((response) => {
       this.dataSource.data = response.totalData;
       this.isDataLoaded = true;
