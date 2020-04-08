@@ -577,7 +577,7 @@ export class AddDataComponent implements OnInit {
       cards: this.dataEntryForm.get('cards').value || 0,
       stubNo: this.dataEntryForm.get('stubNo').value || 0,
       officeId: this.dataEntryForm.get('office').value,
-      date: this.dataEntryForm.get('date').value,
+      date: moment(this.dataEntryForm.get('date').value).format('YYYY.MM.DD'),
       id: this.splitDataId || -1
     };
 
