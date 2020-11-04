@@ -94,15 +94,21 @@
               <mat-label>Day 2</mat-label>
               <input matInput type="number" class="form-control" formControlName="repDay2">
             </div>
-            <div class="col-sm-1">
+          </div>
+          <div class="row justify-center">
+            <div class="col-sm-2">
               <mat-label>Balance</mat-label>
               <input matInput type="number" class="form-control" formControlName="repBalance">
             </div>
-            <div class="col-sm-1">
+            <div class="col-sm-2">
               <mat-label>Bal B</mat-label>
               <input matInput type="number" class="form-control" formControlName="repBalanceB">
             </div>
             <div class="col-sm-2">
+              <mat-label>BACS</mat-label>
+              <input matInput type="number" class="form-control" formControlName="repBACS" (keyup)="updateTotal()">
+            </div>
+            <div class="col-sm-3">
               <mat-label>Vehicle</mat-label>
               <mat-select class="form-control" formControlName="repVehicle">
                 <mat-option *ngFor="let vehicle of vehicles" [value]="vehicle.id">{{vehicle.name}}</mat-option>
@@ -160,6 +166,10 @@
           <div class="col-sm-2">
             <mat-label>Card Machine</mat-label>
             <input matInput type="number" class="form-control"  formControlName="cards" (keyup)="updateTotal()">
+          </div>
+          <div class="col-sm-auto">
+            <mat-label>BACS</mat-label>
+            <input matInput type="number" class="form-control" readonly [value]="dataEntryForm.get('repBACS').value">
           </div>
           <div class="col-sm-2">
             <mat-label>Total</mat-label>

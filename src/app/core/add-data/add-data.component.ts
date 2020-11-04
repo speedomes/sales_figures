@@ -68,6 +68,7 @@ export class AddDataComponent implements OnInit {
       repDay2: new FormControl(''),
       repBalance: new FormControl(''),
       repBalanceB: new FormControl(''),
+      repBACS: new FormControl(''),
       repVehicle: new FormControl(''),
       date: new FormControl({ value: '', disabled: true}, [Validators.required]),
       officeSold: new FormControl(''),
@@ -150,7 +151,7 @@ export class AddDataComponent implements OnInit {
 
   updateTotal() {
     this.dataEntryForm.patchValue({
-      totalPayment: (parseFloat(this.dataEntryForm.get('cash').value || 0) + parseFloat(this.dataEntryForm.get('cards').value || 0)).toFixed(2)
+      totalPayment: (parseFloat(this.dataEntryForm.get('cash').value || 0) + parseFloat(this.dataEntryForm.get('cards').value || 0) + parseFloat(this.dataEntryForm.get('repBACS').value || 0)).toFixed(2)
     });
   }
 
@@ -167,6 +168,7 @@ export class AddDataComponent implements OnInit {
       repDay2: '',
       repBalance: '',
       repBalanceB: '',
+      repBACS: '',
       officeSold: '',
       officePulled: '',
       officeNewClients: '',
@@ -273,6 +275,7 @@ export class AddDataComponent implements OnInit {
         repDay2: '',
         repBalance: '',
         repBalanceB: '',
+        repBACS: '',
         repVehicle: 313
       });
     }
@@ -423,6 +426,7 @@ export class AddDataComponent implements OnInit {
           repDay2: record.t2 || '',
           repBalance: record.balance || '',
           repBalanceB: record.balanceb || '',
+          repBACS: record.bacs || '',
           repVehicle: record.vehicle_id || 313
         };
         this.dataEntryForm.patchValue(repData);
@@ -518,7 +522,8 @@ export class AddDataComponent implements OnInit {
       day1: this.dataEntryForm.get('repDay1').value,
       day2: this.dataEntryForm.get('repDay2').value,
       repId: this.dataEntryForm.get('rep').value,
-      balanceB: this.dataEntryForm.get('repBalanceB').value
+      balanceB: this.dataEntryForm.get('repBalanceB').value,
+      bacs: this.dataEntryForm.get('repBACS').value
     };
 
     this.dataService.addRecord(recordDetails).subscribe((response: any) => {
@@ -552,6 +557,7 @@ export class AddDataComponent implements OnInit {
       day2: this.dataEntryForm.get('repDay2').value,
       repId: this.dataEntryForm.get('rep').value,
       balanceB: this.dataEntryForm.get('repBalanceB').value,
+      bacs: this.dataEntryForm.get('repBACS').value,
       orderId: this.existingOrderId
     };
 
