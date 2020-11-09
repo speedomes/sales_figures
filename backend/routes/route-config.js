@@ -70,7 +70,7 @@ router.post('/api/auth', (req, res, next) => {
 
 router.post('/api/getDashboardData',(req, res, next) => {
   let dashboardQuery = `SELECT sum(d.sold) as sold, sum(d.pulled) as pulled,
-    sum(d.newclients) as newClients, FORMAT(sum(d.credit), 2) as credit,
+    sum(d.newclients) as newClients, FORMAT(sum(d.credit) + sum(d.bacs), 2) as credit,
     sum(d.inuse) as interviews, sum(d.t1) as day1, sum(d.t2) as day2,
     FORMAT((sum(d.t2)/sum(d.t1))*100, 2) as percentage
     from daily as d join reps as r on d.rep_id = r.id 
@@ -492,7 +492,7 @@ router.post('/api/getDailyData',(req, res, next) => {
   const startLimit = parseInt(req.body.startLimit);
   const endLimit = parseInt(req.body.endLimit);
   const dailyDataQuery = `SELECT d.date, o.name as officeName, d.rep_id as repId, v.name as vehicleName, 
-  d.sold, d.pulled, d.newclients as newClients, d.credit, d.balance, d.unused, d.inuse, d.t1, d.t2, d.st, 
+  d.sold, d.pulled, d.newclients as newClients, (d.credit + d.bacs) as credit, d.balance, d.unused, d.inuse, d.t1, d.t2, d.st, 
   r.name as repName, h.name as hire_company FROM daily as d join reps as r on d.rep_id = r.id 
   join office as o on r.office_id = o.id join vehicle as v on d.vehicle_id = v.id
   join hirecompany as h on v.hire_company_id=h.id ORDER BY d.date DESC LIMIT ${startLimit},${endLimit}`;
@@ -573,7 +573,7 @@ router.post('/api/getDailyDataByFilter',(req, res, next) => {
 router.post('/api/getScopeData',(req, res, next) => {
   const startLimit = parseInt(req.body.startLimit);
   const endLimit = parseInt(req.body.endLimit);
-  let scopeDataQuery = `SELECT d.date, d.sold, d.pulled, d.newclients as newClients, d.credit, d.inuse, d.t1 as day1, d.t2 as day2, d.rep_id as repId, r.name as repName,
+  let scopeDataQuery = `SELECT d.date, d.sold, d.pulled, d.newclients as newClients, d.credit, d.bacs, d.inuse, d.t1 as day1, d.t2 as day2, d.rep_id as repId, r.name as repName,
     v.name as vehicle, d.balance, o.name as officeName
     FROM daily AS d JOIN reps AS r ON d.rep_id = r.id JOIN vehicle AS v ON d.vehicle_id = v.id JOIN office AS o ON r.office_id = o.id WHERE`;
   let splitDataQuery = `SELECT SUM(cash) as cash, SUM(cards) as cards FROM split WHERE`;
@@ -662,7 +662,7 @@ router.post('/api/getScopeData',(req, res, next) => {
       rows.forEach((row) => {
         totalPulled += row.pulled;
         totalNewClients += row.newClients;
-        totalCredit += row.credit;
+        totalCredit += (row.credit + row.bacs);
         totalVehicles++;
       });
       scopeData.data = rows;
@@ -922,10 +922,10 @@ router.post('/api/updateSplit',(req, res) => {
 });
 
 router.post('/api/getKPIData',(req, res) => {
-  const getRKPIDataQuery = `SELECT sum(sold) as sold, sum(pulled) as pulled, sum(newclients) as newClients, sum(credit) as credit, sum(inuse) as inuse,
+  const getRKPIDataQuery = `SELECT sum(sold) as sold, sum(pulled) as pulled, sum(newclients) as newClients, (sum(credit) + sum(bacs)) as credit, sum(inuse) as inuse,
     sum(t1) as tra1, sum(t2) as tra2 from daily WHERE rep_id=${req.body.repId}`;
   
-  const getOKPIDataQuery = `SELECT sum(d.sold) as sold, sum(d.pulled) as pulled, sum(d.newclients) as newClients, sum(d.credit) as credit,
+  const getOKPIDataQuery = `SELECT sum(d.sold) as sold, sum(d.pulled) as pulled, sum(d.newclients) as newClients, (sum(d.credit) + sum(d.bacs)) as credit,
     sum(d.inuse) as inuse, sum(d.t1) as tra1, sum(d.t2) as tra2 from daily as d join reps as r on d.rep_id=r.id join office as o on r.office_id=o.id
     WHERE o.id=${req.body.officeId}`;
 
@@ -1247,7 +1247,7 @@ router.post('/api/deleteVehicle',(req, res) => {
 });
 
 router.post('/api/getExistingRepData',(req, res, next) => {
-  let repDataQuery = `SELECT vehicle_id, balance, balanceb from reps WHERE id='${req.body.repId}' AND office_id='${req.body.officeId}'`;
+  let repDataQuery = `SELECT vehicle_id, balance, balanceb, bacs from reps WHERE id='${req.body.repId}' AND office_id='${req.body.officeId}'`;
 
   database.query(repDataQuery)
   .then (rows => {
@@ -1351,15 +1351,28 @@ router.post('/api/getTotalData',(req, res, next) => {
 });
 
 router.post('/api/getSplitData',(req, res, next) => {
-  const splitDataQuery = `SELECT s.date, o.name, s.cash, s.cards,
-      FORMAT((s.cash + s.cards), 2) as total, s.stub_no
-      FROM split as s join office as o on s.office_id=o.id ORDER BY s.date DESC`;
+  const splitDataQuery = `SELECT s.office_id, s.date, o.name, s.cash, s.cards, s.stub_no
+    FROM split as s join office as o on s.office_id=o.id ORDER BY s.date DESC`;
+
+  const bacsQuery = `Select sum(d.bacs) as bacs, r.office_id from daily AS d JOIN reps AS r ON d.rep_id = r.id JOIN office AS o ON r.office_id = o.id WHERE `;
 
   database.query(splitDataQuery)
   .then (rows => {
-    res.status(201).json({
-      message: 'Split data fetched successfully.',
-      splitData: rows
+    let splitDataPromiseArray = [];
+    rows.forEach((row) => {
+      splitDataPromiseArray.push(database.query(bacsQuery + `r.office_id='${row.office_id}' AND d.date='${row.date}' ORDER BY d.date DESC`));
+    });
+
+    Promise.all(splitDataPromiseArray).then(data => {
+      for (let index = 0; index < rows.length; index++) {
+        const row = rows[index];
+        row.total = ((row.cash || 0) + (row.cards || 0) + (data[index][0].bacs || 0)).toFixed(2);
+      }
+
+      res.status(201).json({
+        message: 'Split data fetched successfully.',
+        splitData: rows
+      });
     });
   })
   .catch(err => {

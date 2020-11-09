@@ -683,6 +683,7 @@ export class AddDataComponent implements OnInit {
       repPulled: '',
       repNC: '',
       repCredit: '',
+      repBACS: '',
       repInt: '',
       repDay1: '',
       repDay2: '',
