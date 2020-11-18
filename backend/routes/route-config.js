@@ -43,6 +43,8 @@ const database = new Database({
   debug: false
 });
 
+// updateData();
+
 router.post('/api/auth', (req, res, next) => {
   fs.readFile(__dirname + '/../user-config.json', 'utf8', (err, data) => {
     if (!err) {
@@ -699,7 +701,7 @@ router.post('/api/checkRecord',(req, res, next) => {
   const soldDataQuery = `Select sum(d.sold) as sold from daily AS d JOIN reps AS r ON d.rep_id = r.id
     JOIN office AS o ON r.office_id = o.id WHERE d.sold <> -1 AND o.id='${req.body.officeId}' 
     AND d.date='${req.body.date}'`;
-  const splitQuery = `SELECT id, cash, cards, stub_no FROM split WHERE office_id='${req.body.officeId}' AND date='${req.body.date}'`;
+  const splitQuery = `SELECT id, cash, cards, stub_no, bacs FROM split WHERE office_id='${req.body.officeId}' AND date='${req.body.date}'`;
 
   database.query(recordQuery)
   .then (rows => {
@@ -820,7 +822,7 @@ router.post('/api/checkRecord',(req, res, next) => {
   });
 });
 
-router.post('/api/addRecord',(req, res) => {
+router.post('/api/addRecord',(req, res, next) => {
   const addRecordQuery = `Insert daily(date, vehicle_id, sold, pulled, newclients, credit, balance, inuse, t1, t2, rep_id, balanceb, last_modified, bacs)
     VALUES ('${req.body.date}', '${req.body.vehicleId}', '${req.body.sold}', '${req.body.pulled}', '${req.body.newClients}', '${req.body.credit}',
     '${req.body.balance}', '${req.body.inuse}', '${req.body.day1}', '${req.body.day2}', '${req.body.repId}', '${req.body.balanceB}', NOW(), '${req.body.bacs}')`;
@@ -837,25 +839,19 @@ router.post('/api/addRecord',(req, res) => {
     .then(() => {
       database.query(officeRecordQuery)
       .then((rows) => {
-        res.status(201).json({
-          message: 'Record added successfully',
-          officeCredit: rows[0].credit.toFixed(2)
-        });
+        updateBACS(req.body.officeId, req.body.date, req.body.bacs, res, next, 'added', rows[0].credit.toFixed(2));
       })
       .catch(err => {
         next(err); 
-      });    
+      });
     })
     .catch(err => {
       next(err); 
     });
-  })
-  .catch(err => {
-    next(err); 
   });
 });
 
-router.post('/api/updateRecord',(req, res) => {
+router.post('/api/updateRecord',(req, res, next) => {
   const updateRecordQuery = `Update daily SET vehicle_id='${req.body.vehicleId}', sold='${req.body.sold}', pulled='${req.body.pulled}',
     newclients='${req.body.newClients}', credit='${req.body.credit}', balance='${req.body.balance}', inuse='${req.body.inuse}', 
     t1='${req.body.day1}', t2='${req.body.day2}', balanceb='${req.body.balanceB}', bacs='${req.body.bacs}', rep_id='${req.body.repId}', last_modified=NOW() WHERE id='${req.body.orderId}'`;
@@ -872,23 +868,20 @@ router.post('/api/updateRecord',(req, res) => {
     .then(() => {
       database.query(officeRecordQuery)
       .then((rows) => {
-        res.status(201).json({
-          message: 'Record has been updated successfully',
-          officeCredit: rows[0].credit.toFixed(2)
-        });
+          updateBACS(req.body.officeId, req.body.date, req.body.bacs, res, next, 'updated', rows[0].credit.toFixed(2));
+        })
+        .catch(err => {
+          next(err); 
+        });    
       })
       .catch(err => {
         next(err); 
-      });    
+      });
     })
     .catch(err => {
       next(err); 
     });
-  })
-  .catch(err => {
-    next(err); 
   });
-});
 
 router.post('/api/saveSplit',(req, res) => {
   const saveSplitQuery = `Insert split(date, office_id, cash, cards, stub_no) VALUES ('${req.body.date}', ${req.body.officeId}, ${req.body.cash}, 
@@ -1247,7 +1240,7 @@ router.post('/api/deleteVehicle',(req, res) => {
 });
 
 router.post('/api/getExistingRepData',(req, res, next) => {
-  let repDataQuery = `SELECT vehicle_id, balance, balanceb, bacs from reps WHERE id='${req.body.repId}' AND office_id='${req.body.officeId}'`;
+  let repDataQuery = `SELECT vehicle_id, balance, balanceb from reps WHERE id='${req.body.repId}' AND office_id='${req.body.officeId}'`;
 
   database.query(repDataQuery)
   .then (rows => {
@@ -1351,34 +1344,55 @@ router.post('/api/getTotalData',(req, res, next) => {
 });
 
 router.post('/api/getSplitData',(req, res, next) => {
-  const splitDataQuery = `SELECT s.office_id, s.date, o.name, s.cash, s.cards, s.stub_no
+  const splitDataQuery = `SELECT s.office_id, s.date, o.name, s.cash, s.cards, s.stub_no, ROUND((s.cash + s.cards + s.bacs), 2) as total
     FROM split as s join office as o on s.office_id=o.id ORDER BY s.date DESC`;
-
-  const bacsQuery = `Select sum(d.bacs) as bacs, r.office_id from daily AS d JOIN reps AS r ON d.rep_id = r.id JOIN office AS o ON r.office_id = o.id WHERE `;
 
   database.query(splitDataQuery)
   .then (rows => {
-    let splitDataPromiseArray = [];
-    rows.forEach((row) => {
-      splitDataPromiseArray.push(database.query(bacsQuery + `r.office_id='${row.office_id}' AND d.date='${row.date}' ORDER BY d.date DESC`));
-    });
-
-    Promise.all(splitDataPromiseArray).then(data => {
-      for (let index = 0; index < rows.length; index++) {
-        const row = rows[index];
-        row.total = ((row.cash || 0) + (row.cards || 0) + (data[index][0].bacs || 0)).toFixed(2);
-      }
-
-      res.status(201).json({
-        message: 'Split data fetched successfully.',
-        splitData: rows
-      });
+    res.status(201).json({
+      message: 'Split data fetched successfully.',
+      splitData: rows
     });
   })
   .catch(err => {
     next(err); 
   });
 });
+
+
+function updateBACS(officeId, date, bacs, res, next, status, oc) {
+  const splitRecordQuery = `Select * from split where office_id='${officeId}' AND date='${date}'`;
+  const addSplitRecordQuery = `Insert split(date, office_id, cash, cards, stub_no, bacs) VALUES ('${date}', '${officeId}', 0, 0, 0, ${bacs})`;
+
+  database.query(splitRecordQuery).then((data) => {
+    if(data.length > 0) {
+      let newBACS = data[0].bacs + bacs;
+      const updateSplitRecordQuery = `Update split SET bacs=${newBACS} WHERE date='${date}' AND office_id='${officeId}'`;
+      database.query(updateSplitRecordQuery).then(() => {
+        res.status(201).json({
+          message: `Record ${status} successfully`,
+          offsetCredit: oc
+        });
+      })
+      .catch(err => {
+        next(err); 
+      });
+    } else {
+      database.query(addSplitRecordQuery).then(() => {
+        res.status(201).json({
+          message: `Record ${status} successfully`,
+          offsetCredit: oc
+        });
+      })
+      .catch(err => {
+        next(err); 
+      });
+    }     
+  })
+  .catch(err => {
+    next(err); 
+  });
+}
 
 router.post('/api/getHireCompanies',(req, res, next) => {
   const hireCompanyDataQuery = `SELECT * from hirecompany WHERE id <> 0 ORDER BY id`;

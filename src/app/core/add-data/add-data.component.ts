@@ -39,6 +39,7 @@ export class AddDataComponent implements OnInit {
   nextRepLimitReached = true;
   enableSaveData = true;
   enableSplitSaveData = true;
+  currentSplitBACS = 0;
 
   doFilter = {
     offices: [],
@@ -81,6 +82,7 @@ export class AddDataComponent implements OnInit {
       cash: new FormControl(''),
       cards: new FormControl(''),
       totalPayment: new FormControl(''),
+      splitBACS: new FormControl(''),
       stubNo: new FormControl(''),
       repWSold: new FormControl(''),
       repWPulled: new FormControl(''),
@@ -151,7 +153,10 @@ export class AddDataComponent implements OnInit {
 
   updateTotal() {
     this.dataEntryForm.patchValue({
-      totalPayment: (parseFloat(this.dataEntryForm.get('cash').value || 0) + parseFloat(this.dataEntryForm.get('cards').value || 0) + parseFloat(this.dataEntryForm.get('repBACS').value || 0)).toFixed(2)
+      splitBACS: (parseFloat(this.currentSplitBACS.toString()) + parseFloat(this.dataEntryForm.get('repBACS').value || 0)).toFixed(2)
+    });
+    this.dataEntryForm.patchValue({
+      totalPayment: (parseFloat(this.dataEntryForm.get('cash').value || 0) + parseFloat(this.dataEntryForm.get('cards').value || 0) + parseFloat(this.dataEntryForm.get('splitBACS').value || 0)).toFixed(2)
     });
   }
 
@@ -179,6 +184,7 @@ export class AddDataComponent implements OnInit {
       cash: '',
       cards: '',
       totalPayment: '',
+      splitBACS: '',
       stubNo: ''
     });
 
@@ -467,6 +473,7 @@ export class AddDataComponent implements OnInit {
           cash: '',
           cards: '',
           totalPayment: '',
+          splitBACS: '',
           stubNo: ''
         });
         this.displaySnackbar('No Office data found');
@@ -479,9 +486,11 @@ export class AddDataComponent implements OnInit {
         const splitData = {
           cash: splitRecord.cash.toFixed(2) || '',
           cards: splitRecord.cards.toFixed(2) || '',
-          totalPayment: (splitRecord.cash + splitRecord.cards).toFixed(2),
+          totalPayment: ((splitRecord.cash || 0) + (splitRecord.cards || 0) + (splitRecord.bacs || 0)).toFixed(2),
+          splitBACS: splitRecord.bacs.toFixed(2) || '',
           stubNo: splitRecord.stub_no
         };
+        this.currentSplitBACS = splitRecord.bacs.toFixed(2);
         this.dataEntryForm.patchValue(splitData);
       } else {
         this.hasSplitData = false;
@@ -489,8 +498,10 @@ export class AddDataComponent implements OnInit {
           cash: '',
           cards: '',
           totalPayment: '',
+          splitBACS: '',
           stubNo: ''
         };
+        this.currentSplitBACS = 0;
         this.dataEntryForm.patchValue(splitData);
       }
     },
@@ -697,6 +708,7 @@ export class AddDataComponent implements OnInit {
       cash: '',
       cards: '',
       totalPayment: '',
+      splitBACS: '',
       stubNo: ''
     });
   }
